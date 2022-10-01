@@ -34,6 +34,7 @@ golang: v2alpha1/*.proto
 .PHONY: clean-go
 clean-go:
 	rm -rf v2alpha1/go
+	rm -rf v2alpha1/ml_metadata
 	rm -f v2alpha1/google/rpc/status.proto
 
 # Generate Python package.
@@ -60,7 +61,7 @@ clean-python:
 .PHONY: generate
 generate: go_pipelinespec go_cachekey
 
-go_pipelinespec: v2alpha1/pipeline_spec.proto v2alpha1/google/rpc/status.proto
+go_pipelinespec: v2alpha1/ml_metadata/metadata_store.proto v2alpha1/pipeline_spec.proto v2alpha1/google/rpc/status.proto
 	mkdir -p v2alpha1/go/pipelinespec
 	cd v2alpha1 && protoc -I=. \
 		--go_out=go/pipelinespec \
@@ -73,6 +74,12 @@ go_cachekey: v2alpha1/pipeline_spec.proto v2alpha1/cache_key.proto
 		--go_out=go/cachekey \
 		--go_opt=paths=source_relative \
 		cache_key.proto
+
+# Fetch dependency proto
+v2alpha1/ml_metadata/metadata_store.proto:
+	mkdir -p v2alpha1/ml_metadata
+	cp ../third_party/ml-metadata/ml_metadata/proto/metadata_store.proto ./v2alpha1/ml_metadata/metadata_store.proto
+	echo 'option go_package = "github.com/kubeflow/pipelines/third_party/ml-metadata/go/ml_metadata";' >> ./v2alpha1/ml_metadata/metadata_store.proto
 
 # Fetch dependency proto
 v2alpha1/google/rpc/status.proto:
