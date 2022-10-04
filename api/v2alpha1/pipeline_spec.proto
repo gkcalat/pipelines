@@ -11,50 +11,50 @@ import "ml_metadata/metadata_store.proto";
 option go_package = "github.com/kubeflow/pipelines/api/v2alpha1/go/pipelinespec";
 
 // The spec of a pipeline job.
-message PipelineRun {
-  // The resource name of the PipelineRun.
+message Run {
+  // The resource name of the Run.
   string name = 1;
 
-  // The display name of the PipelineRun.
+  // The display name of the Run.
   string display_name = 2;
 
-  // PipelineRun creation time.
+  // Run creation time.
   google.protobuf.Timestamp create_time = 3;
 
-  // PipelineRun start time.
+  // Run start time.
   google.protobuf.Timestamp start_time = 4;
 
-  // PipelineRun end time.
+  // Run end time.
   google.protobuf.Timestamp end_time = 5;
 
-  // Timestamp when this PipelineRun was most recently updated.
+  // Timestamp when this Run was most recently updated.
   google.protobuf.Timestamp update_time = 6;
 
   // Definition of the Pipeline that is being executed.
   google.protobuf.Struct pipeline_spec = 7;
 
-  // The detailed state of the PipelineRun.
-  PipelineRunState state = 8;
+  // The detailed state of the Run.
+  RunState state = 8;
 
-  // The details of PipelineRun.
-  PipelineRunDetail run_detail = 9;
+  // The details of Run.
+  RunDetail run_detail = 9;
 
-  // The error that occurred during PipelineRun execution.
-  // Only populated when the PipelineRun's state is FAILED or CANCELLED.
+  // The error that occurred during Run execution.
+  // Only populated when the Run's state is FAILED or CANCELLED.
   google.rpc.Status error = 10;
 
-  // The labels with user-defined metadata to organize PipelineRun.
+  // The labels with user-defined metadata to organize Run.
   map<string, string> labels = 11;
 
-  // The runtime config of a PipelineRun.
+  // The runtime config of a Run.
   message RuntimeConfig {
     // Deprecated. Use [RuntimeConfig.parameter_values][] instead.
     map<string, Value> parameters = 1 [deprecated = true];
 
     reserved 2;
 
-    // The runtime parameters of the PipelineRun. The parameters will be
-    // passed into [PipelineRun.pipeline_spec][] to replace the placeholders
+    // The runtime parameters of the Run. The parameters will be
+    // passed into [Run.pipeline_spec][] to replace the placeholders
     // at runtime.
     map<string, google.protobuf.Value> parameter_values = 3;
   }
@@ -63,40 +63,40 @@ message PipelineRun {
   RuntimeConfig runtime_config = 12;
 }
 
-// Describes the state of a PipelineRun.
-enum PipelineRunState {
-  // The PipelineRun state is unspecified.
-  PIPELINE_STATE_UNSPECIFIED = 0;
-  // The PipelineRun has been created or resumed, and processing has not yet
+// Describes the state of a Run.
+enum RunState {
+  // The Run state is unspecified.
+  RUN_STATE_UNSPECIFIED = 0;
+  // The Run has been created or resumed, and processing has not yet
   // begun.
-  PIPELINE_STATE_QUEUED = 1;
+  RUN_STATE_QUEUED = 1;
   // The service is preparing to run the pipeline.
-  PIPELINE_STATE_PENDING = 2;
-  // The PipelineRun is in progress.
-  PIPELINE_STATE_RUNNING = 3;
-  // The PipelineRun completed successfully.
-  PIPELINE_STATE_SUCCEEDED = 4;
-  // The PipelineRun failed.
-  PIPELINE_STATE_FAILED = 5;
-  // The PipelineRun is being cancelled. From this state, the PipelineRun may only go
-  // to either PIPELINE_STATE_SUCCEEDED, PIPELINE_STATE_FAILED or
-  // PIPELINE_STATE_CANCELLED.
-  PIPELINE_STATE_CANCELLING = 6;
-  // The PipelineRun has been cancelled.
-  PIPELINE_STATE_CANCELLED = 7;
-  // The PipelineRun has been stopped, and can be resumed.
-  PIPELINE_STATE_PAUSED = 8;
+  RUN_STATE_PENDING = 2;
+  // The Run is in progress.
+  RUN_STATE_RUNNING = 3;
+  // The Run completed successfully.
+  RUN_STATE_SUCCEEDED = 4;
+  // The Run failed.
+  RUN_STATE_FAILED = 5;
+  // The Run is being cancelled. From this state, the Run may only go
+  // to either RUN_STATE_SUCCEEDED, RUN_STATE_FAILED or
+  // RUN_STATE_CANCELLED.
+  RUN_STATE_CANCELLING = 6;
+  // The Run has been cancelled.
+  RUN_STATE_CANCELLED = 7;
+  // The Run has been stopped, and can be resumed.
+  RUN_STATE_PAUSED = 8;
 }
 
-// The runtime detail of PipelineRun.
-message PipelineRunDetail {
+// The runtime detail of Run.
+message RunDetail {
   // The context of the pipeline.
   ml_metadata.Context pipeline_context = 1;
 
-  // The context of the current PipelineRun.
+  // The context of the current Run.
   ml_metadata.Context pipeline_run_context = 2;
 
-  // The runtime details of the tasks under the PipelineRun.
+  // The runtime details of the tasks under the Run.
   repeated PipelineTaskDetail task_details = 3;
 }
 
@@ -110,7 +110,7 @@ message PipelineTaskDetail {
   int64 parent_task_id = 12;
 
   // The user specified name of the task that is defined in
-  // [PipelineRun.spec][].
+  // [Run.spec][].
   string task_name = 2;
 
   // Task create time.
@@ -147,7 +147,7 @@ message PipelineTaskDetail {
     SKIPPED = 8;
     // Specifies that the task was not triggered because the task's trigger
     // policy is not satisfied. The trigger policy is specified in the
-    // `condition` field of [PipelineRun.pipeline_spec][].
+    // `condition` field of [Run.pipeline_spec][].
     NOT_TRIGGERED = 9;
   }
 
@@ -205,7 +205,7 @@ message PipelineTaskExecutorDetail {
 
     // The name of the [CustomJob][] for the pre-caching-check container
     // execution. This job will be available if the
-    // [PipelineRun.pipeline_spec][] specifies the `pre_caching_check` hook in
+    // [Run.pipeline_spec][] specifies the `pre_caching_check` hook in
     // the lifecycle events.
     string pre_caching_check_job = 2;
 
@@ -215,7 +215,7 @@ message PipelineTaskExecutorDetail {
 
     // The names of the previously failed [CustomJob][] for the
     // pre-caching-check container executions. This job will be available if the
-    // [PipelineRun.pipeline_spec][] specifies the `pre_caching_check` hook in
+    // [Run.pipeline_spec][] specifies the `pre_caching_check` hook in
     // the lifecycle events.
     // The list includes the all attempts in chronological order.
     repeated string failed_pre_caching_check_jobs = 4;
@@ -1131,7 +1131,7 @@ message PipelineTaskFinalStatus {
   // The pipeline job unique id.
   int64 pipeline_job_uuid = 3 [deprecated = true];
 
-  // The pipeline job name from the [PipelineJob.name][].
+  // The pipeline job name from the [Run.name][].
   string pipeline_job_name = 4 [deprecated = true];
 
   // The pipeline job resource name, in the format of

@@ -28,7 +28,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     syntax='proto3',
     serialized_options=b'Z:github.com/kubeflow/pipelines/api/v2alpha1/go/pipelinespec',
     create_key=_descriptor._internal_create_key,
-    serialized_pb=b'\n\x13pipeline_spec.proto\x12\x0cml_pipelines\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/rpc/status.proto\x1a ml_metadata/metadata_store.proto\"\xa8\x07\n\x0bPipelineRun\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12/\n\x0b\x63reate_time\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\nstart_time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08\x65nd_time\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0bupdate_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\rpipeline_spec\x18\x07 \x01(\x0b\x32\x17.google.protobuf.Struct\x12-\n\x05state\x18\x08 \x01(\x0e\x32\x1e.ml_pipelines.PipelineRunState\x12\x33\n\nrun_detail\x18\t \x01(\x0b\x32\x1f.ml_pipelines.PipelineRunDetail\x12!\n\x05\x65rror\x18\n \x01(\x0b\x32\x12.google.rpc.Status\x12\x35\n\x06labels\x18\x0b \x03(\x0b\x32%.ml_pipelines.PipelineRun.LabelsEntry\x12?\n\x0eruntime_config\x18\x0c \x01(\x0b\x32\'.ml_pipelines.PipelineRun.RuntimeConfig\x1a-\n\x0bLabelsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\xd6\x02\n\rRuntimeConfig\x12O\n\nparameters\x18\x01 \x03(\x0b\x32\x37.ml_pipelines.PipelineRun.RuntimeConfig.ParametersEntryB\x02\x18\x01\x12V\n\x10parameter_values\x18\x03 \x03(\x0b\x32<.ml_pipelines.PipelineRun.RuntimeConfig.ParameterValuesEntry\x1a\x46\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value:\x02\x38\x01\x1aN\n\x14ParameterValuesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.google.protobuf.Value:\x02\x38\x01J\x04\x08\x02\x10\x03\"\xaf\x01\n\x11PipelineRunDetail\x12.\n\x10pipeline_context\x18\x01 \x01(\x0b\x32\x14.ml_metadata.Context\x12\x32\n\x14pipeline_run_context\x18\x02 \x01(\x0b\x32\x14.ml_metadata.Context\x12\x36\n\x0ctask_details\x18\x03 \x03(\x0b\x32 .ml_pipelines.PipelineTaskDetail\"\xba\t\n\x12PipelineTaskDetail\x12\x0f\n\x07task_id\x18\x01 \x01(\x03\x12\x16\n\x0eparent_task_id\x18\x0c \x01(\x03\x12\x11\n\ttask_name\x18\x02 \x01(\t\x12/\n\x0b\x63reate_time\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\nstart_time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08\x65nd_time\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x41\n\x0f\x65xecutor_detail\x18\x06 \x01(\x0b\x32(.ml_pipelines.PipelineTaskExecutorDetail\x12\x35\n\x05state\x18\x07 \x01(\x0e\x32&.ml_pipelines.PipelineTaskDetail.State\x12)\n\texecution\x18\x08 \x01(\x0b\x32\x16.ml_metadata.Execution\x12!\n\x05\x65rror\x18\t \x01(\x0b\x32\x12.google.rpc.Status\x12<\n\x06inputs\x18\n \x03(\x0b\x32,.ml_pipelines.PipelineTaskDetail.InputsEntry\x12>\n\x07outputs\x18\x0b \x03(\x0b\x32-.ml_pipelines.PipelineTaskDetail.OutputsEntry\x12Q\n\x14pipeline_task_status\x18\r \x03(\x0b\x32\x33.ml_pipelines.PipelineTaskDetail.PipelineTaskStatus\x1a\x38\n\x0c\x41rtifactList\x12(\n\tartifacts\x18\x01 \x03(\x0b\x32\x15.ml_metadata.Artifact\x1a\\\n\x0bInputsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12<\n\x05value\x18\x02 \x01(\x0b\x32-.ml_pipelines.PipelineTaskDetail.ArtifactList:\x02\x38\x01\x1a]\n\x0cOutputsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12<\n\x05value\x18\x02 \x01(\x0b\x32-.ml_pipelines.PipelineTaskDetail.ArtifactList:\x02\x38\x01\x1a\x9f\x01\n\x12PipelineTaskStatus\x12/\n\x0bupdate_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x35\n\x05state\x18\x02 \x01(\x0e\x32&.ml_pipelines.PipelineTaskDetail.State\x12!\n\x05\x65rror\x18\x03 \x01(\x0b\x32\x12.google.rpc.Status\"\xa6\x01\n\x05State\x12\x15\n\x11STATE_UNSPECIFIED\x10\x00\x12\x0b\n\x07PENDING\x10\x01\x12\x0b\n\x07RUNNING\x10\x02\x12\r\n\tSUCCEEDED\x10\x03\x12\x12\n\x0e\x43\x41NCEL_PENDING\x10\x04\x12\x0e\n\nCANCELLING\x10\x05\x12\r\n\tCANCELLED\x10\x06\x12\n\n\x06\x46\x41ILED\x10\x07\x12\x0b\n\x07SKIPPED\x10\x08\x12\x11\n\rNOT_TRIGGERED\x10\t\"\x82\x03\n\x1aPipelineTaskExecutorDetail\x12T\n\x10\x63ontainer_detail\x18\x01 \x01(\x0b\x32\x38.ml_pipelines.PipelineTaskExecutorDetail.ContainerDetailH\x00\x12Y\n\x11\x63ustom_job_detail\x18\x02 \x01(\x0b\x32\x38.ml_pipelines.PipelineTaskExecutorDetail.CustomJobDetailB\x02\x18\x01H\x00\x1a\x83\x01\n\x0f\x43ontainerDetail\x12\x10\n\x08main_job\x18\x01 \x01(\t\x12\x1d\n\x15pre_caching_check_job\x18\x02 \x01(\t\x12\x18\n\x10\x66\x61iled_main_jobs\x18\x03 \x03(\t\x12%\n\x1d\x66\x61iled_pre_caching_check_jobs\x18\x04 \x03(\t\x1a\"\n\x0f\x43ustomJobDetail\x12\x0b\n\x03job\x18\x01 \x01(\t:\x02\x18\x01\x42\t\n\x07\x64\x65tails\"\xf7\x03\n\x0cPipelineSpec\x12\x31\n\rpipeline_info\x18\x01 \x01(\x0b\x32\x1a.ml_pipelines.PipelineInfo\x12\x30\n\x0f\x64\x65ployment_spec\x18\x07 \x01(\x0b\x32\x17.google.protobuf.Struct\x12\x13\n\x0bsdk_version\x18\x04 \x01(\t\x12\x16\n\x0eschema_version\x18\x05 \x01(\t\x12>\n\ncomponents\x18\x08 \x03(\x0b\x32*.ml_pipelines.PipelineSpec.ComponentsEntry\x12)\n\x04root\x18\t \x01(\x0b\x32\x1b.ml_pipelines.ComponentSpec\x12\x1d\n\x15\x64\x65\x66\x61ult_pipeline_root\x18\n \x01(\t\x1a{\n\x10RuntimeParameter\x12;\n\x04type\x18\x01 \x01(\x0e\x32-.ml_pipelines.PrimitiveType.PrimitiveTypeEnum\x12*\n\rdefault_value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value\x1aN\n\x0f\x43omponentsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12*\n\x05value\x18\x02 \x01(\x0b\x32\x1b.ml_pipelines.ComponentSpec:\x02\x38\x01\"\xdf\x01\n\rComponentSpec\x12<\n\x11input_definitions\x18\x01 \x01(\x0b\x32!.ml_pipelines.ComponentInputsSpec\x12>\n\x12output_definitions\x18\x02 \x01(\x0b\x32\".ml_pipelines.ComponentOutputsSpec\x12$\n\x03\x64\x61g\x18\x03 \x01(\x0b\x32\x15.ml_pipelines.DagSpecH\x00\x12\x18\n\x0e\x65xecutor_label\x18\x04 \x01(\tH\x00\x42\x10\n\x0eimplementation\"\xb7\x01\n\x07\x44\x61gSpec\x12/\n\x05tasks\x18\x01 \x03(\x0b\x32 .ml_pipelines.DagSpec.TasksEntry\x12-\n\x07outputs\x18\x02 \x01(\x0b\x32\x1c.ml_pipelines.DagOutputsSpec\x1aL\n\nTasksEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12-\n\x05value\x18\x02 \x01(\x0b\x32\x1e.ml_pipelines.PipelineTaskSpec:\x02\x38\x01\"\x95\t\n\x0e\x44\x61gOutputsSpec\x12>\n\tartifacts\x18\x01 \x03(\x0b\x32+.ml_pipelines.DagOutputsSpec.ArtifactsEntry\x12@\n\nparameters\x18\x02 \x03(\x0b\x32,.ml_pipelines.DagOutputsSpec.ParametersEntry\x1aM\n\x14\x41rtifactSelectorSpec\x12\x18\n\x10producer_subtask\x18\x01 \x01(\t\x12\x1b\n\x13output_artifact_key\x18\x02 \x01(\t\x1a\x66\n\x15\x44\x61gOutputArtifactSpec\x12M\n\x12\x61rtifact_selectors\x18\x01 \x03(\x0b\x32\x31.ml_pipelines.DagOutputsSpec.ArtifactSelectorSpec\x1a\x64\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x41\n\x05value\x18\x02 \x01(\x0b\x32\x32.ml_pipelines.DagOutputsSpec.DagOutputArtifactSpec:\x02\x38\x01\x1aO\n\x15ParameterSelectorSpec\x12\x18\n\x10producer_subtask\x18\x01 \x01(\t\x12\x1c\n\x14output_parameter_key\x18\x02 \x01(\t\x1ai\n\x16ParameterSelectorsSpec\x12O\n\x13parameter_selectors\x18\x01 \x03(\x0b\x32\x32.ml_pipelines.DagOutputsSpec.ParameterSelectorSpec\x1a\xf1\x01\n\x19MapParameterSelectorsSpec\x12g\n\x11mapped_parameters\x18\x02 \x03(\x0b\x32L.ml_pipelines.DagOutputsSpec.MapParameterSelectorsSpec.MappedParametersEntry\x1ak\n\x15MappedParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x41\n\x05value\x18\x02 \x01(\x0b\x32\x32.ml_pipelines.DagOutputsSpec.ParameterSelectorSpec:\x02\x38\x01\x1a\xcb\x01\n\x16\x44\x61gOutputParameterSpec\x12R\n\x14value_from_parameter\x18\x01 \x01(\x0b\x32\x32.ml_pipelines.DagOutputsSpec.ParameterSelectorSpecH\x00\x12O\n\x10value_from_oneof\x18\x02 \x01(\x0b\x32\x33.ml_pipelines.DagOutputsSpec.ParameterSelectorsSpecH\x00\x42\x06\n\x04kindJ\x04\x08\x03\x10\x04\x1a\x66\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x42\n\x05value\x18\x02 \x01(\x0b\x32\x33.ml_pipelines.DagOutputsSpec.DagOutputParameterSpec:\x02\x38\x01\"\x8e\x05\n\x13\x43omponentInputsSpec\x12\x43\n\tartifacts\x18\x01 \x03(\x0b\x32\x30.ml_pipelines.ComponentInputsSpec.ArtifactsEntry\x12\x45\n\nparameters\x18\x02 \x03(\x0b\x32\x31.ml_pipelines.ComponentInputsSpec.ParametersEntry\x1aG\n\x0c\x41rtifactSpec\x12\x37\n\rartifact_type\x18\x01 \x01(\x0b\x32 .ml_pipelines.ArtifactTypeSchema\x1a\xdb\x01\n\rParameterSpec\x12?\n\x04type\x18\x01 \x01(\x0e\x32-.ml_pipelines.PrimitiveType.PrimitiveTypeEnumB\x02\x18\x01\x12\x45\n\x0eparameter_type\x18\x02 \x01(\x0e\x32-.ml_pipelines.ParameterType.ParameterTypeEnum\x12-\n\rdefault_value\x18\x03 \x01(\x0b\x32\x16.google.protobuf.Value\x12\x13\n\x0bis_optional\x18\x04 \x01(\x08\x1a`\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12=\n\x05value\x18\x02 \x01(\x0b\x32..ml_pipelines.ComponentInputsSpec.ArtifactSpec:\x02\x38\x01\x1a\x62\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12>\n\x05value\x18\x02 \x01(\x0b\x32/.ml_pipelines.ComponentInputsSpec.ParameterSpec:\x02\x38\x01\"\xf4\x07\n\x14\x43omponentOutputsSpec\x12\x44\n\tartifacts\x18\x01 \x03(\x0b\x32\x31.ml_pipelines.ComponentOutputsSpec.ArtifactsEntry\x12\x46\n\nparameters\x18\x02 \x03(\x0b\x32\x32.ml_pipelines.ComponentOutputsSpec.ParametersEntry\x1a\xeb\x03\n\x0c\x41rtifactSpec\x12\x37\n\rartifact_type\x18\x01 \x01(\x0b\x32 .ml_pipelines.ArtifactTypeSchema\x12W\n\nproperties\x18\x02 \x03(\x0b\x32?.ml_pipelines.ComponentOutputsSpec.ArtifactSpec.PropertiesEntryB\x02\x18\x01\x12\x64\n\x11\x63ustom_properties\x18\x03 \x03(\x0b\x32\x45.ml_pipelines.ComponentOutputsSpec.ArtifactSpec.CustomPropertiesEntryB\x02\x18\x01\x12)\n\x08metadata\x18\x04 \x01(\x0b\x32\x17.google.protobuf.Struct\x1aX\n\x0fPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1a^\n\x15\x43ustomPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1a\x97\x01\n\rParameterSpec\x12?\n\x04type\x18\x01 \x01(\x0e\x32-.ml_pipelines.PrimitiveType.PrimitiveTypeEnumB\x02\x18\x01\x12\x45\n\x0eparameter_type\x18\x02 \x01(\x0e\x32-.ml_pipelines.ParameterType.ParameterTypeEnum\x1a\x61\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12>\n\x05value\x18\x02 \x01(\x0b\x32/.ml_pipelines.ComponentOutputsSpec.ArtifactSpec:\x02\x38\x01\x1a\x63\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12?\n\x05value\x18\x02 \x01(\x0b\x32\x30.ml_pipelines.ComponentOutputsSpec.ParameterSpec:\x02\x38\x01\"\xc2\x08\n\x0eTaskInputsSpec\x12@\n\nparameters\x18\x01 \x03(\x0b\x32,.ml_pipelines.TaskInputsSpec.ParametersEntry\x12>\n\tartifacts\x18\x02 \x03(\x0b\x32+.ml_pipelines.TaskInputsSpec.ArtifactsEntry\x1a\xfa\x01\n\x11InputArtifactSpec\x12\x65\n\x14task_output_artifact\x18\x03 \x01(\x0b\x32\x45.ml_pipelines.TaskInputsSpec.InputArtifactSpec.TaskOutputArtifactSpecH\x00\x12\"\n\x18\x63omponent_input_artifact\x18\x04 \x01(\tH\x00\x1aL\n\x16TaskOutputArtifactSpec\x12\x15\n\rproducer_task\x18\x01 \x01(\t\x12\x1b\n\x13output_artifact_key\x18\x02 \x01(\tB\x06\n\x04kindJ\x04\x08\x05\x10\x06\x1a\xea\x03\n\x12InputParameterSpec\x12h\n\x15task_output_parameter\x18\x01 \x01(\x0b\x32G.ml_pipelines.TaskInputsSpec.InputParameterSpec.TaskOutputParameterSpecH\x00\x12>\n\rruntime_value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameterH\x00\x12#\n\x19\x63omponent_input_parameter\x18\x03 \x01(\tH\x00\x12\\\n\x11task_final_status\x18\x05 \x01(\x0b\x32?.ml_pipelines.TaskInputsSpec.InputParameterSpec.TaskFinalStatusH\x00\x12%\n\x1dparameter_expression_selector\x18\x04 \x01(\t\x1aN\n\x17TaskOutputParameterSpec\x12\x15\n\rproducer_task\x18\x01 \x01(\t\x12\x1c\n\x14output_parameter_key\x18\x02 \x01(\t\x1a(\n\x0fTaskFinalStatus\x12\x15\n\rproducer_task\x18\x01 \x01(\tB\x06\n\x04kind\x1a\x62\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12>\n\x05value\x18\x02 \x01(\x0b\x32/.ml_pipelines.TaskInputsSpec.InputParameterSpec:\x02\x38\x01\x1a`\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12=\n\x05value\x18\x02 \x01(\x0b\x32..ml_pipelines.TaskInputsSpec.InputArtifactSpec:\x02\x38\x01\"\xf6\x06\n\x0fTaskOutputsSpec\x12\x41\n\nparameters\x18\x01 \x03(\x0b\x32-.ml_pipelines.TaskOutputsSpec.ParametersEntry\x12?\n\tartifacts\x18\x02 \x03(\x0b\x32,.ml_pipelines.TaskOutputsSpec.ArtifactsEntry\x1a\xc0\x03\n\x12OutputArtifactSpec\x12\x37\n\rartifact_type\x18\x01 \x01(\x0b\x32 .ml_pipelines.ArtifactTypeSchema\x12T\n\nproperties\x18\x02 \x03(\x0b\x32@.ml_pipelines.TaskOutputsSpec.OutputArtifactSpec.PropertiesEntry\x12\x61\n\x11\x63ustom_properties\x18\x03 \x03(\x0b\x32\x46.ml_pipelines.TaskOutputsSpec.OutputArtifactSpec.CustomPropertiesEntry\x1aX\n\x0fPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1a^\n\x15\x43ustomPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1aR\n\x13OutputParameterSpec\x12;\n\x04type\x18\x01 \x01(\x0e\x32-.ml_pipelines.PrimitiveType.PrimitiveTypeEnum\x1a\x64\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12@\n\x05value\x18\x02 \x01(\x0b\x32\x31.ml_pipelines.TaskOutputsSpec.OutputParameterSpec:\x02\x38\x01\x1a\x62\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12?\n\x05value\x18\x02 \x01(\x0b\x32\x30.ml_pipelines.TaskOutputsSpec.OutputArtifactSpec:\x02\x38\x01\"m\n\rPrimitiveType\"X\n\x11PrimitiveTypeEnum\x12\x1e\n\x1aPRIMITIVE_TYPE_UNSPECIFIED\x10\x00\x12\x07\n\x03INT\x10\x01\x12\n\n\x06\x44OUBLE\x10\x02\x12\n\n\x06STRING\x10\x03\x1a\x02\x18\x01:\x02\x18\x01\"\xa0\x01\n\rParameterType\"\x8e\x01\n\x11ParameterTypeEnum\x12#\n\x1fPARAMETER_TYPE_ENUM_UNSPECIFIED\x10\x00\x12\x11\n\rNUMBER_DOUBLE\x10\x01\x12\x12\n\x0eNUMBER_INTEGER\x10\x02\x12\n\n\x06STRING\x10\x03\x12\x0b\n\x07\x42OOLEAN\x10\x04\x12\x08\n\x04LIST\x10\x05\x12\n\n\x06STRUCT\x10\x06\"\xd9\x08\n\x10PipelineTaskSpec\x12\x31\n\ttask_info\x18\x01 \x01(\x0b\x32\x1e.ml_pipelines.PipelineTaskInfo\x12,\n\x06inputs\x18\x02 \x01(\x0b\x32\x1c.ml_pipelines.TaskInputsSpec\x12\x17\n\x0f\x64\x65pendent_tasks\x18\x05 \x03(\t\x12\x46\n\x0f\x63\x61\x63hing_options\x18\x06 \x01(\x0b\x32-.ml_pipelines.PipelineTaskSpec.CachingOptions\x12\x31\n\rcomponent_ref\x18\x07 \x01(\x0b\x32\x1a.ml_pipelines.ComponentRef\x12\x44\n\x0etrigger_policy\x18\x08 \x01(\x0b\x32,.ml_pipelines.PipelineTaskSpec.TriggerPolicy\x12?\n\x11\x61rtifact_iterator\x18\t \x01(\x0b\x32\".ml_pipelines.ArtifactIteratorSpecH\x00\x12\x41\n\x12parameter_iterator\x18\n \x01(\x0b\x32#.ml_pipelines.ParameterIteratorSpecH\x00\x12@\n\x0cretry_policy\x18\x0b \x01(\x0b\x32*.ml_pipelines.PipelineTaskSpec.RetryPolicy\x12\x46\n\x0fiterator_policy\x18\x0c \x01(\x0b\x32-.ml_pipelines.PipelineTaskSpec.IteratorPolicy\x1a&\n\x0e\x43\x61\x63hingOptions\x12\x14\n\x0c\x65nable_cache\x18\x01 \x01(\x08\x1a\xeb\x01\n\rTriggerPolicy\x12\x11\n\tcondition\x18\x01 \x01(\t\x12N\n\x08strategy\x18\x02 \x01(\x0e\x32<.ml_pipelines.PipelineTaskSpec.TriggerPolicy.TriggerStrategy\"w\n\x0fTriggerStrategy\x12 \n\x1cTRIGGER_STRATEGY_UNSPECIFIED\x10\x00\x12 \n\x1c\x41LL_UPSTREAM_TASKS_SUCCEEDED\x10\x01\x12 \n\x1c\x41LL_UPSTREAM_TASKS_COMPLETED\x10\x02\x1a\xac\x01\n\x0bRetryPolicy\x12\x17\n\x0fmax_retry_count\x18\x01 \x01(\x05\x12\x33\n\x10\x62\x61\x63koff_duration\x18\x02 \x01(\x0b\x32\x19.google.protobuf.Duration\x12\x16\n\x0e\x62\x61\x63koff_factor\x18\x03 \x01(\x01\x12\x37\n\x14\x62\x61\x63koff_max_duration\x18\x04 \x01(\x0b\x32\x19.google.protobuf.Duration\x1a+\n\x0eIteratorPolicy\x12\x19\n\x11parallelism_limit\x18\x01 \x01(\x05\x42\n\n\x08iterator\"\x8c\x01\n\x14\x41rtifactIteratorSpec\x12;\n\x05items\x18\x01 \x01(\x0b\x32,.ml_pipelines.ArtifactIteratorSpec.ItemsSpec\x12\x12\n\nitem_input\x18\x02 \x01(\t\x1a#\n\tItemsSpec\x12\x16\n\x0einput_artifact\x18\x01 \x01(\t\"\xa8\x01\n\x15ParameterIteratorSpec\x12<\n\x05items\x18\x01 \x01(\x0b\x32-.ml_pipelines.ParameterIteratorSpec.ItemsSpec\x12\x12\n\nitem_input\x18\x02 \x01(\t\x1a=\n\tItemsSpec\x12\r\n\x03raw\x18\x01 \x01(\tH\x00\x12\x19\n\x0finput_parameter\x18\x02 \x01(\tH\x00\x42\x06\n\x04kind\"\x1c\n\x0c\x43omponentRef\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1c\n\x0cPipelineInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x81\x01\n\x12\x41rtifactTypeSchema\x12\x16\n\x0cschema_title\x18\x01 \x01(\tH\x00\x12\x18\n\nschema_uri\x18\x02 \x01(\tB\x02\x18\x01H\x00\x12\x19\n\x0finstance_schema\x18\x03 \x01(\tH\x00\x12\x16\n\x0eschema_version\x18\x04 \x01(\tB\x06\n\x04kind\" \n\x10PipelineTaskInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x9e\x01\n\x17ValueOrRuntimeParameter\x12\x31\n\x0e\x63onstant_value\x18\x01 \x01(\x0b\x32\x13.ml_pipelines.ValueB\x02\x18\x01H\x00\x12\x1b\n\x11runtime_parameter\x18\x02 \x01(\tH\x00\x12*\n\x08\x63onstant\x18\x03 \x01(\x0b\x32\x16.google.protobuf.ValueH\x00\x42\x07\n\x05value\"\xe1\x11\n\x18PipelineDeploymentConfig\x12H\n\texecutors\x18\x01 \x03(\x0b\x32\x35.ml_pipelines.PipelineDeploymentConfig.ExecutorsEntry\x1a\xf0\x05\n\x15PipelineContainerSpec\x12\r\n\x05image\x18\x01 \x01(\t\x12\x0f\n\x07\x63ommand\x18\x02 \x03(\t\x12\x0c\n\x04\x61rgs\x18\x03 \x03(\t\x12Y\n\tlifecycle\x18\x04 \x01(\x0b\x32\x46.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpec.Lifecycle\x12\\\n\tresources\x18\x05 \x01(\x0b\x32I.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpec.ResourceSpec\x12P\n\x03\x65nv\x18\x06 \x03(\x0b\x32\x43.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpec.EnvVar\x1a\x98\x01\n\tLifecycle\x12\x64\n\x0fpre_cache_check\x18\x01 \x01(\x0b\x32K.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpec.Lifecycle.Exec\x1a%\n\x04\x45xec\x12\x0f\n\x07\x63ommand\x18\x02 \x03(\t\x12\x0c\n\x04\x61rgs\x18\x03 \x03(\t\x1a\xdb\x01\n\x0cResourceSpec\x12\x11\n\tcpu_limit\x18\x01 \x01(\x01\x12\x14\n\x0cmemory_limit\x18\x02 \x01(\x01\x12p\n\x0b\x61\x63\x63\x65lerator\x18\x03 \x01(\x0b\x32[.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpec.ResourceSpec.AcceleratorConfig\x1a\x30\n\x11\x41\x63\x63\x65leratorConfig\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\r\n\x05\x63ount\x18\x02 \x01(\x03\x1a%\n\x06\x45nvVar\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\x1a\xc0\x04\n\x0cImporterSpec\x12;\n\x0c\x61rtifact_uri\x18\x01 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter\x12\x35\n\x0btype_schema\x18\x02 \x01(\x0b\x32 .ml_pipelines.ArtifactTypeSchema\x12[\n\nproperties\x18\x03 \x03(\x0b\x32\x43.ml_pipelines.PipelineDeploymentConfig.ImporterSpec.PropertiesEntryB\x02\x18\x01\x12h\n\x11\x63ustom_properties\x18\x04 \x03(\x0b\x32I.ml_pipelines.PipelineDeploymentConfig.ImporterSpec.CustomPropertiesEntryB\x02\x18\x01\x12)\n\x08metadata\x18\x06 \x01(\x0b\x32\x17.google.protobuf.Struct\x12\x10\n\x08reimport\x18\x05 \x01(\x08\x1aX\n\x0fPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1a^\n\x15\x43ustomPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1a\xb9\x02\n\x0cResolverSpec\x12o\n\x17output_artifact_queries\x18\x01 \x03(\x0b\x32N.ml_pipelines.PipelineDeploymentConfig.ResolverSpec.OutputArtifactQueriesEntry\x1a\x32\n\x11\x41rtifactQuerySpec\x12\x0e\n\x06\x66ilter\x18\x01 \x01(\t\x12\r\n\x05limit\x18\x02 \x01(\x05\x1a\x83\x01\n\x1aOutputArtifactQueriesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12T\n\x05value\x18\x02 \x01(\x0b\x32\x45.ml_pipelines.PipelineDeploymentConfig.ResolverSpec.ArtifactQuerySpec:\x02\x38\x01\x1aJ\n\x17\x41IPlatformCustomJobSpec\x12+\n\ncustom_job\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct:\x02\x18\x01\x1a\xd5\x02\n\x0c\x45xecutorSpec\x12Q\n\tcontainer\x18\x01 \x01(\x0b\x32<.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpecH\x00\x12G\n\x08importer\x18\x02 \x01(\x0b\x32\x33.ml_pipelines.PipelineDeploymentConfig.ImporterSpecH\x00\x12G\n\x08resolver\x18\x03 \x01(\x0b\x32\x33.ml_pipelines.PipelineDeploymentConfig.ResolverSpecH\x00\x12X\n\ncustom_job\x18\x04 \x01(\x0b\x32>.ml_pipelines.PipelineDeploymentConfig.AIPlatformCustomJobSpecB\x02\x18\x01H\x00\x42\x06\n\x04spec\x1a\x65\n\x0e\x45xecutorsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x42\n\x05value\x18\x02 \x01(\x0b\x32\x33.ml_pipelines.PipelineDeploymentConfig.ExecutorSpec:\x02\x38\x01\"U\n\x05Value\x12\x13\n\tint_value\x18\x01 \x01(\x03H\x00\x12\x16\n\x0c\x64ouble_value\x18\x02 \x01(\x01H\x00\x12\x16\n\x0cstring_value\x18\x03 \x01(\tH\x00\x42\x07\n\x05value\"\xb8\x03\n\x0fRuntimeArtifact\x12\x0c\n\x04name\x18\x01 \x01(\t\x12.\n\x04type\x18\x02 \x01(\x0b\x32 .ml_pipelines.ArtifactTypeSchema\x12\x0b\n\x03uri\x18\x03 \x01(\t\x12\x45\n\nproperties\x18\x04 \x03(\x0b\x32-.ml_pipelines.RuntimeArtifact.PropertiesEntryB\x02\x18\x01\x12R\n\x11\x63ustom_properties\x18\x05 \x03(\x0b\x32\x33.ml_pipelines.RuntimeArtifact.CustomPropertiesEntryB\x02\x18\x01\x12)\n\x08metadata\x18\x06 \x01(\x0b\x32\x17.google.protobuf.Struct\x1a\x46\n\x0fPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value:\x02\x38\x01\x1aL\n\x15\x43ustomPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value:\x02\x38\x01\"@\n\x0c\x41rtifactList\x12\x30\n\tartifacts\x18\x01 \x03(\x0b\x32\x1d.ml_pipelines.RuntimeArtifact\"\xd6\x07\n\rExecutorInput\x12\x32\n\x06inputs\x18\x01 \x01(\x0b\x32\".ml_pipelines.ExecutorInput.Inputs\x12\x34\n\x07outputs\x18\x02 \x01(\x0b\x32#.ml_pipelines.ExecutorInput.Outputs\x1a\xd3\x03\n\x06Inputs\x12J\n\nparameters\x18\x01 \x03(\x0b\x32\x32.ml_pipelines.ExecutorInput.Inputs.ParametersEntryB\x02\x18\x01\x12\x44\n\tartifacts\x18\x02 \x03(\x0b\x32\x31.ml_pipelines.ExecutorInput.Inputs.ArtifactsEntry\x12Q\n\x10parameter_values\x18\x03 \x03(\x0b\x32\x37.ml_pipelines.ExecutorInput.Inputs.ParameterValuesEntry\x1a\x46\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value:\x02\x38\x01\x1aL\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.ml_pipelines.ArtifactList:\x02\x38\x01\x1aN\n\x14ParameterValuesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.google.protobuf.Value:\x02\x38\x01\x1a&\n\x0fOutputParameter\x12\x13\n\x0boutput_file\x18\x01 \x01(\t\x1a\xdc\x02\n\x07Outputs\x12G\n\nparameters\x18\x01 \x03(\x0b\x32\x33.ml_pipelines.ExecutorInput.Outputs.ParametersEntry\x12\x45\n\tartifacts\x18\x02 \x03(\x0b\x32\x32.ml_pipelines.ExecutorInput.Outputs.ArtifactsEntry\x12\x13\n\x0boutput_file\x18\x03 \x01(\t\x1a^\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12:\n\x05value\x18\x02 \x01(\x0b\x32+.ml_pipelines.ExecutorInput.OutputParameter:\x02\x38\x01\x1aL\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.ml_pipelines.ArtifactList:\x02\x38\x01\"\xc9\x03\n\x0e\x45xecutorOutput\x12\x44\n\nparameters\x18\x01 \x03(\x0b\x32,.ml_pipelines.ExecutorOutput.ParametersEntryB\x02\x18\x01\x12>\n\tartifacts\x18\x02 \x03(\x0b\x32+.ml_pipelines.ExecutorOutput.ArtifactsEntry\x12K\n\x10parameter_values\x18\x03 \x03(\x0b\x32\x31.ml_pipelines.ExecutorOutput.ParameterValuesEntry\x1a\x46\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value:\x02\x38\x01\x1aL\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.ml_pipelines.ArtifactList:\x02\x38\x01\x1aN\n\x14ParameterValuesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.google.protobuf.Value:\x02\x38\x01\"\xc9\x01\n\x17PipelineTaskFinalStatus\x12\r\n\x05state\x18\x01 \x01(\t\x12!\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x12.google.rpc.Status\x12\x1d\n\x11pipeline_job_uuid\x18\x03 \x01(\x03\x42\x02\x18\x01\x12\x1d\n\x11pipeline_job_name\x18\x04 \x01(\tB\x02\x18\x01\x12\"\n\x1apipeline_job_resource_name\x18\x05 \x01(\t\x12\x1a\n\x12pipeline_task_name\x18\x06 \x01(\t\"\x9f\x02\n\x11PipelineStateEnum\"\x89\x02\n\x11PipelineTaskState\x12\x1a\n\x16TASK_STATE_UNSPECIFIED\x10\x00\x12\x0b\n\x07PENDING\x10\x01\x12\x12\n\x0eRUNNING_DRIVER\x10\x02\x12\x14\n\x10\x44RIVER_SUCCEEDED\x10\x03\x12\x14\n\x10RUNNING_EXECUTOR\x10\x04\x12\r\n\tSUCCEEDED\x10\x05\x12\x12\n\x0e\x43\x41NCEL_PENDING\x10\x06\x12\x0e\n\nCANCELLING\x10\x07\x12\r\n\tCANCELLED\x10\x08\x12\n\n\x06\x46\x41ILED\x10\t\x12\x0b\n\x07SKIPPED\x10\n\x12\n\n\x06QUEUED\x10\x0b\x12\x11\n\rNOT_TRIGGERED\x10\x0c\x12\x11\n\rUNSCHEDULABLE\x10\r*\x96\x02\n\x10PipelineRunState\x12\x1e\n\x1aPIPELINE_STATE_UNSPECIFIED\x10\x00\x12\x19\n\x15PIPELINE_STATE_QUEUED\x10\x01\x12\x1a\n\x16PIPELINE_STATE_PENDING\x10\x02\x12\x1a\n\x16PIPELINE_STATE_RUNNING\x10\x03\x12\x1c\n\x18PIPELINE_STATE_SUCCEEDED\x10\x04\x12\x19\n\x15PIPELINE_STATE_FAILED\x10\x05\x12\x1d\n\x19PIPELINE_STATE_CANCELLING\x10\x06\x12\x1c\n\x18PIPELINE_STATE_CANCELLED\x10\x07\x12\x19\n\x15PIPELINE_STATE_PAUSED\x10\x08\x42<Z:github.com/kubeflow/pipelines/api/v2alpha1/go/pipelinespecb\x06proto3',
+    serialized_pb=b'\n\x13pipeline_spec.proto\x12\x0cml_pipelines\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/rpc/status.proto\x1a ml_metadata/metadata_store.proto\"\xf0\x06\n\x03Run\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12/\n\x0b\x63reate_time\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\nstart_time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08\x65nd_time\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0bupdate_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\rpipeline_spec\x18\x07 \x01(\x0b\x32\x17.google.protobuf.Struct\x12%\n\x05state\x18\x08 \x01(\x0e\x32\x16.ml_pipelines.RunState\x12+\n\nrun_detail\x18\t \x01(\x0b\x32\x17.ml_pipelines.RunDetail\x12!\n\x05\x65rror\x18\n \x01(\x0b\x32\x12.google.rpc.Status\x12-\n\x06labels\x18\x0b \x03(\x0b\x32\x1d.ml_pipelines.Run.LabelsEntry\x12\x37\n\x0eruntime_config\x18\x0c \x01(\x0b\x32\x1f.ml_pipelines.Run.RuntimeConfig\x1a-\n\x0bLabelsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\xc6\x02\n\rRuntimeConfig\x12G\n\nparameters\x18\x01 \x03(\x0b\x32/.ml_pipelines.Run.RuntimeConfig.ParametersEntryB\x02\x18\x01\x12N\n\x10parameter_values\x18\x03 \x03(\x0b\x32\x34.ml_pipelines.Run.RuntimeConfig.ParameterValuesEntry\x1a\x46\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value:\x02\x38\x01\x1aN\n\x14ParameterValuesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.google.protobuf.Value:\x02\x38\x01J\x04\x08\x02\x10\x03\"\xa7\x01\n\tRunDetail\x12.\n\x10pipeline_context\x18\x01 \x01(\x0b\x32\x14.ml_metadata.Context\x12\x32\n\x14pipeline_run_context\x18\x02 \x01(\x0b\x32\x14.ml_metadata.Context\x12\x36\n\x0ctask_details\x18\x03 \x03(\x0b\x32 .ml_pipelines.PipelineTaskDetail\"\xba\t\n\x12PipelineTaskDetail\x12\x0f\n\x07task_id\x18\x01 \x01(\x03\x12\x16\n\x0eparent_task_id\x18\x0c \x01(\x03\x12\x11\n\ttask_name\x18\x02 \x01(\t\x12/\n\x0b\x63reate_time\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\nstart_time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08\x65nd_time\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x41\n\x0f\x65xecutor_detail\x18\x06 \x01(\x0b\x32(.ml_pipelines.PipelineTaskExecutorDetail\x12\x35\n\x05state\x18\x07 \x01(\x0e\x32&.ml_pipelines.PipelineTaskDetail.State\x12)\n\texecution\x18\x08 \x01(\x0b\x32\x16.ml_metadata.Execution\x12!\n\x05\x65rror\x18\t \x01(\x0b\x32\x12.google.rpc.Status\x12<\n\x06inputs\x18\n \x03(\x0b\x32,.ml_pipelines.PipelineTaskDetail.InputsEntry\x12>\n\x07outputs\x18\x0b \x03(\x0b\x32-.ml_pipelines.PipelineTaskDetail.OutputsEntry\x12Q\n\x14pipeline_task_status\x18\r \x03(\x0b\x32\x33.ml_pipelines.PipelineTaskDetail.PipelineTaskStatus\x1a\x38\n\x0c\x41rtifactList\x12(\n\tartifacts\x18\x01 \x03(\x0b\x32\x15.ml_metadata.Artifact\x1a\\\n\x0bInputsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12<\n\x05value\x18\x02 \x01(\x0b\x32-.ml_pipelines.PipelineTaskDetail.ArtifactList:\x02\x38\x01\x1a]\n\x0cOutputsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12<\n\x05value\x18\x02 \x01(\x0b\x32-.ml_pipelines.PipelineTaskDetail.ArtifactList:\x02\x38\x01\x1a\x9f\x01\n\x12PipelineTaskStatus\x12/\n\x0bupdate_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x35\n\x05state\x18\x02 \x01(\x0e\x32&.ml_pipelines.PipelineTaskDetail.State\x12!\n\x05\x65rror\x18\x03 \x01(\x0b\x32\x12.google.rpc.Status\"\xa6\x01\n\x05State\x12\x15\n\x11STATE_UNSPECIFIED\x10\x00\x12\x0b\n\x07PENDING\x10\x01\x12\x0b\n\x07RUNNING\x10\x02\x12\r\n\tSUCCEEDED\x10\x03\x12\x12\n\x0e\x43\x41NCEL_PENDING\x10\x04\x12\x0e\n\nCANCELLING\x10\x05\x12\r\n\tCANCELLED\x10\x06\x12\n\n\x06\x46\x41ILED\x10\x07\x12\x0b\n\x07SKIPPED\x10\x08\x12\x11\n\rNOT_TRIGGERED\x10\t\"\x82\x03\n\x1aPipelineTaskExecutorDetail\x12T\n\x10\x63ontainer_detail\x18\x01 \x01(\x0b\x32\x38.ml_pipelines.PipelineTaskExecutorDetail.ContainerDetailH\x00\x12Y\n\x11\x63ustom_job_detail\x18\x02 \x01(\x0b\x32\x38.ml_pipelines.PipelineTaskExecutorDetail.CustomJobDetailB\x02\x18\x01H\x00\x1a\x83\x01\n\x0f\x43ontainerDetail\x12\x10\n\x08main_job\x18\x01 \x01(\t\x12\x1d\n\x15pre_caching_check_job\x18\x02 \x01(\t\x12\x18\n\x10\x66\x61iled_main_jobs\x18\x03 \x03(\t\x12%\n\x1d\x66\x61iled_pre_caching_check_jobs\x18\x04 \x03(\t\x1a\"\n\x0f\x43ustomJobDetail\x12\x0b\n\x03job\x18\x01 \x01(\t:\x02\x18\x01\x42\t\n\x07\x64\x65tails\"\xf7\x03\n\x0cPipelineSpec\x12\x31\n\rpipeline_info\x18\x01 \x01(\x0b\x32\x1a.ml_pipelines.PipelineInfo\x12\x30\n\x0f\x64\x65ployment_spec\x18\x07 \x01(\x0b\x32\x17.google.protobuf.Struct\x12\x13\n\x0bsdk_version\x18\x04 \x01(\t\x12\x16\n\x0eschema_version\x18\x05 \x01(\t\x12>\n\ncomponents\x18\x08 \x03(\x0b\x32*.ml_pipelines.PipelineSpec.ComponentsEntry\x12)\n\x04root\x18\t \x01(\x0b\x32\x1b.ml_pipelines.ComponentSpec\x12\x1d\n\x15\x64\x65\x66\x61ult_pipeline_root\x18\n \x01(\t\x1a{\n\x10RuntimeParameter\x12;\n\x04type\x18\x01 \x01(\x0e\x32-.ml_pipelines.PrimitiveType.PrimitiveTypeEnum\x12*\n\rdefault_value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value\x1aN\n\x0f\x43omponentsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12*\n\x05value\x18\x02 \x01(\x0b\x32\x1b.ml_pipelines.ComponentSpec:\x02\x38\x01\"\xdf\x01\n\rComponentSpec\x12<\n\x11input_definitions\x18\x01 \x01(\x0b\x32!.ml_pipelines.ComponentInputsSpec\x12>\n\x12output_definitions\x18\x02 \x01(\x0b\x32\".ml_pipelines.ComponentOutputsSpec\x12$\n\x03\x64\x61g\x18\x03 \x01(\x0b\x32\x15.ml_pipelines.DagSpecH\x00\x12\x18\n\x0e\x65xecutor_label\x18\x04 \x01(\tH\x00\x42\x10\n\x0eimplementation\"\xb7\x01\n\x07\x44\x61gSpec\x12/\n\x05tasks\x18\x01 \x03(\x0b\x32 .ml_pipelines.DagSpec.TasksEntry\x12-\n\x07outputs\x18\x02 \x01(\x0b\x32\x1c.ml_pipelines.DagOutputsSpec\x1aL\n\nTasksEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12-\n\x05value\x18\x02 \x01(\x0b\x32\x1e.ml_pipelines.PipelineTaskSpec:\x02\x38\x01\"\x95\t\n\x0e\x44\x61gOutputsSpec\x12>\n\tartifacts\x18\x01 \x03(\x0b\x32+.ml_pipelines.DagOutputsSpec.ArtifactsEntry\x12@\n\nparameters\x18\x02 \x03(\x0b\x32,.ml_pipelines.DagOutputsSpec.ParametersEntry\x1aM\n\x14\x41rtifactSelectorSpec\x12\x18\n\x10producer_subtask\x18\x01 \x01(\t\x12\x1b\n\x13output_artifact_key\x18\x02 \x01(\t\x1a\x66\n\x15\x44\x61gOutputArtifactSpec\x12M\n\x12\x61rtifact_selectors\x18\x01 \x03(\x0b\x32\x31.ml_pipelines.DagOutputsSpec.ArtifactSelectorSpec\x1a\x64\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x41\n\x05value\x18\x02 \x01(\x0b\x32\x32.ml_pipelines.DagOutputsSpec.DagOutputArtifactSpec:\x02\x38\x01\x1aO\n\x15ParameterSelectorSpec\x12\x18\n\x10producer_subtask\x18\x01 \x01(\t\x12\x1c\n\x14output_parameter_key\x18\x02 \x01(\t\x1ai\n\x16ParameterSelectorsSpec\x12O\n\x13parameter_selectors\x18\x01 \x03(\x0b\x32\x32.ml_pipelines.DagOutputsSpec.ParameterSelectorSpec\x1a\xf1\x01\n\x19MapParameterSelectorsSpec\x12g\n\x11mapped_parameters\x18\x02 \x03(\x0b\x32L.ml_pipelines.DagOutputsSpec.MapParameterSelectorsSpec.MappedParametersEntry\x1ak\n\x15MappedParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x41\n\x05value\x18\x02 \x01(\x0b\x32\x32.ml_pipelines.DagOutputsSpec.ParameterSelectorSpec:\x02\x38\x01\x1a\xcb\x01\n\x16\x44\x61gOutputParameterSpec\x12R\n\x14value_from_parameter\x18\x01 \x01(\x0b\x32\x32.ml_pipelines.DagOutputsSpec.ParameterSelectorSpecH\x00\x12O\n\x10value_from_oneof\x18\x02 \x01(\x0b\x32\x33.ml_pipelines.DagOutputsSpec.ParameterSelectorsSpecH\x00\x42\x06\n\x04kindJ\x04\x08\x03\x10\x04\x1a\x66\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x42\n\x05value\x18\x02 \x01(\x0b\x32\x33.ml_pipelines.DagOutputsSpec.DagOutputParameterSpec:\x02\x38\x01\"\x8e\x05\n\x13\x43omponentInputsSpec\x12\x43\n\tartifacts\x18\x01 \x03(\x0b\x32\x30.ml_pipelines.ComponentInputsSpec.ArtifactsEntry\x12\x45\n\nparameters\x18\x02 \x03(\x0b\x32\x31.ml_pipelines.ComponentInputsSpec.ParametersEntry\x1aG\n\x0c\x41rtifactSpec\x12\x37\n\rartifact_type\x18\x01 \x01(\x0b\x32 .ml_pipelines.ArtifactTypeSchema\x1a\xdb\x01\n\rParameterSpec\x12?\n\x04type\x18\x01 \x01(\x0e\x32-.ml_pipelines.PrimitiveType.PrimitiveTypeEnumB\x02\x18\x01\x12\x45\n\x0eparameter_type\x18\x02 \x01(\x0e\x32-.ml_pipelines.ParameterType.ParameterTypeEnum\x12-\n\rdefault_value\x18\x03 \x01(\x0b\x32\x16.google.protobuf.Value\x12\x13\n\x0bis_optional\x18\x04 \x01(\x08\x1a`\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12=\n\x05value\x18\x02 \x01(\x0b\x32..ml_pipelines.ComponentInputsSpec.ArtifactSpec:\x02\x38\x01\x1a\x62\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12>\n\x05value\x18\x02 \x01(\x0b\x32/.ml_pipelines.ComponentInputsSpec.ParameterSpec:\x02\x38\x01\"\xf4\x07\n\x14\x43omponentOutputsSpec\x12\x44\n\tartifacts\x18\x01 \x03(\x0b\x32\x31.ml_pipelines.ComponentOutputsSpec.ArtifactsEntry\x12\x46\n\nparameters\x18\x02 \x03(\x0b\x32\x32.ml_pipelines.ComponentOutputsSpec.ParametersEntry\x1a\xeb\x03\n\x0c\x41rtifactSpec\x12\x37\n\rartifact_type\x18\x01 \x01(\x0b\x32 .ml_pipelines.ArtifactTypeSchema\x12W\n\nproperties\x18\x02 \x03(\x0b\x32?.ml_pipelines.ComponentOutputsSpec.ArtifactSpec.PropertiesEntryB\x02\x18\x01\x12\x64\n\x11\x63ustom_properties\x18\x03 \x03(\x0b\x32\x45.ml_pipelines.ComponentOutputsSpec.ArtifactSpec.CustomPropertiesEntryB\x02\x18\x01\x12)\n\x08metadata\x18\x04 \x01(\x0b\x32\x17.google.protobuf.Struct\x1aX\n\x0fPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1a^\n\x15\x43ustomPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1a\x97\x01\n\rParameterSpec\x12?\n\x04type\x18\x01 \x01(\x0e\x32-.ml_pipelines.PrimitiveType.PrimitiveTypeEnumB\x02\x18\x01\x12\x45\n\x0eparameter_type\x18\x02 \x01(\x0e\x32-.ml_pipelines.ParameterType.ParameterTypeEnum\x1a\x61\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12>\n\x05value\x18\x02 \x01(\x0b\x32/.ml_pipelines.ComponentOutputsSpec.ArtifactSpec:\x02\x38\x01\x1a\x63\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12?\n\x05value\x18\x02 \x01(\x0b\x32\x30.ml_pipelines.ComponentOutputsSpec.ParameterSpec:\x02\x38\x01\"\xc2\x08\n\x0eTaskInputsSpec\x12@\n\nparameters\x18\x01 \x03(\x0b\x32,.ml_pipelines.TaskInputsSpec.ParametersEntry\x12>\n\tartifacts\x18\x02 \x03(\x0b\x32+.ml_pipelines.TaskInputsSpec.ArtifactsEntry\x1a\xfa\x01\n\x11InputArtifactSpec\x12\x65\n\x14task_output_artifact\x18\x03 \x01(\x0b\x32\x45.ml_pipelines.TaskInputsSpec.InputArtifactSpec.TaskOutputArtifactSpecH\x00\x12\"\n\x18\x63omponent_input_artifact\x18\x04 \x01(\tH\x00\x1aL\n\x16TaskOutputArtifactSpec\x12\x15\n\rproducer_task\x18\x01 \x01(\t\x12\x1b\n\x13output_artifact_key\x18\x02 \x01(\tB\x06\n\x04kindJ\x04\x08\x05\x10\x06\x1a\xea\x03\n\x12InputParameterSpec\x12h\n\x15task_output_parameter\x18\x01 \x01(\x0b\x32G.ml_pipelines.TaskInputsSpec.InputParameterSpec.TaskOutputParameterSpecH\x00\x12>\n\rruntime_value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameterH\x00\x12#\n\x19\x63omponent_input_parameter\x18\x03 \x01(\tH\x00\x12\\\n\x11task_final_status\x18\x05 \x01(\x0b\x32?.ml_pipelines.TaskInputsSpec.InputParameterSpec.TaskFinalStatusH\x00\x12%\n\x1dparameter_expression_selector\x18\x04 \x01(\t\x1aN\n\x17TaskOutputParameterSpec\x12\x15\n\rproducer_task\x18\x01 \x01(\t\x12\x1c\n\x14output_parameter_key\x18\x02 \x01(\t\x1a(\n\x0fTaskFinalStatus\x12\x15\n\rproducer_task\x18\x01 \x01(\tB\x06\n\x04kind\x1a\x62\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12>\n\x05value\x18\x02 \x01(\x0b\x32/.ml_pipelines.TaskInputsSpec.InputParameterSpec:\x02\x38\x01\x1a`\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12=\n\x05value\x18\x02 \x01(\x0b\x32..ml_pipelines.TaskInputsSpec.InputArtifactSpec:\x02\x38\x01\"\xf6\x06\n\x0fTaskOutputsSpec\x12\x41\n\nparameters\x18\x01 \x03(\x0b\x32-.ml_pipelines.TaskOutputsSpec.ParametersEntry\x12?\n\tartifacts\x18\x02 \x03(\x0b\x32,.ml_pipelines.TaskOutputsSpec.ArtifactsEntry\x1a\xc0\x03\n\x12OutputArtifactSpec\x12\x37\n\rartifact_type\x18\x01 \x01(\x0b\x32 .ml_pipelines.ArtifactTypeSchema\x12T\n\nproperties\x18\x02 \x03(\x0b\x32@.ml_pipelines.TaskOutputsSpec.OutputArtifactSpec.PropertiesEntry\x12\x61\n\x11\x63ustom_properties\x18\x03 \x03(\x0b\x32\x46.ml_pipelines.TaskOutputsSpec.OutputArtifactSpec.CustomPropertiesEntry\x1aX\n\x0fPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1a^\n\x15\x43ustomPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1aR\n\x13OutputParameterSpec\x12;\n\x04type\x18\x01 \x01(\x0e\x32-.ml_pipelines.PrimitiveType.PrimitiveTypeEnum\x1a\x64\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12@\n\x05value\x18\x02 \x01(\x0b\x32\x31.ml_pipelines.TaskOutputsSpec.OutputParameterSpec:\x02\x38\x01\x1a\x62\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12?\n\x05value\x18\x02 \x01(\x0b\x32\x30.ml_pipelines.TaskOutputsSpec.OutputArtifactSpec:\x02\x38\x01\"m\n\rPrimitiveType\"X\n\x11PrimitiveTypeEnum\x12\x1e\n\x1aPRIMITIVE_TYPE_UNSPECIFIED\x10\x00\x12\x07\n\x03INT\x10\x01\x12\n\n\x06\x44OUBLE\x10\x02\x12\n\n\x06STRING\x10\x03\x1a\x02\x18\x01:\x02\x18\x01\"\xa0\x01\n\rParameterType\"\x8e\x01\n\x11ParameterTypeEnum\x12#\n\x1fPARAMETER_TYPE_ENUM_UNSPECIFIED\x10\x00\x12\x11\n\rNUMBER_DOUBLE\x10\x01\x12\x12\n\x0eNUMBER_INTEGER\x10\x02\x12\n\n\x06STRING\x10\x03\x12\x0b\n\x07\x42OOLEAN\x10\x04\x12\x08\n\x04LIST\x10\x05\x12\n\n\x06STRUCT\x10\x06\"\xd9\x08\n\x10PipelineTaskSpec\x12\x31\n\ttask_info\x18\x01 \x01(\x0b\x32\x1e.ml_pipelines.PipelineTaskInfo\x12,\n\x06inputs\x18\x02 \x01(\x0b\x32\x1c.ml_pipelines.TaskInputsSpec\x12\x17\n\x0f\x64\x65pendent_tasks\x18\x05 \x03(\t\x12\x46\n\x0f\x63\x61\x63hing_options\x18\x06 \x01(\x0b\x32-.ml_pipelines.PipelineTaskSpec.CachingOptions\x12\x31\n\rcomponent_ref\x18\x07 \x01(\x0b\x32\x1a.ml_pipelines.ComponentRef\x12\x44\n\x0etrigger_policy\x18\x08 \x01(\x0b\x32,.ml_pipelines.PipelineTaskSpec.TriggerPolicy\x12?\n\x11\x61rtifact_iterator\x18\t \x01(\x0b\x32\".ml_pipelines.ArtifactIteratorSpecH\x00\x12\x41\n\x12parameter_iterator\x18\n \x01(\x0b\x32#.ml_pipelines.ParameterIteratorSpecH\x00\x12@\n\x0cretry_policy\x18\x0b \x01(\x0b\x32*.ml_pipelines.PipelineTaskSpec.RetryPolicy\x12\x46\n\x0fiterator_policy\x18\x0c \x01(\x0b\x32-.ml_pipelines.PipelineTaskSpec.IteratorPolicy\x1a&\n\x0e\x43\x61\x63hingOptions\x12\x14\n\x0c\x65nable_cache\x18\x01 \x01(\x08\x1a\xeb\x01\n\rTriggerPolicy\x12\x11\n\tcondition\x18\x01 \x01(\t\x12N\n\x08strategy\x18\x02 \x01(\x0e\x32<.ml_pipelines.PipelineTaskSpec.TriggerPolicy.TriggerStrategy\"w\n\x0fTriggerStrategy\x12 \n\x1cTRIGGER_STRATEGY_UNSPECIFIED\x10\x00\x12 \n\x1c\x41LL_UPSTREAM_TASKS_SUCCEEDED\x10\x01\x12 \n\x1c\x41LL_UPSTREAM_TASKS_COMPLETED\x10\x02\x1a\xac\x01\n\x0bRetryPolicy\x12\x17\n\x0fmax_retry_count\x18\x01 \x01(\x05\x12\x33\n\x10\x62\x61\x63koff_duration\x18\x02 \x01(\x0b\x32\x19.google.protobuf.Duration\x12\x16\n\x0e\x62\x61\x63koff_factor\x18\x03 \x01(\x01\x12\x37\n\x14\x62\x61\x63koff_max_duration\x18\x04 \x01(\x0b\x32\x19.google.protobuf.Duration\x1a+\n\x0eIteratorPolicy\x12\x19\n\x11parallelism_limit\x18\x01 \x01(\x05\x42\n\n\x08iterator\"\x8c\x01\n\x14\x41rtifactIteratorSpec\x12;\n\x05items\x18\x01 \x01(\x0b\x32,.ml_pipelines.ArtifactIteratorSpec.ItemsSpec\x12\x12\n\nitem_input\x18\x02 \x01(\t\x1a#\n\tItemsSpec\x12\x16\n\x0einput_artifact\x18\x01 \x01(\t\"\xa8\x01\n\x15ParameterIteratorSpec\x12<\n\x05items\x18\x01 \x01(\x0b\x32-.ml_pipelines.ParameterIteratorSpec.ItemsSpec\x12\x12\n\nitem_input\x18\x02 \x01(\t\x1a=\n\tItemsSpec\x12\r\n\x03raw\x18\x01 \x01(\tH\x00\x12\x19\n\x0finput_parameter\x18\x02 \x01(\tH\x00\x42\x06\n\x04kind\"\x1c\n\x0c\x43omponentRef\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1c\n\x0cPipelineInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x81\x01\n\x12\x41rtifactTypeSchema\x12\x16\n\x0cschema_title\x18\x01 \x01(\tH\x00\x12\x18\n\nschema_uri\x18\x02 \x01(\tB\x02\x18\x01H\x00\x12\x19\n\x0finstance_schema\x18\x03 \x01(\tH\x00\x12\x16\n\x0eschema_version\x18\x04 \x01(\tB\x06\n\x04kind\" \n\x10PipelineTaskInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x9e\x01\n\x17ValueOrRuntimeParameter\x12\x31\n\x0e\x63onstant_value\x18\x01 \x01(\x0b\x32\x13.ml_pipelines.ValueB\x02\x18\x01H\x00\x12\x1b\n\x11runtime_parameter\x18\x02 \x01(\tH\x00\x12*\n\x08\x63onstant\x18\x03 \x01(\x0b\x32\x16.google.protobuf.ValueH\x00\x42\x07\n\x05value\"\xe1\x11\n\x18PipelineDeploymentConfig\x12H\n\texecutors\x18\x01 \x03(\x0b\x32\x35.ml_pipelines.PipelineDeploymentConfig.ExecutorsEntry\x1a\xf0\x05\n\x15PipelineContainerSpec\x12\r\n\x05image\x18\x01 \x01(\t\x12\x0f\n\x07\x63ommand\x18\x02 \x03(\t\x12\x0c\n\x04\x61rgs\x18\x03 \x03(\t\x12Y\n\tlifecycle\x18\x04 \x01(\x0b\x32\x46.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpec.Lifecycle\x12\\\n\tresources\x18\x05 \x01(\x0b\x32I.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpec.ResourceSpec\x12P\n\x03\x65nv\x18\x06 \x03(\x0b\x32\x43.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpec.EnvVar\x1a\x98\x01\n\tLifecycle\x12\x64\n\x0fpre_cache_check\x18\x01 \x01(\x0b\x32K.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpec.Lifecycle.Exec\x1a%\n\x04\x45xec\x12\x0f\n\x07\x63ommand\x18\x02 \x03(\t\x12\x0c\n\x04\x61rgs\x18\x03 \x03(\t\x1a\xdb\x01\n\x0cResourceSpec\x12\x11\n\tcpu_limit\x18\x01 \x01(\x01\x12\x14\n\x0cmemory_limit\x18\x02 \x01(\x01\x12p\n\x0b\x61\x63\x63\x65lerator\x18\x03 \x01(\x0b\x32[.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpec.ResourceSpec.AcceleratorConfig\x1a\x30\n\x11\x41\x63\x63\x65leratorConfig\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\r\n\x05\x63ount\x18\x02 \x01(\x03\x1a%\n\x06\x45nvVar\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\x1a\xc0\x04\n\x0cImporterSpec\x12;\n\x0c\x61rtifact_uri\x18\x01 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter\x12\x35\n\x0btype_schema\x18\x02 \x01(\x0b\x32 .ml_pipelines.ArtifactTypeSchema\x12[\n\nproperties\x18\x03 \x03(\x0b\x32\x43.ml_pipelines.PipelineDeploymentConfig.ImporterSpec.PropertiesEntryB\x02\x18\x01\x12h\n\x11\x63ustom_properties\x18\x04 \x03(\x0b\x32I.ml_pipelines.PipelineDeploymentConfig.ImporterSpec.CustomPropertiesEntryB\x02\x18\x01\x12)\n\x08metadata\x18\x06 \x01(\x0b\x32\x17.google.protobuf.Struct\x12\x10\n\x08reimport\x18\x05 \x01(\x08\x1aX\n\x0fPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1a^\n\x15\x43ustomPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.ml_pipelines.ValueOrRuntimeParameter:\x02\x38\x01\x1a\xb9\x02\n\x0cResolverSpec\x12o\n\x17output_artifact_queries\x18\x01 \x03(\x0b\x32N.ml_pipelines.PipelineDeploymentConfig.ResolverSpec.OutputArtifactQueriesEntry\x1a\x32\n\x11\x41rtifactQuerySpec\x12\x0e\n\x06\x66ilter\x18\x01 \x01(\t\x12\r\n\x05limit\x18\x02 \x01(\x05\x1a\x83\x01\n\x1aOutputArtifactQueriesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12T\n\x05value\x18\x02 \x01(\x0b\x32\x45.ml_pipelines.PipelineDeploymentConfig.ResolverSpec.ArtifactQuerySpec:\x02\x38\x01\x1aJ\n\x17\x41IPlatformCustomJobSpec\x12+\n\ncustom_job\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct:\x02\x18\x01\x1a\xd5\x02\n\x0c\x45xecutorSpec\x12Q\n\tcontainer\x18\x01 \x01(\x0b\x32<.ml_pipelines.PipelineDeploymentConfig.PipelineContainerSpecH\x00\x12G\n\x08importer\x18\x02 \x01(\x0b\x32\x33.ml_pipelines.PipelineDeploymentConfig.ImporterSpecH\x00\x12G\n\x08resolver\x18\x03 \x01(\x0b\x32\x33.ml_pipelines.PipelineDeploymentConfig.ResolverSpecH\x00\x12X\n\ncustom_job\x18\x04 \x01(\x0b\x32>.ml_pipelines.PipelineDeploymentConfig.AIPlatformCustomJobSpecB\x02\x18\x01H\x00\x42\x06\n\x04spec\x1a\x65\n\x0e\x45xecutorsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x42\n\x05value\x18\x02 \x01(\x0b\x32\x33.ml_pipelines.PipelineDeploymentConfig.ExecutorSpec:\x02\x38\x01\"U\n\x05Value\x12\x13\n\tint_value\x18\x01 \x01(\x03H\x00\x12\x16\n\x0c\x64ouble_value\x18\x02 \x01(\x01H\x00\x12\x16\n\x0cstring_value\x18\x03 \x01(\tH\x00\x42\x07\n\x05value\"\xb8\x03\n\x0fRuntimeArtifact\x12\x0c\n\x04name\x18\x01 \x01(\t\x12.\n\x04type\x18\x02 \x01(\x0b\x32 .ml_pipelines.ArtifactTypeSchema\x12\x0b\n\x03uri\x18\x03 \x01(\t\x12\x45\n\nproperties\x18\x04 \x03(\x0b\x32-.ml_pipelines.RuntimeArtifact.PropertiesEntryB\x02\x18\x01\x12R\n\x11\x63ustom_properties\x18\x05 \x03(\x0b\x32\x33.ml_pipelines.RuntimeArtifact.CustomPropertiesEntryB\x02\x18\x01\x12)\n\x08metadata\x18\x06 \x01(\x0b\x32\x17.google.protobuf.Struct\x1a\x46\n\x0fPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value:\x02\x38\x01\x1aL\n\x15\x43ustomPropertiesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value:\x02\x38\x01\"@\n\x0c\x41rtifactList\x12\x30\n\tartifacts\x18\x01 \x03(\x0b\x32\x1d.ml_pipelines.RuntimeArtifact\"\xd6\x07\n\rExecutorInput\x12\x32\n\x06inputs\x18\x01 \x01(\x0b\x32\".ml_pipelines.ExecutorInput.Inputs\x12\x34\n\x07outputs\x18\x02 \x01(\x0b\x32#.ml_pipelines.ExecutorInput.Outputs\x1a\xd3\x03\n\x06Inputs\x12J\n\nparameters\x18\x01 \x03(\x0b\x32\x32.ml_pipelines.ExecutorInput.Inputs.ParametersEntryB\x02\x18\x01\x12\x44\n\tartifacts\x18\x02 \x03(\x0b\x32\x31.ml_pipelines.ExecutorInput.Inputs.ArtifactsEntry\x12Q\n\x10parameter_values\x18\x03 \x03(\x0b\x32\x37.ml_pipelines.ExecutorInput.Inputs.ParameterValuesEntry\x1a\x46\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value:\x02\x38\x01\x1aL\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.ml_pipelines.ArtifactList:\x02\x38\x01\x1aN\n\x14ParameterValuesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.google.protobuf.Value:\x02\x38\x01\x1a&\n\x0fOutputParameter\x12\x13\n\x0boutput_file\x18\x01 \x01(\t\x1a\xdc\x02\n\x07Outputs\x12G\n\nparameters\x18\x01 \x03(\x0b\x32\x33.ml_pipelines.ExecutorInput.Outputs.ParametersEntry\x12\x45\n\tartifacts\x18\x02 \x03(\x0b\x32\x32.ml_pipelines.ExecutorInput.Outputs.ArtifactsEntry\x12\x13\n\x0boutput_file\x18\x03 \x01(\t\x1a^\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12:\n\x05value\x18\x02 \x01(\x0b\x32+.ml_pipelines.ExecutorInput.OutputParameter:\x02\x38\x01\x1aL\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.ml_pipelines.ArtifactList:\x02\x38\x01\"\xc9\x03\n\x0e\x45xecutorOutput\x12\x44\n\nparameters\x18\x01 \x03(\x0b\x32,.ml_pipelines.ExecutorOutput.ParametersEntryB\x02\x18\x01\x12>\n\tartifacts\x18\x02 \x03(\x0b\x32+.ml_pipelines.ExecutorOutput.ArtifactsEntry\x12K\n\x10parameter_values\x18\x03 \x03(\x0b\x32\x31.ml_pipelines.ExecutorOutput.ParameterValuesEntry\x1a\x46\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.ml_pipelines.Value:\x02\x38\x01\x1aL\n\x0e\x41rtifactsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.ml_pipelines.ArtifactList:\x02\x38\x01\x1aN\n\x14ParameterValuesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.google.protobuf.Value:\x02\x38\x01\"\xc9\x01\n\x17PipelineTaskFinalStatus\x12\r\n\x05state\x18\x01 \x01(\t\x12!\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x12.google.rpc.Status\x12\x1d\n\x11pipeline_job_uuid\x18\x03 \x01(\x03\x42\x02\x18\x01\x12\x1d\n\x11pipeline_job_name\x18\x04 \x01(\tB\x02\x18\x01\x12\"\n\x1apipeline_job_resource_name\x18\x05 \x01(\t\x12\x1a\n\x12pipeline_task_name\x18\x06 \x01(\t\"\x9f\x02\n\x11PipelineStateEnum\"\x89\x02\n\x11PipelineTaskState\x12\x1a\n\x16TASK_STATE_UNSPECIFIED\x10\x00\x12\x0b\n\x07PENDING\x10\x01\x12\x12\n\x0eRUNNING_DRIVER\x10\x02\x12\x14\n\x10\x44RIVER_SUCCEEDED\x10\x03\x12\x14\n\x10RUNNING_EXECUTOR\x10\x04\x12\r\n\tSUCCEEDED\x10\x05\x12\x12\n\x0e\x43\x41NCEL_PENDING\x10\x06\x12\x0e\n\nCANCELLING\x10\x07\x12\r\n\tCANCELLED\x10\x08\x12\n\n\x06\x46\x41ILED\x10\t\x12\x0b\n\x07SKIPPED\x10\n\x12\n\n\x06QUEUED\x10\x0b\x12\x11\n\rNOT_TRIGGERED\x10\x0c\x12\x11\n\rUNSCHEDULABLE\x10\r*\xe1\x01\n\x08RunState\x12\x19\n\x15RUN_STATE_UNSPECIFIED\x10\x00\x12\x14\n\x10RUN_STATE_QUEUED\x10\x01\x12\x15\n\x11RUN_STATE_PENDING\x10\x02\x12\x15\n\x11RUN_STATE_RUNNING\x10\x03\x12\x17\n\x13RUN_STATE_SUCCEEDED\x10\x04\x12\x14\n\x10RUN_STATE_FAILED\x10\x05\x12\x18\n\x14RUN_STATE_CANCELLING\x10\x06\x12\x17\n\x13RUN_STATE_CANCELLED\x10\x07\x12\x14\n\x10RUN_STATE_PAUSED\x10\x08\x42<Z:github.com/kubeflow/pipelines/api/v2alpha1/go/pipelinespecb\x06proto3',
     dependencies=[
         google_dot_protobuf_dot_duration__pb2.DESCRIPTOR,
         google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,
@@ -37,71 +37,71 @@ DESCRIPTOR = _descriptor.FileDescriptor(
         ml__metadata_dot_metadata__store__pb2.DESCRIPTOR,
     ])
 
-_PIPELINERUNSTATE = _descriptor.EnumDescriptor(
-    name='PipelineRunState',
-    full_name='ml_pipelines.PipelineRunState',
+_RUNSTATE = _descriptor.EnumDescriptor(
+    name='RunState',
+    full_name='ml_pipelines.RunState',
     filename=None,
     file=DESCRIPTOR,
     create_key=_descriptor._internal_create_key,
     values=[
         _descriptor.EnumValueDescriptor(
-            name='PIPELINE_STATE_UNSPECIFIED',
+            name='RUN_STATE_UNSPECIFIED',
             index=0,
             number=0,
             serialized_options=None,
             type=None,
             create_key=_descriptor._internal_create_key),
         _descriptor.EnumValueDescriptor(
-            name='PIPELINE_STATE_QUEUED',
+            name='RUN_STATE_QUEUED',
             index=1,
             number=1,
             serialized_options=None,
             type=None,
             create_key=_descriptor._internal_create_key),
         _descriptor.EnumValueDescriptor(
-            name='PIPELINE_STATE_PENDING',
+            name='RUN_STATE_PENDING',
             index=2,
             number=2,
             serialized_options=None,
             type=None,
             create_key=_descriptor._internal_create_key),
         _descriptor.EnumValueDescriptor(
-            name='PIPELINE_STATE_RUNNING',
+            name='RUN_STATE_RUNNING',
             index=3,
             number=3,
             serialized_options=None,
             type=None,
             create_key=_descriptor._internal_create_key),
         _descriptor.EnumValueDescriptor(
-            name='PIPELINE_STATE_SUCCEEDED',
+            name='RUN_STATE_SUCCEEDED',
             index=4,
             number=4,
             serialized_options=None,
             type=None,
             create_key=_descriptor._internal_create_key),
         _descriptor.EnumValueDescriptor(
-            name='PIPELINE_STATE_FAILED',
+            name='RUN_STATE_FAILED',
             index=5,
             number=5,
             serialized_options=None,
             type=None,
             create_key=_descriptor._internal_create_key),
         _descriptor.EnumValueDescriptor(
-            name='PIPELINE_STATE_CANCELLING',
+            name='RUN_STATE_CANCELLING',
             index=6,
             number=6,
             serialized_options=None,
             type=None,
             create_key=_descriptor._internal_create_key),
         _descriptor.EnumValueDescriptor(
-            name='PIPELINE_STATE_CANCELLED',
+            name='RUN_STATE_CANCELLED',
             index=7,
             number=7,
             serialized_options=None,
             type=None,
             create_key=_descriptor._internal_create_key),
         _descriptor.EnumValueDescriptor(
-            name='PIPELINE_STATE_PAUSED',
+            name='RUN_STATE_PAUSED',
             index=8,
             number=8,
             serialized_options=None,
@@ -110,21 +110,21 @@ _PIPELINERUNSTATE = _descriptor.EnumDescriptor(
     ],
     containing_type=None,
     serialized_options=None,
-    serialized_start=15561,
-    serialized_end=15839,
+    serialized_start=15497,
+    serialized_end=15722,
 )
-_sym_db.RegisterEnumDescriptor(_PIPELINERUNSTATE)
+_sym_db.RegisterEnumDescriptor(_RUNSTATE)
 
-PipelineRunState = enum_type_wrapper.EnumTypeWrapper(_PIPELINERUNSTATE)
-PIPELINE_STATE_UNSPECIFIED = 0
-PIPELINE_STATE_QUEUED = 1
-PIPELINE_STATE_PENDING = 2
-PIPELINE_STATE_RUNNING = 3
-PIPELINE_STATE_SUCCEEDED = 4
-PIPELINE_STATE_FAILED = 5
-PIPELINE_STATE_CANCELLING = 6
-PIPELINE_STATE_CANCELLED = 7
-PIPELINE_STATE_PAUSED = 8
+RunState = enum_type_wrapper.EnumTypeWrapper(_RUNSTATE)
+RUN_STATE_UNSPECIFIED = 0
+RUN_STATE_QUEUED = 1
+RUN_STATE_PENDING = 2
+RUN_STATE_RUNNING = 3
+RUN_STATE_SUCCEEDED = 4
+RUN_STATE_FAILED = 5
+RUN_STATE_CANCELLING = 6
+RUN_STATE_CANCELLED = 7
+RUN_STATE_PAUSED = 8
 
 _PIPELINETASKDETAIL_STATE = _descriptor.EnumDescriptor(
     name='State',
@@ -206,8 +206,8 @@ _PIPELINETASKDETAIL_STATE = _descriptor.EnumDescriptor(
     ],
     containing_type=None,
     serialized_options=None,
-    serialized_start=2353,
-    serialized_end=2519,
+    serialized_start=2289,
+    serialized_end=2455,
 )
 _sym_db.RegisterEnumDescriptor(_PIPELINETASKDETAIL_STATE)
 
@@ -249,8 +249,8 @@ _PRIMITIVETYPE_PRIMITIVETYPEENUM = _descriptor.EnumDescriptor(
     ],
     containing_type=None,
     serialized_options=b'\030\001',
-    serialized_start=8675,
-    serialized_end=8763,
+    serialized_start=8611,
+    serialized_end=8699,
 )
 _sym_db.RegisterEnumDescriptor(_PRIMITIVETYPE_PRIMITIVETYPEENUM)
 
@@ -313,8 +313,8 @@ _PARAMETERTYPE_PARAMETERTYPEENUM = _descriptor.EnumDescriptor(
     ],
     containing_type=None,
     serialized_options=None,
-    serialized_start=8788,
-    serialized_end=8930,
+    serialized_start=8724,
+    serialized_end=8866,
 )
 _sym_db.RegisterEnumDescriptor(_PARAMETERTYPE_PARAMETERTYPEENUM)
 
@@ -349,8 +349,8 @@ _PIPELINETASKSPEC_TRIGGERPOLICY_TRIGGERSTRATEGY = _descriptor.EnumDescriptor(
     ],
     containing_type=None,
     serialized_options=None,
-    serialized_start=9695,
-    serialized_end=9814,
+    serialized_start=9631,
+    serialized_end=9750,
 )
 _sym_db.RegisterEnumDescriptor(_PIPELINETASKSPEC_TRIGGERPOLICY_TRIGGERSTRATEGY)
 
@@ -462,14 +462,14 @@ _PIPELINESTATEENUM_PIPELINETASKSTATE = _descriptor.EnumDescriptor(
     ],
     containing_type=None,
     serialized_options=None,
-    serialized_start=15293,
-    serialized_end=15558,
+    serialized_start=15229,
+    serialized_end=15494,
 )
 _sym_db.RegisterEnumDescriptor(_PIPELINESTATEENUM_PIPELINETASKSTATE)
 
-_PIPELINERUN_LABELSENTRY = _descriptor.Descriptor(
+_RUN_LABELSENTRY = _descriptor.Descriptor(
     name='LabelsEntry',
-    full_name='ml_pipelines.PipelineRun.LabelsEntry',
+    full_name='ml_pipelines.Run.LabelsEntry',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
@@ -477,7 +477,7 @@ _PIPELINERUN_LABELSENTRY = _descriptor.Descriptor(
     fields=[
         _descriptor.FieldDescriptor(
             name='key',
-            full_name='ml_pipelines.PipelineRun.LabelsEntry.key',
+            full_name='ml_pipelines.Run.LabelsEntry.key',
             index=0,
             number=1,
             type=9,
@@ -495,7 +495,7 @@ _PIPELINERUN_LABELSENTRY = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='value',
-            full_name='ml_pipelines.PipelineRun.LabelsEntry.value',
+            full_name='ml_pipelines.Run.LabelsEntry.value',
             index=1,
             number=2,
             type=9,
@@ -520,13 +520,13 @@ _PIPELINERUN_LABELSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=738,
-    serialized_end=783,
+    serialized_start=698,
+    serialized_end=743,
 )
 
-_PIPELINERUN_RUNTIMECONFIG_PARAMETERSENTRY = _descriptor.Descriptor(
+_RUN_RUNTIMECONFIG_PARAMETERSENTRY = _descriptor.Descriptor(
     name='ParametersEntry',
-    full_name='ml_pipelines.PipelineRun.RuntimeConfig.ParametersEntry',
+    full_name='ml_pipelines.Run.RuntimeConfig.ParametersEntry',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
@@ -534,7 +534,7 @@ _PIPELINERUN_RUNTIMECONFIG_PARAMETERSENTRY = _descriptor.Descriptor(
     fields=[
         _descriptor.FieldDescriptor(
             name='key',
-            full_name='ml_pipelines.PipelineRun.RuntimeConfig.ParametersEntry.key',
+            full_name='ml_pipelines.Run.RuntimeConfig.ParametersEntry.key',
             index=0,
             number=1,
             type=9,
@@ -552,7 +552,7 @@ _PIPELINERUN_RUNTIMECONFIG_PARAMETERSENTRY = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='value',
-            full_name='ml_pipelines.PipelineRun.RuntimeConfig.ParametersEntry.value',
+            full_name='ml_pipelines.Run.RuntimeConfig.ParametersEntry.value',
             index=1,
             number=2,
             type=11,
@@ -577,13 +577,13 @@ _PIPELINERUN_RUNTIMECONFIG_PARAMETERSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=972,
-    serialized_end=1042,
+    serialized_start=916,
+    serialized_end=986,
 )
 
-_PIPELINERUN_RUNTIMECONFIG_PARAMETERVALUESENTRY = _descriptor.Descriptor(
+_RUN_RUNTIMECONFIG_PARAMETERVALUESENTRY = _descriptor.Descriptor(
     name='ParameterValuesEntry',
-    full_name='ml_pipelines.PipelineRun.RuntimeConfig.ParameterValuesEntry',
+    full_name='ml_pipelines.Run.RuntimeConfig.ParameterValuesEntry',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
@@ -591,7 +591,7 @@ _PIPELINERUN_RUNTIMECONFIG_PARAMETERVALUESENTRY = _descriptor.Descriptor(
     fields=[
         _descriptor.FieldDescriptor(
             name='key',
-            full_name='ml_pipelines.PipelineRun.RuntimeConfig.ParameterValuesEntry.key',
+            full_name='ml_pipelines.Run.RuntimeConfig.ParameterValuesEntry.key',
             index=0,
             number=1,
             type=9,
@@ -609,7 +609,7 @@ _PIPELINERUN_RUNTIMECONFIG_PARAMETERVALUESENTRY = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='value',
-            full_name='ml_pipelines.PipelineRun.RuntimeConfig.ParameterValuesEntry.value',
+            full_name='ml_pipelines.Run.RuntimeConfig.ParameterValuesEntry.value',
             index=1,
             number=2,
             type=11,
@@ -634,13 +634,13 @@ _PIPELINERUN_RUNTIMECONFIG_PARAMETERVALUESENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=1044,
-    serialized_end=1122,
+    serialized_start=988,
+    serialized_end=1066,
 )
 
-_PIPELINERUN_RUNTIMECONFIG = _descriptor.Descriptor(
+_RUN_RUNTIMECONFIG = _descriptor.Descriptor(
     name='RuntimeConfig',
-    full_name='ml_pipelines.PipelineRun.RuntimeConfig',
+    full_name='ml_pipelines.Run.RuntimeConfig',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
@@ -648,7 +648,7 @@ _PIPELINERUN_RUNTIMECONFIG = _descriptor.Descriptor(
     fields=[
         _descriptor.FieldDescriptor(
             name='parameters',
-            full_name='ml_pipelines.PipelineRun.RuntimeConfig.parameters',
+            full_name='ml_pipelines.Run.RuntimeConfig.parameters',
             index=0,
             number=1,
             type=11,
@@ -666,7 +666,7 @@ _PIPELINERUN_RUNTIMECONFIG = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='parameter_values',
-            full_name='ml_pipelines.PipelineRun.RuntimeConfig.parameter_values',
+            full_name='ml_pipelines.Run.RuntimeConfig.parameter_values',
             index=1,
             number=3,
             type=11,
@@ -685,8 +685,8 @@ _PIPELINERUN_RUNTIMECONFIG = _descriptor.Descriptor(
     ],
     extensions=[],
     nested_types=[
-        _PIPELINERUN_RUNTIMECONFIG_PARAMETERSENTRY,
-        _PIPELINERUN_RUNTIMECONFIG_PARAMETERVALUESENTRY,
+        _RUN_RUNTIMECONFIG_PARAMETERSENTRY,
+        _RUN_RUNTIMECONFIG_PARAMETERVALUESENTRY,
     ],
     enum_types=[],
     serialized_options=None,
@@ -694,13 +694,13 @@ _PIPELINERUN_RUNTIMECONFIG = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=786,
-    serialized_end=1128,
+    serialized_start=746,
+    serialized_end=1072,
 )
 
-_PIPELINERUN = _descriptor.Descriptor(
-    name='PipelineRun',
-    full_name='ml_pipelines.PipelineRun',
+_RUN = _descriptor.Descriptor(
+    name='Run',
+    full_name='ml_pipelines.Run',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
@@ -708,7 +708,7 @@ _PIPELINERUN = _descriptor.Descriptor(
     fields=[
         _descriptor.FieldDescriptor(
             name='name',
-            full_name='ml_pipelines.PipelineRun.name',
+            full_name='ml_pipelines.Run.name',
             index=0,
             number=1,
             type=9,
@@ -726,7 +726,7 @@ _PIPELINERUN = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='display_name',
-            full_name='ml_pipelines.PipelineRun.display_name',
+            full_name='ml_pipelines.Run.display_name',
             index=1,
             number=2,
             type=9,
@@ -744,7 +744,7 @@ _PIPELINERUN = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='create_time',
-            full_name='ml_pipelines.PipelineRun.create_time',
+            full_name='ml_pipelines.Run.create_time',
             index=2,
             number=3,
             type=11,
@@ -762,7 +762,7 @@ _PIPELINERUN = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='start_time',
-            full_name='ml_pipelines.PipelineRun.start_time',
+            full_name='ml_pipelines.Run.start_time',
             index=3,
             number=4,
             type=11,
@@ -780,7 +780,7 @@ _PIPELINERUN = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='end_time',
-            full_name='ml_pipelines.PipelineRun.end_time',
+            full_name='ml_pipelines.Run.end_time',
             index=4,
             number=5,
             type=11,
@@ -798,7 +798,7 @@ _PIPELINERUN = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='update_time',
-            full_name='ml_pipelines.PipelineRun.update_time',
+            full_name='ml_pipelines.Run.update_time',
             index=5,
             number=6,
             type=11,
@@ -816,7 +816,7 @@ _PIPELINERUN = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='pipeline_spec',
-            full_name='ml_pipelines.PipelineRun.pipeline_spec',
+            full_name='ml_pipelines.Run.pipeline_spec',
             index=6,
             number=7,
             type=11,
@@ -834,7 +834,7 @@ _PIPELINERUN = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='state',
-            full_name='ml_pipelines.PipelineRun.state',
+            full_name='ml_pipelines.Run.state',
             index=7,
             number=8,
             type=14,
@@ -852,7 +852,7 @@ _PIPELINERUN = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='run_detail',
-            full_name='ml_pipelines.PipelineRun.run_detail',
+            full_name='ml_pipelines.Run.run_detail',
             index=8,
             number=9,
             type=11,
@@ -870,7 +870,7 @@ _PIPELINERUN = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='error',
-            full_name='ml_pipelines.PipelineRun.error',
+            full_name='ml_pipelines.Run.error',
             index=9,
             number=10,
             type=11,
@@ -888,7 +888,7 @@ _PIPELINERUN = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='labels',
-            full_name='ml_pipelines.PipelineRun.labels',
+            full_name='ml_pipelines.Run.labels',
             index=10,
             number=11,
             type=11,
@@ -906,7 +906,7 @@ _PIPELINERUN = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='runtime_config',
-            full_name='ml_pipelines.PipelineRun.runtime_config',
+            full_name='ml_pipelines.Run.runtime_config',
             index=11,
             number=12,
             type=11,
@@ -925,8 +925,8 @@ _PIPELINERUN = _descriptor.Descriptor(
     ],
     extensions=[],
     nested_types=[
-        _PIPELINERUN_LABELSENTRY,
-        _PIPELINERUN_RUNTIMECONFIG,
+        _RUN_LABELSENTRY,
+        _RUN_RUNTIMECONFIG,
     ],
     enum_types=[],
     serialized_options=None,
@@ -935,12 +935,12 @@ _PIPELINERUN = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[],
     serialized_start=192,
-    serialized_end=1128,
+    serialized_end=1072,
 )
 
-_PIPELINERUNDETAIL = _descriptor.Descriptor(
-    name='PipelineRunDetail',
-    full_name='ml_pipelines.PipelineRunDetail',
+_RUNDETAIL = _descriptor.Descriptor(
+    name='RunDetail',
+    full_name='ml_pipelines.RunDetail',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
@@ -948,7 +948,7 @@ _PIPELINERUNDETAIL = _descriptor.Descriptor(
     fields=[
         _descriptor.FieldDescriptor(
             name='pipeline_context',
-            full_name='ml_pipelines.PipelineRunDetail.pipeline_context',
+            full_name='ml_pipelines.RunDetail.pipeline_context',
             index=0,
             number=1,
             type=11,
@@ -966,7 +966,7 @@ _PIPELINERUNDETAIL = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='pipeline_run_context',
-            full_name='ml_pipelines.PipelineRunDetail.pipeline_run_context',
+            full_name='ml_pipelines.RunDetail.pipeline_run_context',
             index=1,
             number=2,
             type=11,
@@ -984,7 +984,7 @@ _PIPELINERUNDETAIL = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
             name='task_details',
-            full_name='ml_pipelines.PipelineRunDetail.task_details',
+            full_name='ml_pipelines.RunDetail.task_details',
             index=2,
             number=3,
             type=11,
@@ -1009,8 +1009,8 @@ _PIPELINERUNDETAIL = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=1131,
-    serialized_end=1306,
+    serialized_start=1075,
+    serialized_end=1242,
 )
 
 _PIPELINETASKDETAIL_ARTIFACTLIST = _descriptor.Descriptor(
@@ -1048,8 +1048,8 @@ _PIPELINETASKDETAIL_ARTIFACTLIST = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=1943,
-    serialized_end=1999,
+    serialized_start=1879,
+    serialized_end=1935,
 )
 
 _PIPELINETASKDETAIL_INPUTSENTRY = _descriptor.Descriptor(
@@ -1105,8 +1105,8 @@ _PIPELINETASKDETAIL_INPUTSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2001,
-    serialized_end=2093,
+    serialized_start=1937,
+    serialized_end=2029,
 )
 
 _PIPELINETASKDETAIL_OUTPUTSENTRY = _descriptor.Descriptor(
@@ -1162,8 +1162,8 @@ _PIPELINETASKDETAIL_OUTPUTSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2095,
-    serialized_end=2188,
+    serialized_start=2031,
+    serialized_end=2124,
 )
 
 _PIPELINETASKDETAIL_PIPELINETASKSTATUS = _descriptor.Descriptor(
@@ -1237,8 +1237,8 @@ _PIPELINETASKDETAIL_PIPELINETASKSTATUS = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2191,
-    serialized_end=2350,
+    serialized_start=2127,
+    serialized_end=2286,
 )
 
 _PIPELINETASKDETAIL = _descriptor.Descriptor(
@@ -1499,8 +1499,8 @@ _PIPELINETASKDETAIL = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=1309,
-    serialized_end=2519,
+    serialized_start=1245,
+    serialized_end=2455,
 )
 
 _PIPELINETASKEXECUTORDETAIL_CONTAINERDETAIL = _descriptor.Descriptor(
@@ -1592,8 +1592,8 @@ _PIPELINETASKEXECUTORDETAIL_CONTAINERDETAIL = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2730,
-    serialized_end=2861,
+    serialized_start=2666,
+    serialized_end=2797,
 )
 
 _PIPELINETASKEXECUTORDETAIL_CUSTOMJOBDETAIL = _descriptor.Descriptor(
@@ -1631,8 +1631,8 @@ _PIPELINETASKEXECUTORDETAIL_CUSTOMJOBDETAIL = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2863,
-    serialized_end=2897,
+    serialized_start=2799,
+    serialized_end=2833,
 )
 
 _PIPELINETASKEXECUTORDETAIL = _descriptor.Descriptor(
@@ -1699,8 +1699,8 @@ _PIPELINETASKEXECUTORDETAIL = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key,
             fields=[]),
     ],
-    serialized_start=2522,
-    serialized_end=2908,
+    serialized_start=2458,
+    serialized_end=2844,
 )
 
 _PIPELINESPEC_RUNTIMEPARAMETER = _descriptor.Descriptor(
@@ -1756,8 +1756,8 @@ _PIPELINESPEC_RUNTIMEPARAMETER = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=3211,
-    serialized_end=3334,
+    serialized_start=3147,
+    serialized_end=3270,
 )
 
 _PIPELINESPEC_COMPONENTSENTRY = _descriptor.Descriptor(
@@ -1813,8 +1813,8 @@ _PIPELINESPEC_COMPONENTSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=3336,
-    serialized_end=3414,
+    serialized_start=3272,
+    serialized_end=3350,
 )
 
 _PIPELINESPEC = _descriptor.Descriptor(
@@ -1963,8 +1963,8 @@ _PIPELINESPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2911,
-    serialized_end=3414,
+    serialized_start=2847,
+    serialized_end=3350,
 )
 
 _COMPONENTSPEC = _descriptor.Descriptor(
@@ -2064,8 +2064,8 @@ _COMPONENTSPEC = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key,
             fields=[]),
     ],
-    serialized_start=3417,
-    serialized_end=3640,
+    serialized_start=3353,
+    serialized_end=3576,
 )
 
 _DAGSPEC_TASKSENTRY = _descriptor.Descriptor(
@@ -2121,8 +2121,8 @@ _DAGSPEC_TASKSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=3750,
-    serialized_end=3826,
+    serialized_start=3686,
+    serialized_end=3762,
 )
 
 _DAGSPEC = _descriptor.Descriptor(
@@ -2180,8 +2180,8 @@ _DAGSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=3643,
-    serialized_end=3826,
+    serialized_start=3579,
+    serialized_end=3762,
 )
 
 _DAGOUTPUTSSPEC_ARTIFACTSELECTORSPEC = _descriptor.Descriptor(
@@ -2237,8 +2237,8 @@ _DAGOUTPUTSSPEC_ARTIFACTSELECTORSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=3977,
-    serialized_end=4054,
+    serialized_start=3913,
+    serialized_end=3990,
 )
 
 _DAGOUTPUTSSPEC_DAGOUTPUTARTIFACTSPEC = _descriptor.Descriptor(
@@ -2276,8 +2276,8 @@ _DAGOUTPUTSSPEC_DAGOUTPUTARTIFACTSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4056,
-    serialized_end=4158,
+    serialized_start=3992,
+    serialized_end=4094,
 )
 
 _DAGOUTPUTSSPEC_ARTIFACTSENTRY = _descriptor.Descriptor(
@@ -2333,8 +2333,8 @@ _DAGOUTPUTSSPEC_ARTIFACTSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4160,
-    serialized_end=4260,
+    serialized_start=4096,
+    serialized_end=4196,
 )
 
 _DAGOUTPUTSSPEC_PARAMETERSELECTORSPEC = _descriptor.Descriptor(
@@ -2390,8 +2390,8 @@ _DAGOUTPUTSSPEC_PARAMETERSELECTORSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4262,
-    serialized_end=4341,
+    serialized_start=4198,
+    serialized_end=4277,
 )
 
 _DAGOUTPUTSSPEC_PARAMETERSELECTORSSPEC = _descriptor.Descriptor(
@@ -2429,8 +2429,8 @@ _DAGOUTPUTSSPEC_PARAMETERSELECTORSSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4343,
-    serialized_end=4448,
+    serialized_start=4279,
+    serialized_end=4384,
 )
 
 _DAGOUTPUTSSPEC_MAPPARAMETERSELECTORSSPEC_MAPPEDPARAMETERSENTRY = _descriptor.Descriptor(
@@ -2486,8 +2486,8 @@ _DAGOUTPUTSSPEC_MAPPARAMETERSELECTORSSPEC_MAPPEDPARAMETERSENTRY = _descriptor.De
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4585,
-    serialized_end=4692,
+    serialized_start=4521,
+    serialized_end=4628,
 )
 
 _DAGOUTPUTSSPEC_MAPPARAMETERSELECTORSSPEC = _descriptor.Descriptor(
@@ -2527,8 +2527,8 @@ _DAGOUTPUTSSPEC_MAPPARAMETERSELECTORSSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4451,
-    serialized_end=4692,
+    serialized_start=4387,
+    serialized_end=4628,
 )
 
 _DAGOUTPUTSSPEC_DAGOUTPUTPARAMETERSPEC = _descriptor.Descriptor(
@@ -2592,8 +2592,8 @@ _DAGOUTPUTSSPEC_DAGOUTPUTPARAMETERSPEC = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key,
             fields=[]),
     ],
-    serialized_start=4695,
-    serialized_end=4898,
+    serialized_start=4631,
+    serialized_end=4834,
 )
 
 _DAGOUTPUTSSPEC_PARAMETERSENTRY = _descriptor.Descriptor(
@@ -2649,8 +2649,8 @@ _DAGOUTPUTSSPEC_PARAMETERSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4900,
-    serialized_end=5002,
+    serialized_start=4836,
+    serialized_end=4938,
 )
 
 _DAGOUTPUTSSPEC = _descriptor.Descriptor(
@@ -2715,8 +2715,8 @@ _DAGOUTPUTSSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=3829,
-    serialized_end=5002,
+    serialized_start=3765,
+    serialized_end=4938,
 )
 
 _COMPONENTINPUTSSPEC_ARTIFACTSPEC = _descriptor.Descriptor(
@@ -2754,8 +2754,8 @@ _COMPONENTINPUTSSPEC_ARTIFACTSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5168,
-    serialized_end=5239,
+    serialized_start=5104,
+    serialized_end=5175,
 )
 
 _COMPONENTINPUTSSPEC_PARAMETERSPEC = _descriptor.Descriptor(
@@ -2847,8 +2847,8 @@ _COMPONENTINPUTSSPEC_PARAMETERSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5242,
-    serialized_end=5461,
+    serialized_start=5178,
+    serialized_end=5397,
 )
 
 _COMPONENTINPUTSSPEC_ARTIFACTSENTRY = _descriptor.Descriptor(
@@ -2904,8 +2904,8 @@ _COMPONENTINPUTSSPEC_ARTIFACTSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5463,
-    serialized_end=5559,
+    serialized_start=5399,
+    serialized_end=5495,
 )
 
 _COMPONENTINPUTSSPEC_PARAMETERSENTRY = _descriptor.Descriptor(
@@ -2961,8 +2961,8 @@ _COMPONENTINPUTSSPEC_PARAMETERSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5561,
-    serialized_end=5659,
+    serialized_start=5497,
+    serialized_end=5595,
 )
 
 _COMPONENTINPUTSSPEC = _descriptor.Descriptor(
@@ -3023,8 +3023,8 @@ _COMPONENTINPUTSSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5005,
-    serialized_end=5659,
+    serialized_start=4941,
+    serialized_end=5595,
 )
 
 _COMPONENTOUTPUTSSPEC_ARTIFACTSPEC_PROPERTIESENTRY = _descriptor.Descriptor(
@@ -3080,8 +3080,8 @@ _COMPONENTOUTPUTSSPEC_ARTIFACTSPEC_PROPERTIESENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6136,
-    serialized_end=6224,
+    serialized_start=6072,
+    serialized_end=6160,
 )
 
 _COMPONENTOUTPUTSSPEC_ARTIFACTSPEC_CUSTOMPROPERTIESENTRY = _descriptor.Descriptor(
@@ -3137,8 +3137,8 @@ _COMPONENTOUTPUTSSPEC_ARTIFACTSPEC_CUSTOMPROPERTIESENTRY = _descriptor.Descripto
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6226,
-    serialized_end=6320,
+    serialized_start=6162,
+    serialized_end=6256,
 )
 
 _COMPONENTOUTPUTSSPEC_ARTIFACTSPEC = _descriptor.Descriptor(
@@ -3233,8 +3233,8 @@ _COMPONENTOUTPUTSSPEC_ARTIFACTSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5829,
-    serialized_end=6320,
+    serialized_start=5765,
+    serialized_end=6256,
 )
 
 _COMPONENTOUTPUTSSPEC_PARAMETERSPEC = _descriptor.Descriptor(
@@ -3290,8 +3290,8 @@ _COMPONENTOUTPUTSSPEC_PARAMETERSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5242,
-    serialized_end=5393,
+    serialized_start=5178,
+    serialized_end=5329,
 )
 
 _COMPONENTOUTPUTSSPEC_ARTIFACTSENTRY = _descriptor.Descriptor(
@@ -3347,8 +3347,8 @@ _COMPONENTOUTPUTSSPEC_ARTIFACTSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6476,
-    serialized_end=6573,
+    serialized_start=6412,
+    serialized_end=6509,
 )
 
 _COMPONENTOUTPUTSSPEC_PARAMETERSENTRY = _descriptor.Descriptor(
@@ -3404,8 +3404,8 @@ _COMPONENTOUTPUTSSPEC_PARAMETERSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6575,
-    serialized_end=6674,
+    serialized_start=6511,
+    serialized_end=6610,
 )
 
 _COMPONENTOUTPUTSSPEC = _descriptor.Descriptor(
@@ -3466,8 +3466,8 @@ _COMPONENTOUTPUTSSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5662,
-    serialized_end=6674,
+    serialized_start=5598,
+    serialized_end=6610,
 )
 
 _TASKINPUTSSPEC_INPUTARTIFACTSPEC_TASKOUTPUTARTIFACTSPEC = _descriptor.Descriptor(
@@ -3523,8 +3523,8 @@ _TASKINPUTSSPEC_INPUTARTIFACTSPEC_TASKOUTPUTARTIFACTSPEC = _descriptor.Descripto
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6986,
-    serialized_end=7062,
+    serialized_start=6922,
+    serialized_end=6998,
 )
 
 _TASKINPUTSSPEC_INPUTARTIFACTSPEC = _descriptor.Descriptor(
@@ -3590,8 +3590,8 @@ _TASKINPUTSSPEC_INPUTARTIFACTSPEC = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key,
             fields=[]),
     ],
-    serialized_start=6826,
-    serialized_end=7076,
+    serialized_start=6762,
+    serialized_end=7012,
 )
 
 _TASKINPUTSSPEC_INPUTPARAMETERSPEC_TASKOUTPUTPARAMETERSPEC = _descriptor.Descriptor(
@@ -3647,8 +3647,8 @@ _TASKINPUTSSPEC_INPUTPARAMETERSPEC_TASKOUTPUTPARAMETERSPEC = _descriptor.Descrip
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7441,
-    serialized_end=7519,
+    serialized_start=7377,
+    serialized_end=7455,
 )
 
 _TASKINPUTSSPEC_INPUTPARAMETERSPEC_TASKFINALSTATUS = _descriptor.Descriptor(
@@ -3686,8 +3686,8 @@ _TASKINPUTSSPEC_INPUTPARAMETERSPEC_TASKFINALSTATUS = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7521,
-    serialized_end=7561,
+    serialized_start=7457,
+    serialized_end=7497,
 )
 
 _TASKINPUTSSPEC_INPUTPARAMETERSPEC = _descriptor.Descriptor(
@@ -3808,8 +3808,8 @@ _TASKINPUTSSPEC_INPUTPARAMETERSPEC = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key,
             fields=[]),
     ],
-    serialized_start=7079,
-    serialized_end=7569,
+    serialized_start=7015,
+    serialized_end=7505,
 )
 
 _TASKINPUTSSPEC_PARAMETERSENTRY = _descriptor.Descriptor(
@@ -3865,8 +3865,8 @@ _TASKINPUTSSPEC_PARAMETERSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7571,
-    serialized_end=7669,
+    serialized_start=7507,
+    serialized_end=7605,
 )
 
 _TASKINPUTSSPEC_ARTIFACTSENTRY = _descriptor.Descriptor(
@@ -3922,8 +3922,8 @@ _TASKINPUTSSPEC_ARTIFACTSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7671,
-    serialized_end=7767,
+    serialized_start=7607,
+    serialized_end=7703,
 )
 
 _TASKINPUTSSPEC = _descriptor.Descriptor(
@@ -3984,8 +3984,8 @@ _TASKINPUTSSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6677,
-    serialized_end=7767,
+    serialized_start=6613,
+    serialized_end=7703,
 )
 
 _TASKOUTPUTSSPEC_OUTPUTARTIFACTSPEC_PROPERTIESENTRY = _descriptor.Descriptor(
@@ -4041,8 +4041,8 @@ _TASKOUTPUTSSPEC_OUTPUTARTIFACTSPEC_PROPERTIESENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6136,
-    serialized_end=6224,
+    serialized_start=6072,
+    serialized_end=6160,
 )
 
 _TASKOUTPUTSSPEC_OUTPUTARTIFACTSPEC_CUSTOMPROPERTIESENTRY = _descriptor.Descriptor(
@@ -4098,8 +4098,8 @@ _TASKOUTPUTSSPEC_OUTPUTARTIFACTSPEC_CUSTOMPROPERTIESENTRY = _descriptor.Descript
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6226,
-    serialized_end=6320,
+    serialized_start=6162,
+    serialized_end=6256,
 )
 
 _TASKOUTPUTSSPEC_OUTPUTARTIFACTSPEC = _descriptor.Descriptor(
@@ -4176,8 +4176,8 @@ _TASKOUTPUTSSPEC_OUTPUTARTIFACTSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7922,
-    serialized_end=8370,
+    serialized_start=7858,
+    serialized_end=8306,
 )
 
 _TASKOUTPUTSSPEC_OUTPUTPARAMETERSPEC = _descriptor.Descriptor(
@@ -4215,8 +4215,8 @@ _TASKOUTPUTSSPEC_OUTPUTPARAMETERSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8372,
-    serialized_end=8454,
+    serialized_start=8308,
+    serialized_end=8390,
 )
 
 _TASKOUTPUTSSPEC_PARAMETERSENTRY = _descriptor.Descriptor(
@@ -4272,8 +4272,8 @@ _TASKOUTPUTSSPEC_PARAMETERSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8456,
-    serialized_end=8556,
+    serialized_start=8392,
+    serialized_end=8492,
 )
 
 _TASKOUTPUTSSPEC_ARTIFACTSENTRY = _descriptor.Descriptor(
@@ -4329,8 +4329,8 @@ _TASKOUTPUTSSPEC_ARTIFACTSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8558,
-    serialized_end=8656,
+    serialized_start=8494,
+    serialized_end=8592,
 )
 
 _TASKOUTPUTSSPEC = _descriptor.Descriptor(
@@ -4391,8 +4391,8 @@ _TASKOUTPUTSSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7770,
-    serialized_end=8656,
+    serialized_start=7706,
+    serialized_end=8592,
 )
 
 _PRIMITIVETYPE = _descriptor.Descriptor(
@@ -4413,8 +4413,8 @@ _PRIMITIVETYPE = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8658,
-    serialized_end=8767,
+    serialized_start=8594,
+    serialized_end=8703,
 )
 
 _PARAMETERTYPE = _descriptor.Descriptor(
@@ -4435,8 +4435,8 @@ _PARAMETERTYPE = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8770,
-    serialized_end=8930,
+    serialized_start=8706,
+    serialized_end=8866,
 )
 
 _PIPELINETASKSPEC_CACHINGOPTIONS = _descriptor.Descriptor(
@@ -4474,8 +4474,8 @@ _PIPELINETASKSPEC_CACHINGOPTIONS = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=9538,
-    serialized_end=9576,
+    serialized_start=9474,
+    serialized_end=9512,
 )
 
 _PIPELINETASKSPEC_TRIGGERPOLICY = _descriptor.Descriptor(
@@ -4533,8 +4533,8 @@ _PIPELINETASKSPEC_TRIGGERPOLICY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=9579,
-    serialized_end=9814,
+    serialized_start=9515,
+    serialized_end=9750,
 )
 
 _PIPELINETASKSPEC_RETRYPOLICY = _descriptor.Descriptor(
@@ -4626,8 +4626,8 @@ _PIPELINETASKSPEC_RETRYPOLICY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=9817,
-    serialized_end=9989,
+    serialized_start=9753,
+    serialized_end=9925,
 )
 
 _PIPELINETASKSPEC_ITERATORPOLICY = _descriptor.Descriptor(
@@ -4665,8 +4665,8 @@ _PIPELINETASKSPEC_ITERATORPOLICY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=9991,
-    serialized_end=10034,
+    serialized_start=9927,
+    serialized_end=9970,
 )
 
 _PIPELINETASKSPEC = _descriptor.Descriptor(
@@ -4879,8 +4879,8 @@ _PIPELINETASKSPEC = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key,
             fields=[]),
     ],
-    serialized_start=8933,
-    serialized_end=10046,
+    serialized_start=8869,
+    serialized_end=9982,
 )
 
 _ARTIFACTITERATORSPEC_ITEMSSPEC = _descriptor.Descriptor(
@@ -4918,8 +4918,8 @@ _ARTIFACTITERATORSPEC_ITEMSSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=10154,
-    serialized_end=10189,
+    serialized_start=10090,
+    serialized_end=10125,
 )
 
 _ARTIFACTITERATORSPEC = _descriptor.Descriptor(
@@ -4977,8 +4977,8 @@ _ARTIFACTITERATORSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=10049,
-    serialized_end=10189,
+    serialized_start=9985,
+    serialized_end=10125,
 )
 
 _PARAMETERITERATORSPEC_ITEMSSPEC = _descriptor.Descriptor(
@@ -5042,8 +5042,8 @@ _PARAMETERITERATORSPEC_ITEMSSPEC = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key,
             fields=[]),
     ],
-    serialized_start=10299,
-    serialized_end=10360,
+    serialized_start=10235,
+    serialized_end=10296,
 )
 
 _PARAMETERITERATORSPEC = _descriptor.Descriptor(
@@ -5101,8 +5101,8 @@ _PARAMETERITERATORSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=10192,
-    serialized_end=10360,
+    serialized_start=10128,
+    serialized_end=10296,
 )
 
 _COMPONENTREF = _descriptor.Descriptor(
@@ -5140,8 +5140,8 @@ _COMPONENTREF = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=10362,
-    serialized_end=10390,
+    serialized_start=10298,
+    serialized_end=10326,
 )
 
 _PIPELINEINFO = _descriptor.Descriptor(
@@ -5179,8 +5179,8 @@ _PIPELINEINFO = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=10392,
-    serialized_end=10420,
+    serialized_start=10328,
+    serialized_end=10356,
 )
 
 _ARTIFACTTYPESCHEMA = _descriptor.Descriptor(
@@ -5280,8 +5280,8 @@ _ARTIFACTTYPESCHEMA = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key,
             fields=[]),
     ],
-    serialized_start=10423,
-    serialized_end=10552,
+    serialized_start=10359,
+    serialized_end=10488,
 )
 
 _PIPELINETASKINFO = _descriptor.Descriptor(
@@ -5319,8 +5319,8 @@ _PIPELINETASKINFO = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=10554,
-    serialized_end=10586,
+    serialized_start=10490,
+    serialized_end=10522,
 )
 
 _VALUEORRUNTIMEPARAMETER = _descriptor.Descriptor(
@@ -5402,8 +5402,8 @@ _VALUEORRUNTIMEPARAMETER = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key,
             fields=[]),
     ],
-    serialized_start=10589,
-    serialized_end=10747,
+    serialized_start=10525,
+    serialized_end=10683,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC_LIFECYCLE_EXEC = _descriptor.Descriptor(
@@ -5459,8 +5459,8 @@ _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC_LIFECYCLE_EXEC = _descriptor.Des
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=11307,
-    serialized_end=11344,
+    serialized_start=11243,
+    serialized_end=11280,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC_LIFECYCLE = _descriptor.Descriptor(
@@ -5500,8 +5500,8 @@ _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC_LIFECYCLE = _descriptor.Descript
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=11192,
-    serialized_end=11344,
+    serialized_start=11128,
+    serialized_end=11280,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC_RESOURCESPEC_ACCELERATORCONFIG = _descriptor.Descriptor(
@@ -5557,8 +5557,8 @@ _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC_RESOURCESPEC_ACCELERATORCONFIG =
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=11518,
-    serialized_end=11566,
+    serialized_start=11454,
+    serialized_end=11502,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC_RESOURCESPEC = _descriptor.Descriptor(
@@ -5634,8 +5634,8 @@ _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC_RESOURCESPEC = _descriptor.Descr
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=11347,
-    serialized_end=11566,
+    serialized_start=11283,
+    serialized_end=11502,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC_ENVVAR = _descriptor.Descriptor(
@@ -5691,8 +5691,8 @@ _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC_ENVVAR = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=11568,
-    serialized_end=11605,
+    serialized_start=11504,
+    serialized_end=11541,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC = _descriptor.Descriptor(
@@ -5824,8 +5824,8 @@ _PIPELINEDEPLOYMENTCONFIG_PIPELINECONTAINERSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=10853,
-    serialized_end=11605,
+    serialized_start=10789,
+    serialized_end=11541,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_IMPORTERSPEC_PROPERTIESENTRY = _descriptor.Descriptor(
@@ -5881,8 +5881,8 @@ _PIPELINEDEPLOYMENTCONFIG_IMPORTERSPEC_PROPERTIESENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6136,
-    serialized_end=6224,
+    serialized_start=6072,
+    serialized_end=6160,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_IMPORTERSPEC_CUSTOMPROPERTIESENTRY = _descriptor.Descriptor(
@@ -5938,8 +5938,8 @@ _PIPELINEDEPLOYMENTCONFIG_IMPORTERSPEC_CUSTOMPROPERTIESENTRY = _descriptor.Descr
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6226,
-    serialized_end=6320,
+    serialized_start=6162,
+    serialized_end=6256,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_IMPORTERSPEC = _descriptor.Descriptor(
@@ -6070,8 +6070,8 @@ _PIPELINEDEPLOYMENTCONFIG_IMPORTERSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=11608,
-    serialized_end=12184,
+    serialized_start=11544,
+    serialized_end=12120,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_RESOLVERSPEC_ARTIFACTQUERYSPEC = _descriptor.Descriptor(
@@ -6127,8 +6127,8 @@ _PIPELINEDEPLOYMENTCONFIG_RESOLVERSPEC_ARTIFACTQUERYSPEC = _descriptor.Descripto
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=12316,
-    serialized_end=12366,
+    serialized_start=12252,
+    serialized_end=12302,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_RESOLVERSPEC_OUTPUTARTIFACTQUERIESENTRY = _descriptor.Descriptor(
@@ -6184,8 +6184,8 @@ _PIPELINEDEPLOYMENTCONFIG_RESOLVERSPEC_OUTPUTARTIFACTQUERIESENTRY = _descriptor.
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=12369,
-    serialized_end=12500,
+    serialized_start=12305,
+    serialized_end=12436,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_RESOLVERSPEC = _descriptor.Descriptor(
@@ -6226,8 +6226,8 @@ _PIPELINEDEPLOYMENTCONFIG_RESOLVERSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=12187,
-    serialized_end=12500,
+    serialized_start=12123,
+    serialized_end=12436,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_AIPLATFORMCUSTOMJOBSPEC = _descriptor.Descriptor(
@@ -6265,8 +6265,8 @@ _PIPELINEDEPLOYMENTCONFIG_AIPLATFORMCUSTOMJOBSPEC = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=12502,
-    serialized_end=12576,
+    serialized_start=12438,
+    serialized_end=12512,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_EXECUTORSPEC = _descriptor.Descriptor(
@@ -6366,8 +6366,8 @@ _PIPELINEDEPLOYMENTCONFIG_EXECUTORSPEC = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key,
             fields=[]),
     ],
-    serialized_start=12579,
-    serialized_end=12920,
+    serialized_start=12515,
+    serialized_end=12856,
 )
 
 _PIPELINEDEPLOYMENTCONFIG_EXECUTORSENTRY = _descriptor.Descriptor(
@@ -6423,8 +6423,8 @@ _PIPELINEDEPLOYMENTCONFIG_EXECUTORSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=12922,
-    serialized_end=13023,
+    serialized_start=12858,
+    serialized_end=12959,
 )
 
 _PIPELINEDEPLOYMENTCONFIG = _descriptor.Descriptor(
@@ -6469,8 +6469,8 @@ _PIPELINEDEPLOYMENTCONFIG = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=10750,
-    serialized_end=13023,
+    serialized_start=10686,
+    serialized_end=12959,
 )
 
 _VALUE = _descriptor.Descriptor(
@@ -6552,8 +6552,8 @@ _VALUE = _descriptor.Descriptor(
             create_key=_descriptor._internal_create_key,
             fields=[]),
     ],
-    serialized_start=13025,
-    serialized_end=13110,
+    serialized_start=12961,
+    serialized_end=13046,
 )
 
 _RUNTIMEARTIFACT_PROPERTIESENTRY = _descriptor.Descriptor(
@@ -6609,8 +6609,8 @@ _RUNTIMEARTIFACT_PROPERTIESENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=13405,
-    serialized_end=13475,
+    serialized_start=13341,
+    serialized_end=13411,
 )
 
 _RUNTIMEARTIFACT_CUSTOMPROPERTIESENTRY = _descriptor.Descriptor(
@@ -6666,8 +6666,8 @@ _RUNTIMEARTIFACT_CUSTOMPROPERTIESENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=13477,
-    serialized_end=13553,
+    serialized_start=13413,
+    serialized_end=13489,
 )
 
 _RUNTIMEARTIFACT = _descriptor.Descriptor(
@@ -6798,8 +6798,8 @@ _RUNTIMEARTIFACT = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=13113,
-    serialized_end=13553,
+    serialized_start=13049,
+    serialized_end=13489,
 )
 
 _ARTIFACTLIST = _descriptor.Descriptor(
@@ -6837,8 +6837,8 @@ _ARTIFACTLIST = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=13555,
-    serialized_end=13619,
+    serialized_start=13491,
+    serialized_end=13555,
 )
 
 _EXECUTORINPUT_INPUTS_PARAMETERSENTRY = _descriptor.Descriptor(
@@ -6894,8 +6894,8 @@ _EXECUTORINPUT_INPUTS_PARAMETERSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=972,
-    serialized_end=1042,
+    serialized_start=916,
+    serialized_end=986,
 )
 
 _EXECUTORINPUT_INPUTS_ARTIFACTSENTRY = _descriptor.Descriptor(
@@ -6951,8 +6951,8 @@ _EXECUTORINPUT_INPUTS_ARTIFACTSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=14057,
-    serialized_end=14133,
+    serialized_start=13993,
+    serialized_end=14069,
 )
 
 _EXECUTORINPUT_INPUTS_PARAMETERVALUESENTRY = _descriptor.Descriptor(
@@ -7008,8 +7008,8 @@ _EXECUTORINPUT_INPUTS_PARAMETERVALUESENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=1044,
-    serialized_end=1122,
+    serialized_start=988,
+    serialized_end=1066,
 )
 
 _EXECUTORINPUT_INPUTS = _descriptor.Descriptor(
@@ -7087,8 +7087,8 @@ _EXECUTORINPUT_INPUTS = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=13746,
-    serialized_end=14213,
+    serialized_start=13682,
+    serialized_end=14149,
 )
 
 _EXECUTORINPUT_OUTPUTPARAMETER = _descriptor.Descriptor(
@@ -7126,8 +7126,8 @@ _EXECUTORINPUT_OUTPUTPARAMETER = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=14215,
-    serialized_end=14253,
+    serialized_start=14151,
+    serialized_end=14189,
 )
 
 _EXECUTORINPUT_OUTPUTS_PARAMETERSENTRY = _descriptor.Descriptor(
@@ -7183,8 +7183,8 @@ _EXECUTORINPUT_OUTPUTS_PARAMETERSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=14432,
-    serialized_end=14526,
+    serialized_start=14368,
+    serialized_end=14462,
 )
 
 _EXECUTORINPUT_OUTPUTS_ARTIFACTSENTRY = _descriptor.Descriptor(
@@ -7240,8 +7240,8 @@ _EXECUTORINPUT_OUTPUTS_ARTIFACTSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=14057,
-    serialized_end=14133,
+    serialized_start=13993,
+    serialized_end=14069,
 )
 
 _EXECUTORINPUT_OUTPUTS = _descriptor.Descriptor(
@@ -7318,8 +7318,8 @@ _EXECUTORINPUT_OUTPUTS = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=14256,
-    serialized_end=14604,
+    serialized_start=14192,
+    serialized_end=14540,
 )
 
 _EXECUTORINPUT = _descriptor.Descriptor(
@@ -7379,8 +7379,8 @@ _EXECUTORINPUT = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=13622,
-    serialized_end=14604,
+    serialized_start=13558,
+    serialized_end=14540,
 )
 
 _EXECUTOROUTPUT_PARAMETERSENTRY = _descriptor.Descriptor(
@@ -7436,8 +7436,8 @@ _EXECUTOROUTPUT_PARAMETERSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=972,
-    serialized_end=1042,
+    serialized_start=916,
+    serialized_end=986,
 )
 
 _EXECUTOROUTPUT_ARTIFACTSENTRY = _descriptor.Descriptor(
@@ -7493,8 +7493,8 @@ _EXECUTOROUTPUT_ARTIFACTSENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=14057,
-    serialized_end=14133,
+    serialized_start=13993,
+    serialized_end=14069,
 )
 
 _EXECUTOROUTPUT_PARAMETERVALUESENTRY = _descriptor.Descriptor(
@@ -7550,8 +7550,8 @@ _EXECUTOROUTPUT_PARAMETERVALUESENTRY = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=1044,
-    serialized_end=1122,
+    serialized_start=988,
+    serialized_end=1066,
 )
 
 _EXECUTOROUTPUT = _descriptor.Descriptor(
@@ -7629,8 +7629,8 @@ _EXECUTOROUTPUT = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=14607,
-    serialized_end=15064,
+    serialized_start=14543,
+    serialized_end=15000,
 )
 
 _PIPELINETASKFINALSTATUS = _descriptor.Descriptor(
@@ -7758,8 +7758,8 @@ _PIPELINETASKFINALSTATUS = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=15067,
-    serialized_end=15268,
+    serialized_start=15003,
+    serialized_end=15204,
 )
 
 _PIPELINESTATEENUM = _descriptor.Descriptor(
@@ -7780,45 +7780,42 @@ _PIPELINESTATEENUM = _descriptor.Descriptor(
     syntax='proto3',
     extension_ranges=[],
     oneofs=[],
-    serialized_start=15271,
-    serialized_end=15558,
+    serialized_start=15207,
+    serialized_end=15494,
 )
 
-_PIPELINERUN_LABELSENTRY.containing_type = _PIPELINERUN
-_PIPELINERUN_RUNTIMECONFIG_PARAMETERSENTRY.fields_by_name[
-    'value'].message_type = _VALUE
-_PIPELINERUN_RUNTIMECONFIG_PARAMETERSENTRY.containing_type = _PIPELINERUN_RUNTIMECONFIG
-_PIPELINERUN_RUNTIMECONFIG_PARAMETERVALUESENTRY.fields_by_name[
+_RUN_LABELSENTRY.containing_type = _RUN
+_RUN_RUNTIMECONFIG_PARAMETERSENTRY.fields_by_name['value'].message_type = _VALUE
+_RUN_RUNTIMECONFIG_PARAMETERSENTRY.containing_type = _RUN_RUNTIMECONFIG
+_RUN_RUNTIMECONFIG_PARAMETERVALUESENTRY.fields_by_name[
     'value'].message_type = google_dot_protobuf_dot_struct__pb2._VALUE
-_PIPELINERUN_RUNTIMECONFIG_PARAMETERVALUESENTRY.containing_type = _PIPELINERUN_RUNTIMECONFIG
-_PIPELINERUN_RUNTIMECONFIG.fields_by_name[
-    'parameters'].message_type = _PIPELINERUN_RUNTIMECONFIG_PARAMETERSENTRY
-_PIPELINERUN_RUNTIMECONFIG.fields_by_name[
-    'parameter_values'].message_type = _PIPELINERUN_RUNTIMECONFIG_PARAMETERVALUESENTRY
-_PIPELINERUN_RUNTIMECONFIG.containing_type = _PIPELINERUN
-_PIPELINERUN.fields_by_name[
+_RUN_RUNTIMECONFIG_PARAMETERVALUESENTRY.containing_type = _RUN_RUNTIMECONFIG
+_RUN_RUNTIMECONFIG.fields_by_name[
+    'parameters'].message_type = _RUN_RUNTIMECONFIG_PARAMETERSENTRY
+_RUN_RUNTIMECONFIG.fields_by_name[
+    'parameter_values'].message_type = _RUN_RUNTIMECONFIG_PARAMETERVALUESENTRY
+_RUN_RUNTIMECONFIG.containing_type = _RUN
+_RUN.fields_by_name[
     'create_time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_PIPELINERUN.fields_by_name[
+_RUN.fields_by_name[
     'start_time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_PIPELINERUN.fields_by_name[
+_RUN.fields_by_name[
     'end_time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_PIPELINERUN.fields_by_name[
+_RUN.fields_by_name[
     'update_time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_PIPELINERUN.fields_by_name[
+_RUN.fields_by_name[
     'pipeline_spec'].message_type = google_dot_protobuf_dot_struct__pb2._STRUCT
-_PIPELINERUN.fields_by_name['state'].enum_type = _PIPELINERUNSTATE
-_PIPELINERUN.fields_by_name['run_detail'].message_type = _PIPELINERUNDETAIL
-_PIPELINERUN.fields_by_name[
+_RUN.fields_by_name['state'].enum_type = _RUNSTATE
+_RUN.fields_by_name['run_detail'].message_type = _RUNDETAIL
+_RUN.fields_by_name[
     'error'].message_type = google_dot_rpc_dot_status__pb2._STATUS
-_PIPELINERUN.fields_by_name['labels'].message_type = _PIPELINERUN_LABELSENTRY
-_PIPELINERUN.fields_by_name[
-    'runtime_config'].message_type = _PIPELINERUN_RUNTIMECONFIG
-_PIPELINERUNDETAIL.fields_by_name[
+_RUN.fields_by_name['labels'].message_type = _RUN_LABELSENTRY
+_RUN.fields_by_name['runtime_config'].message_type = _RUN_RUNTIMECONFIG
+_RUNDETAIL.fields_by_name[
     'pipeline_context'].message_type = ml__metadata_dot_metadata__store__pb2._CONTEXT
-_PIPELINERUNDETAIL.fields_by_name[
+_RUNDETAIL.fields_by_name[
     'pipeline_run_context'].message_type = ml__metadata_dot_metadata__store__pb2._CONTEXT
-_PIPELINERUNDETAIL.fields_by_name[
-    'task_details'].message_type = _PIPELINETASKDETAIL
+_RUNDETAIL.fields_by_name['task_details'].message_type = _PIPELINETASKDETAIL
 _PIPELINETASKDETAIL_ARTIFACTLIST.fields_by_name[
     'artifacts'].message_type = ml__metadata_dot_metadata__store__pb2._ARTIFACT
 _PIPELINETASKDETAIL_ARTIFACTLIST.containing_type = _PIPELINETASKDETAIL
@@ -8309,8 +8306,8 @@ _EXECUTOROUTPUT.fields_by_name[
 _PIPELINETASKFINALSTATUS.fields_by_name[
     'error'].message_type = google_dot_rpc_dot_status__pb2._STATUS
 _PIPELINESTATEENUM_PIPELINETASKSTATE.containing_type = _PIPELINESTATEENUM
-DESCRIPTOR.message_types_by_name['PipelineRun'] = _PIPELINERUN
-DESCRIPTOR.message_types_by_name['PipelineRunDetail'] = _PIPELINERUNDETAIL
+DESCRIPTOR.message_types_by_name['Run'] = _RUN
+DESCRIPTOR.message_types_by_name['RunDetail'] = _RUNDETAIL
 DESCRIPTOR.message_types_by_name['PipelineTaskDetail'] = _PIPELINETASKDETAIL
 DESCRIPTOR.message_types_by_name[
     'PipelineTaskExecutorDetail'] = _PIPELINETASKEXECUTORDETAIL
@@ -8344,11 +8341,11 @@ DESCRIPTOR.message_types_by_name['ExecutorOutput'] = _EXECUTOROUTPUT
 DESCRIPTOR.message_types_by_name[
     'PipelineTaskFinalStatus'] = _PIPELINETASKFINALSTATUS
 DESCRIPTOR.message_types_by_name['PipelineStateEnum'] = _PIPELINESTATEENUM
-DESCRIPTOR.enum_types_by_name['PipelineRunState'] = _PIPELINERUNSTATE
+DESCRIPTOR.enum_types_by_name['RunState'] = _RUNSTATE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-PipelineRun = _reflection.GeneratedProtocolMessageType(
-    'PipelineRun',
+Run = _reflection.GeneratedProtocolMessageType(
+    'Run',
     (_message.Message,),
     {
         'LabelsEntry':
@@ -8356,9 +8353,9 @@ PipelineRun = _reflection.GeneratedProtocolMessageType(
                 'LabelsEntry',
                 (_message.Message,),
                 {
-                    'DESCRIPTOR': _PIPELINERUN_LABELSENTRY,
+                    'DESCRIPTOR': _RUN_LABELSENTRY,
                     '__module__': 'pipeline_spec_pb2'
-                    # @@protoc_insertion_point(class_scope:ml_pipelines.PipelineRun.LabelsEntry)
+                    # @@protoc_insertion_point(class_scope:ml_pipelines.Run.LabelsEntry)
                 }),
         'RuntimeConfig':
             _reflection.GeneratedProtocolMessageType(
@@ -8371,10 +8368,10 @@ PipelineRun = _reflection.GeneratedProtocolMessageType(
                             (_message.Message,),
                             {
                                 'DESCRIPTOR':
-                                    _PIPELINERUN_RUNTIMECONFIG_PARAMETERSENTRY,
+                                    _RUN_RUNTIMECONFIG_PARAMETERSENTRY,
                                 '__module__':
                                     'pipeline_spec_pb2'
-                                # @@protoc_insertion_point(class_scope:ml_pipelines.PipelineRun.RuntimeConfig.ParametersEntry)
+                                # @@protoc_insertion_point(class_scope:ml_pipelines.Run.RuntimeConfig.ParametersEntry)
                             }),
                     'ParameterValuesEntry':
                         _reflection.GeneratedProtocolMessageType(
@@ -8382,38 +8379,38 @@ PipelineRun = _reflection.GeneratedProtocolMessageType(
                             (_message.Message,),
                             {
                                 'DESCRIPTOR':
-                                    _PIPELINERUN_RUNTIMECONFIG_PARAMETERVALUESENTRY,
+                                    _RUN_RUNTIMECONFIG_PARAMETERVALUESENTRY,
                                 '__module__':
                                     'pipeline_spec_pb2'
-                                # @@protoc_insertion_point(class_scope:ml_pipelines.PipelineRun.RuntimeConfig.ParameterValuesEntry)
+                                # @@protoc_insertion_point(class_scope:ml_pipelines.Run.RuntimeConfig.ParameterValuesEntry)
                             }),
                     'DESCRIPTOR':
-                        _PIPELINERUN_RUNTIMECONFIG,
+                        _RUN_RUNTIMECONFIG,
                     '__module__':
                         'pipeline_spec_pb2'
-                    # @@protoc_insertion_point(class_scope:ml_pipelines.PipelineRun.RuntimeConfig)
+                    # @@protoc_insertion_point(class_scope:ml_pipelines.Run.RuntimeConfig)
                 }),
         'DESCRIPTOR':
-            _PIPELINERUN,
+            _RUN,
         '__module__':
             'pipeline_spec_pb2'
-        # @@protoc_insertion_point(class_scope:ml_pipelines.PipelineRun)
+        # @@protoc_insertion_point(class_scope:ml_pipelines.Run)
     })
-_sym_db.RegisterMessage(PipelineRun)
-_sym_db.RegisterMessage(PipelineRun.LabelsEntry)
-_sym_db.RegisterMessage(PipelineRun.RuntimeConfig)
-_sym_db.RegisterMessage(PipelineRun.RuntimeConfig.ParametersEntry)
-_sym_db.RegisterMessage(PipelineRun.RuntimeConfig.ParameterValuesEntry)
+_sym_db.RegisterMessage(Run)
+_sym_db.RegisterMessage(Run.LabelsEntry)
+_sym_db.RegisterMessage(Run.RuntimeConfig)
+_sym_db.RegisterMessage(Run.RuntimeConfig.ParametersEntry)
+_sym_db.RegisterMessage(Run.RuntimeConfig.ParameterValuesEntry)
 
-PipelineRunDetail = _reflection.GeneratedProtocolMessageType(
-    'PipelineRunDetail',
+RunDetail = _reflection.GeneratedProtocolMessageType(
+    'RunDetail',
     (_message.Message,),
     {
-        'DESCRIPTOR': _PIPELINERUNDETAIL,
+        'DESCRIPTOR': _RUNDETAIL,
         '__module__': 'pipeline_spec_pb2'
-        # @@protoc_insertion_point(class_scope:ml_pipelines.PipelineRunDetail)
+        # @@protoc_insertion_point(class_scope:ml_pipelines.RunDetail)
     })
-_sym_db.RegisterMessage(PipelineRunDetail)
+_sym_db.RegisterMessage(RunDetail)
 
 PipelineTaskDetail = _reflection.GeneratedProtocolMessageType(
     'PipelineTaskDetail',
@@ -9553,10 +9550,10 @@ PipelineStateEnum = _reflection.GeneratedProtocolMessageType(
 _sym_db.RegisterMessage(PipelineStateEnum)
 
 DESCRIPTOR._options = None
-_PIPELINERUN_LABELSENTRY._options = None
-_PIPELINERUN_RUNTIMECONFIG_PARAMETERSENTRY._options = None
-_PIPELINERUN_RUNTIMECONFIG_PARAMETERVALUESENTRY._options = None
-_PIPELINERUN_RUNTIMECONFIG.fields_by_name['parameters']._options = None
+_RUN_LABELSENTRY._options = None
+_RUN_RUNTIMECONFIG_PARAMETERSENTRY._options = None
+_RUN_RUNTIMECONFIG_PARAMETERVALUESENTRY._options = None
+_RUN_RUNTIMECONFIG.fields_by_name['parameters']._options = None
 _PIPELINETASKDETAIL_INPUTSENTRY._options = None
 _PIPELINETASKDETAIL_OUTPUTSENTRY._options = None
 _PIPELINETASKEXECUTORDETAIL_CUSTOMJOBDETAIL._options = None
