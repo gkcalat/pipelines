@@ -22,7 +22,7 @@ PREBUILT_REMOTE_IMAGE=gcr.io/ml-pipeline-test/api-generator@sha256:431635b564a87
 
 # Generate clients using a pre-built api-generator image.
 .PHONY: generate
-generate: hack/generator.sh *.proto
+generate: clean_dependencies copy_dependencies hack/generator.sh *.proto
 	docker run --interactive --rm \
 		--user $$(id -u):$$(id -g) \
 		--mount type=bind,source="$$(pwd)/../..",target=/go/src/github.com/kubeflow/pipelines \
@@ -32,7 +32,7 @@ generate: hack/generator.sh *.proto
 # Note, this should only be used for local development purposes. Once any change is made to the Dockerfile,
 # we should push the new image remotely to ensure everyone is using the same tools.
 .PHONY: generate-from-scratch
-generate-from-scratch: .image-built hack/generator.sh *.proto
+generate-from-scratch: image clean_dependencies copy_dependencies
 	docker run  --interactive --rm \
 	    --user $$(id -u):$$(id -g) \
 		--mount type=bind,source="$$(pwd)/../..",target=/go/src/github.com/kubeflow/pipelines \
@@ -52,3 +52,13 @@ push: image
 .image-built: Dockerfile
 	docker build ../.. -t $(IMAGE_TAG) -f Dockerfile
 	touch .image-built
+
+# Fetch dependency proto
+copy_dependencies:
+	mkdir -p ./temp
+	cp ../../third_party/ml-metadata/ml_metadata/proto/metadata_store.proto ./temp/metadata_store.proto
+	echo 'option go_package = "github.com/kubeflow/pipelines/third_party/ml-metadata/go/ml_metadata";' >> ./temp/metadata_store.proto
+
+# Remove copied dependency protos
+clean_dependencies:
+	rm -rf ./temp
