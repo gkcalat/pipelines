@@ -403,22 +403,93 @@
     }
   },
   "definitions": {
-    "PipelineSpecRuntimeConfig": {
+    "PipelineTaskDetailArtifactList": {
       "type": "object",
       "properties": {
-        "parameters": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/protobufValue"
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ml_metadataArtifact"
           },
-          "description": "The runtime parameters of the PipelineSpec. The parameters will be\nused to replace the placeholders\nat runtime."
-        },
-        "pipeline_root": {
-          "type": "string",
-          "title": "A path in a object store bucket which will be treated as the root\noutput directory of the pipeline. It is used by the system to\ngenerate the paths of output artifacts. Ref:(https://www.kubeflow.org/docs/components/pipelines/pipeline-root/)"
+          "description": "A list of artifact metadata."
         }
       },
-      "description": "The runtime config of a PipelineSpec."
+      "description": "A list of artifact metadata."
+    },
+    "PipelineTaskDetailPipelineTaskStatus": {
+      "type": "object",
+      "properties": {
+        "update_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Update time of this status."
+        },
+        "state": {
+          "$ref": "#/definitions/PipelineTaskDetailTaskState",
+          "description": "The state of the task."
+        },
+        "error": {
+          "$ref": "#/definitions/apiStatus",
+          "description": "The error that occurred during the state. May be set when the state is\nany of the non-final state (PENDING/RUNNING/CANCELLING) or FAILED state.\nIf the state is FAILED, the error here is final and not going to be\nretried.\nIf the state is a non-final state, the error indicates a system-error\nbeing retried."
+        }
+      },
+      "description": "A single record of the task status."
+    },
+    "PipelineTaskDetailTaskState": {
+      "type": "string",
+      "enum": [
+        "STATE_UNSPECIFIED",
+        "PENDING",
+        "RUNNING",
+        "SUCCEEDED",
+        "CANCEL_PENDING",
+        "CANCELLING",
+        "CANCELLED",
+        "FAILED",
+        "SKIPPED",
+        "NOT_TRIGGERED"
+      ],
+      "default": "STATE_UNSPECIFIED",
+      "description": "- STATE_UNSPECIFIED: Unspecified.\n - PENDING: Specifies pending state for the task.\n - RUNNING: Specifies task is being executed.\n - SUCCEEDED: Specifies task completed successfully.\n - CANCEL_PENDING: Specifies Task cancel is in pending state.\n - CANCELLING: Specifies task is being cancelled.\n - CANCELLED: Specifies task was cancelled.\n - FAILED: Specifies task failed.\n - SKIPPED: Specifies task was skipped due to cache hit.\n - NOT_TRIGGERED: Specifies that the task was not triggered because the task's trigger\npolicy is not satisfied. The trigger policy is specified in the\n`condition` field of [Run.pipeline_spec][].",
+      "title": "Specifies state of TaskExecution"
+    },
+    "PipelineTaskExecutorDetailContainerDetail": {
+      "type": "object",
+      "properties": {
+        "main_job": {
+          "type": "string",
+          "description": "The name of the [CustomJob][] for the main container execution."
+        },
+        "pre_caching_check_job": {
+          "type": "string",
+          "description": "The name of the [CustomJob][] for the pre-caching-check container\nexecution. This job will be available if the\n[Run.pipeline_spec][] specifies the `pre_caching_check` hook in\nthe lifecycle events."
+        },
+        "failed_main_jobs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The names of the previously failed [CustomJob][] for the main container\nexecutions. The list includes the all attempts in chronological order."
+        },
+        "failed_pre_caching_check_jobs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The names of the previously failed [CustomJob][] for the\npre-caching-check container executions. This job will be available if the\n[Run.pipeline_spec][] specifies the `pre_caching_check` hook in\nthe lifecycle events.\nThe list includes the all attempts in chronological order."
+        }
+      },
+      "description": "The detail of a container execution. It contains the job names of the\nlifecycle of a container execution."
+    },
+    "PipelineTaskExecutorDetailCustomJobDetail": {
+      "type": "object",
+      "properties": {
+        "job": {
+          "type": "string",
+          "description": "The name of the [CustomJob][]."
+        }
+      },
+      "description": "The detailed info for a custom job executor."
     },
     "ReportRunMetricsResponseReportRunMetricResult": {
       "type": "object",
@@ -463,6 +534,25 @@
       "default": "UNSPECIFIED",
       "description": " - UNSPECIFIED: Default value if not present.\n - RAW: Display value as its raw format.\n - PERCENTAGE: Display value in percentage format."
     },
+    "RunRunStatus": {
+      "type": "object",
+      "properties": {
+        "update_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Update time of this state."
+        },
+        "state": {
+          "$ref": "#/definitions/apiRunState",
+          "description": "The state of the Run."
+        },
+        "error": {
+          "$ref": "#/definitions/apiStatus",
+          "description": "The error that occurred during the state. May be set when the state is\nany of the non-final state (PENDING/RUNNING/CANCELLING) or FAILED state.\nIf the state is FAILED, the error here is final and not going to be\nretried.\nIf the state is a non-final state, the error indicates a system-error\nbeing retried."
+        }
+      },
+      "description": "A timestamped record of the Run state."
+    },
     "apiListRunsResponse": {
       "type": "object",
       "properties": {
@@ -483,61 +573,91 @@
         }
       }
     },
-    "apiParameter": {
+    "apiPipelineTaskDetail": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string"
-        }
-      }
-    },
-    "apiPipelineRuntime": {
-      "type": "object",
-      "properties": {
-        "pipeline_manifest": {
+        "task_id": {
           "type": "string",
-          "description": "Output. The runtime JSON manifest of the pipeline, including the status\nof pipeline steps and fields need for UI visualization etc."
+          "format": "int64",
+          "description": "The system generated ID of the task."
         },
-        "workflow_manifest": {
+        "parent_task_id": {
           "type": "string",
-          "description": "Output. The runtime JSON manifest of the argo workflow.\nThis is deprecated after pipeline_runtime_manifest is in use."
-        }
-      }
-    },
-    "apiPipelineSpec": {
-      "type": "object",
-      "properties": {
-        "pipeline_id": {
-          "type": "string",
-          "description": "Optional input field. The ID of the pipeline user uploaded before."
+          "format": "int64",
+          "description": "The id of the parent task if the task is within a component scope.\nEmpty if the task is at the root level."
         },
-        "pipeline_name": {
+        "task_name": {
           "type": "string",
-          "description": "Optional output field. The name of the pipeline.\nNot empty if the pipeline id is not empty."
+          "description": "The user specified name of the task that is defined in\n[Run.spec][]."
         },
-        "workflow_manifest": {
+        "create_time": {
           "type": "string",
-          "description": "Optional input field. The marshalled raw argo JSON workflow.\nThis will be deprecated when pipeline_manifest is in use."
+          "format": "date-time",
+          "description": "Task create time."
         },
-        "pipeline_manifest": {
+        "start_time": {
           "type": "string",
-          "description": "Optional input field. The raw pipeline JSON spec."
+          "format": "date-time",
+          "description": "Task start time."
         },
-        "parameters": {
+        "end_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Task end time."
+        },
+        "executor_detail": {
+          "$ref": "#/definitions/apiPipelineTaskExecutorDetail",
+          "description": "The detailed execution info."
+        },
+        "state": {
+          "$ref": "#/definitions/PipelineTaskDetailTaskState",
+          "description": "State of the task."
+        },
+        "execution": {
+          "$ref": "#/definitions/ml_metadataExecution",
+          "description": "The execution metadata of the task."
+        },
+        "error": {
+          "$ref": "#/definitions/apiStatus",
+          "description": "The error that occurred during task execution.\nOnly populated when the task's state is FAILED or CANCELLED."
+        },
+        "inputs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/PipelineTaskDetailArtifactList"
+          },
+          "description": "The runtime input artifacts of the task."
+        },
+        "outputs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/PipelineTaskDetailArtifactList"
+          },
+          "description": "The runtime output artifacts of the task."
+        },
+        "state_history": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/apiParameter"
+            "$ref": "#/definitions/PipelineTaskDetailPipelineTaskStatus"
           },
-          "title": "The parameter user provide to inject to the pipeline JSON.\nIf a default value of a parameter exist in the JSON,\nthe value user provided here will replace. V1 only"
-        },
-        "runtime_config": {
-          "$ref": "#/definitions/PipelineSpecRuntimeConfig",
-          "title": "Runtime config of the pipeline. V2 only"
+          "description": "A list of task status. This field keeps a record of task status evolving\nover time."
         }
-      }
+      },
+      "description": "The runtime detail of a task execution."
+    },
+    "apiPipelineTaskExecutorDetail": {
+      "type": "object",
+      "properties": {
+        "container_detail": {
+          "$ref": "#/definitions/PipelineTaskExecutorDetailContainerDetail",
+          "description": "The detailed info for a container executor."
+        },
+        "custom_job_detail": {
+          "$ref": "#/definitions/PipelineTaskExecutorDetailCustomJobDetail",
+          "description": "The detailed info for a custom job executor."
+        }
+      },
+      "description": "The runtime detail of a PipelineTask executor."
     },
     "apiReadArtifactResponse": {
       "type": "object",
@@ -548,15 +668,6 @@
           "description": "The bytes of the artifact content."
         }
       }
-    },
-    "apiRelationship": {
-      "type": "string",
-      "enum": [
-        "UNKNOWN_RELATIONSHIP",
-        "OWNER",
-        "CREATOR"
-      ],
-      "default": "UNKNOWN_RELATIONSHIP"
     },
     "apiReportRunMetricsRequest": {
       "type": "object",
@@ -598,22 +709,6 @@
         }
       }
     },
-    "apiResourceReference": {
-      "type": "object",
-      "properties": {
-        "key": {
-          "$ref": "#/definitions/apiResourceKey"
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the resource that referred to."
-        },
-        "relationship": {
-          "$ref": "#/definitions/apiRelationship",
-          "description": "Required field. The relationship from referred resource to the object."
-        }
-      }
-    },
     "apiResourceType": {
       "type": "string",
       "enum": [
@@ -631,77 +726,97 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Output. Unique run ID. Generated by API server."
+          "description": "Output. Unique Run ID. Generated by API server."
         },
         "name": {
           "type": "string",
-          "description": "Required input field. Name provided by user,\nor auto generated if run is created by scheduled job. Not unique."
-        },
-        "storage_state": {
-          "$ref": "#/definitions/apiRunStorageState",
-          "description": "Output. Specify whether this run is in archived or available mode."
+          "description": "Required input field. Name provided by user,\nor auto generated if Run is created by scheduled job. Not unique."
         },
         "description": {
           "type": "string",
           "title": "Optional input field. Describing the purpose of the run"
         },
-        "pipeline_spec": {
-          "$ref": "#/definitions/apiPipelineSpec",
-          "description": "Required input field.\nDescribing what the pipeline manifest and parameters to use for the run."
-        },
-        "resource_references": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/apiResourceReference"
-          },
-          "description": "Optional input field. Specify which resource this run belongs to.\nWhen creating a run from a particular pipeline version, the pipeline\nversion can be specified here."
-        },
         "service_account": {
           "type": "string",
-          "description": "Optional input field. Specify which Kubernetes service account this run uses."
+          "description": "Optional input field. Specify which Kubernetes service account this Run uses."
         },
-        "created_at": {
+        "create_time": {
           "type": "string",
           "format": "date-time",
-          "description": "Output. The time that the run created."
+          "description": "Run creation time."
         },
-        "scheduled_at": {
+        "start_time": {
           "type": "string",
           "format": "date-time",
-          "description": "Output. When this run is scheduled to run. This could be different from\ncreated_at. For example, if a run is from a backfilling job that was\nsupposed to run 2 month ago, the scheduled_at is 2 month ago,\nv.s. created_at is the current time."
+          "description": "Run start time."
         },
-        "finished_at": {
+        "end_time": {
           "type": "string",
           "format": "date-time",
-          "description": "Output. The time this run is finished."
+          "description": "Run end time."
         },
-        "status": {
+        "update_time": {
           "type": "string",
-          "title": "Output. The status of the run.\nOne of [Pending, Running, Succeeded, Skipped, Failed, Error]"
+          "format": "date-time",
+          "description": "Timestamp when the Run was most recently updated."
         },
-        "error": {
+        "pipeline_id": {
           "type": "string",
-          "description": "In case any error happens retrieving a run field, only run ID\nand the error message is returned. Client has the flexibility of choosing\nhow to handle error. This is especially useful during listing call."
+          "description": "Optional input field. The ID of the Pipeline user used for this Run."
         },
-        "metrics": {
+        "pipeline_spec": {
+          "type": "object",
+          "description": "Optional input field. The pipeline spec."
+        },
+        "state": {
+          "$ref": "#/definitions/apiRunState",
+          "description": "The latest state of the Run."
+        },
+        "state_history": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/apiRunMetric"
+            "$ref": "#/definitions/RunRunStatus"
           },
-          "description": "Output. The metrics of the run. The metrics are reported by ReportMetrics\nAPI."
+          "description": "A list of task status. This field keeps a record of task status evolving\nover time."
+        },
+        "error": {
+          "$ref": "#/definitions/apiStatus",
+          "description": "The error that occurred during Run execution.\nOnly populated when the Run's state is FAILED or CANCELLED."
+        },
+        "runtime_config": {
+          "$ref": "#/definitions/apiRunRuntimeConfig",
+          "description": "Runtime config of the pipeline."
+        },
+        "run_detail": {
+          "$ref": "#/definitions/apiRunDetail",
+          "description": "The details of the Run."
+        },
+        "storage_state": {
+          "$ref": "#/definitions/apiRunStorageState",
+          "description": "Output. Specify whether the Run is in archived or available mode."
         }
       }
     },
     "apiRunDetail": {
       "type": "object",
       "properties": {
-        "run": {
-          "$ref": "#/definitions/apiRun"
+        "pipeline_context": {
+          "$ref": "#/definitions/ml_metadataContext",
+          "description": "The context of the pipeline."
         },
-        "pipeline_runtime": {
-          "$ref": "#/definitions/apiPipelineRuntime"
+        "pipeline_run_context": {
+          "$ref": "#/definitions/ml_metadataContext",
+          "description": "The context of the current Run."
+        },
+        "task_details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiPipelineTaskDetail"
+          },
+          "description": "The runtime details of the tasks under the Run."
         }
-      }
+      },
+      "description": "The runtime detail of Run."
     },
     "apiRunMetric": {
       "type": "object",
@@ -724,6 +839,39 @@
           "description": "The display format of metric."
         }
       }
+    },
+    "apiRunRuntimeConfig": {
+      "type": "object",
+      "properties": {
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "description": "The runtime parameters of the PipelineSpec. The parameters will be\nused to replace the placeholders\nat runtime."
+        },
+        "pipeline_root": {
+          "type": "string",
+          "title": "A path in a object store bucket which will be treated as the root\noutput directory of the pipeline. It is used by the system to\ngenerate the paths of output artifacts.\nRef:(https://www.kubeflow.org/docs/components/pipelines/pipeline-root/)"
+        }
+      },
+      "description": "The runtime config of a Run."
+    },
+    "apiRunState": {
+      "type": "string",
+      "enum": [
+        "PIPELINE_STATE_UNSPECIFIED",
+        "PIPELINE_STATE_QUEUED",
+        "PIPELINE_STATE_PENDING",
+        "PIPELINE_STATE_RUNNING",
+        "PIPELINE_STATE_SUCCEEDED",
+        "PIPELINE_STATE_FAILED",
+        "PIPELINE_STATE_CANCELLING",
+        "PIPELINE_STATE_CANCELLED",
+        "PIPELINE_STATE_PAUSED"
+      ],
+      "default": "PIPELINE_STATE_UNSPECIFIED",
+      "description": "Describes the state of a Run.\n\n - PIPELINE_STATE_UNSPECIFIED: The Run state is unspecified.\n - PIPELINE_STATE_QUEUED: The Run has been created or resumed, and processing has not yet\nbegun.\n - PIPELINE_STATE_PENDING: The service is preparing to run the pipeline.\n - PIPELINE_STATE_RUNNING: The Run is in progress.\n - PIPELINE_STATE_SUCCEEDED: The Run completed successfully.\n - PIPELINE_STATE_FAILED: The Run failed.\n - PIPELINE_STATE_CANCELLING: The Run is being cancelled. From this state, the Run may only go\nto either PIPELINE_STATE_SUCCEEDED, PIPELINE_STATE_FAILED or\nPIPELINE_STATE_CANCELLED.\n - PIPELINE_STATE_CANCELLED: The Run has been cancelled.\n - PIPELINE_STATE_PAUSED: The Run has been stopped, and can be resumed."
     },
     "apiRunStorageState": {
       "type": "string",
@@ -751,6 +899,216 @@
         }
       }
     },
+    "ml_metadataArtifact": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "description": "Output only. The globally unique server generated id of the artifact.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "The client provided name of the artifact. This field is optional. If set,\nit must be unique among all the artifacts of the same artifact type within\na database instance and cannot be changed once set."
+        },
+        "type_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "The id of an ArtifactType. This needs to be specified when an artifact is\ncreated, and it cannot be changed."
+        },
+        "type": {
+          "type": "string",
+          "description": "Output only. The name of an ArtifactType.",
+          "readOnly": true
+        },
+        "uri": {
+          "type": "string",
+          "description": "The uniform resource identifier of the physical artifact.\nMay be empty if there is no physical artifact."
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ml_metadataValue"
+          },
+          "description": "Properties of the artifact.\nProperties must be specified in the ArtifactType."
+        },
+        "custom_properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ml_metadataValue"
+          },
+          "description": "User provided custom properties which are not defined by its type."
+        },
+        "state": {
+          "$ref": "#/definitions/ml_metadataArtifactState",
+          "description": "The state of the artifact known to the system."
+        },
+        "create_time_since_epoch": {
+          "type": "string",
+          "format": "int64",
+          "description": "Output only. Create time of the artifact in millisecond since epoch.",
+          "readOnly": true
+        },
+        "last_update_time_since_epoch": {
+          "type": "string",
+          "format": "int64",
+          "description": "Output only. Last update time of the artifact since epoch in millisecond\nsince epoch.",
+          "readOnly": true
+        }
+      }
+    },
+    "ml_metadataArtifactState": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "PENDING",
+        "LIVE",
+        "MARKED_FOR_DELETION",
+        "DELETED"
+      ],
+      "default": "UNKNOWN",
+      "description": " - PENDING: A state indicating that the artifact may exist.\n - LIVE: A state indicating that the artifact should exist, unless something\nexternal to the system deletes it.\n - MARKED_FOR_DELETION: A state indicating that the artifact should be deleted.\n - DELETED: A state indicating that the artifact has been deleted."
+    },
+    "ml_metadataContext": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "description": "Output Only. The globally unique server generated id of the context."
+        },
+        "name": {
+          "type": "string",
+          "description": "The client provided name of the context. It must be unique within a\ndatabase instance."
+        },
+        "type_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "The id of a ContextType. This needs to be specified when a context is\ncreated, and it cannot be changed."
+        },
+        "type": {
+          "type": "string",
+          "description": "Output only. The name of a ContextType.",
+          "readOnly": true
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ml_metadataValue"
+          },
+          "description": "Values of the properties, which must be specified in the ContextType."
+        },
+        "custom_properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ml_metadataValue"
+          },
+          "description": "User provided custom properties which are not defined by its type."
+        },
+        "create_time_since_epoch": {
+          "type": "string",
+          "format": "int64",
+          "description": "Output only. Create time of the context in millisecond since epoch.",
+          "readOnly": true
+        },
+        "last_update_time_since_epoch": {
+          "type": "string",
+          "format": "int64",
+          "description": "Output only. Last update time of the context in millisecond since epoch.",
+          "readOnly": true
+        }
+      }
+    },
+    "ml_metadataExecution": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "description": "Output only. The globally unique server generated id of the execution.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "The client provided name of the execution. This field is optional. If set,\nit must be unique among all the executions of the same execution type\nwithin a database instance and cannot be changed once set."
+        },
+        "type_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "The id of an ExecutionType. This needs to be specified when an execution is\ncreated, and it cannot be changed.\nThe id of an ExecutionType."
+        },
+        "type": {
+          "type": "string",
+          "description": "Output only. The name of an ExecutionType.",
+          "readOnly": true
+        },
+        "last_known_state": {
+          "$ref": "#/definitions/ml_metadataExecutionState",
+          "description": "The last known state of an execution in the system."
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ml_metadataValue"
+          },
+          "description": "Properties of the Execution.\nProperties must be specified in the ExecutionType."
+        },
+        "custom_properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ml_metadataValue"
+          },
+          "description": "User provided custom properties which are not defined by its type."
+        },
+        "create_time_since_epoch": {
+          "type": "string",
+          "format": "int64",
+          "description": "Output only. Create time of the execution in millisecond since epoch.",
+          "readOnly": true
+        },
+        "last_update_time_since_epoch": {
+          "type": "string",
+          "format": "int64",
+          "description": "Output only. Last update time of the execution in millisecond since epoch.",
+          "readOnly": true
+        }
+      }
+    },
+    "ml_metadataExecutionState": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "NEW",
+        "RUNNING",
+        "COMPLETE",
+        "FAILED",
+        "CACHED",
+        "CANCELED"
+      ],
+      "default": "UNKNOWN",
+      "description": "The state of the Execution. The state transitions are\n  NEW -\u003e RUNNING -\u003e COMPLETE | CACHED | FAILED | CANCELED\nCACHED means the execution is skipped due to cached results.\nCANCELED means the execution is skipped due to precondition not met. It is\ndifferent from CACHED in that a CANCELED execution will not have any event\nassociated with it. It is different from FAILED in that there is no\nunexpected error happened and it is regarded as a normal state."
+    },
+    "ml_metadataValue": {
+      "type": "object",
+      "properties": {
+        "int_value": {
+          "type": "string",
+          "format": "int64"
+        },
+        "double_value": {
+          "type": "number",
+          "format": "double"
+        },
+        "string_value": {
+          "type": "string"
+        },
+        "struct_value": {
+          "type": "object"
+        }
+      },
+      "description": "A value in properties."
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -766,19 +1124,6 @@
       },
       "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
     },
-    "protobufListValue": {
-      "type": "object",
-      "properties": {
-        "values": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufValue"
-          },
-          "description": "Repeated field of dynamically typed values."
-        }
-      },
-      "description": "`ListValue` is a wrapper around a repeated field of values.\n\nThe JSON representation for `ListValue` is JSON array."
-    },
     "protobufNullValue": {
       "type": "string",
       "enum": [
@@ -786,51 +1131,6 @@
       ],
       "default": "NULL_VALUE",
       "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
-    },
-    "protobufStruct": {
-      "type": "object",
-      "properties": {
-        "fields": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/protobufValue"
-          },
-          "description": "Unordered map of dynamically typed values."
-        }
-      },
-      "description": "`Struct` represents a structured data value, consisting of fields\nwhich map to dynamically typed values. In some languages, `Struct`\nmight be supported by a native representation. For example, in\nscripting languages like JS a struct is represented as an\nobject. The details of that representation are described together\nwith the proto support for the language.\n\nThe JSON representation for `Struct` is JSON object."
-    },
-    "protobufValue": {
-      "type": "object",
-      "properties": {
-        "null_value": {
-          "$ref": "#/definitions/protobufNullValue",
-          "description": "Represents a null value."
-        },
-        "number_value": {
-          "type": "number",
-          "format": "double",
-          "description": "Represents a double value."
-        },
-        "string_value": {
-          "type": "string",
-          "description": "Represents a string value."
-        },
-        "bool_value": {
-          "type": "boolean",
-          "format": "boolean",
-          "description": "Represents a boolean value."
-        },
-        "struct_value": {
-          "$ref": "#/definitions/protobufStruct",
-          "description": "Represents a structured value."
-        },
-        "list_value": {
-          "$ref": "#/definitions/protobufListValue",
-          "description": "Represents a repeated `Value`."
-        }
-      },
-      "description": "`Value` represents a dynamically typed value which can be either\nnull, a number, a string, a boolean, a recursive struct value, or a\nlist of values. A producer of value is expected to set one of that\nvariants, absence of any variant indicates an error.\n\nThe JSON representation for `Value` is JSON value."
     }
   },
   "securityDefinitions": {

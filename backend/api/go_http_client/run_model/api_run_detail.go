@@ -6,32 +6,41 @@ package run_model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"strconv"
+
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
 )
 
-// APIRunDetail api run detail
+// APIRunDetail The runtime detail of Run.
 // swagger:model apiRunDetail
 type APIRunDetail struct {
 
-	// pipeline runtime
-	PipelineRuntime *APIPipelineRuntime `json:"pipeline_runtime,omitempty"`
+	// The context of the pipeline.
+	PipelineContext *MlMetadataContext `json:"pipeline_context,omitempty"`
 
-	// run
-	Run *APIRun `json:"run,omitempty"`
+	// The context of the current Run.
+	PipelineRunContext *MlMetadataContext `json:"pipeline_run_context,omitempty"`
+
+	// The runtime details of the tasks under the Run.
+	TaskDetails []*APIPipelineTaskDetail `json:"task_details"`
 }
 
 // Validate validates this api run detail
 func (m *APIRunDetail) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validatePipelineRuntime(formats); err != nil {
+	if err := m.validatePipelineContext(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateRun(formats); err != nil {
+	if err := m.validatePipelineRunContext(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTaskDetails(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -41,16 +50,16 @@ func (m *APIRunDetail) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *APIRunDetail) validatePipelineRuntime(formats strfmt.Registry) error {
+func (m *APIRunDetail) validatePipelineContext(formats strfmt.Registry) error {
 
-	if swag.IsZero(m.PipelineRuntime) { // not required
+	if swag.IsZero(m.PipelineContext) { // not required
 		return nil
 	}
 
-	if m.PipelineRuntime != nil {
-		if err := m.PipelineRuntime.Validate(formats); err != nil {
+	if m.PipelineContext != nil {
+		if err := m.PipelineContext.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("pipeline_runtime")
+				return ve.ValidateName("pipeline_context")
 			}
 			return err
 		}
@@ -59,19 +68,44 @@ func (m *APIRunDetail) validatePipelineRuntime(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *APIRunDetail) validateRun(formats strfmt.Registry) error {
+func (m *APIRunDetail) validatePipelineRunContext(formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Run) { // not required
+	if swag.IsZero(m.PipelineRunContext) { // not required
 		return nil
 	}
 
-	if m.Run != nil {
-		if err := m.Run.Validate(formats); err != nil {
+	if m.PipelineRunContext != nil {
+		if err := m.PipelineRunContext.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("run")
+				return ve.ValidateName("pipeline_run_context")
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *APIRunDetail) validateTaskDetails(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.TaskDetails) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.TaskDetails); i++ {
+		if swag.IsZero(m.TaskDetails[i]) { // not required
+			continue
+		}
+
+		if m.TaskDetails[i] != nil {
+			if err := m.TaskDetails[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("task_details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil

@@ -34,7 +34,7 @@ type APIPipelineSpec struct {
 	PipelineName string `json:"pipeline_name,omitempty"`
 
 	// Runtime config of the pipeline. V2 only
-	RuntimeConfig *PipelineSpecRuntimeConfig `json:"runtime_config,omitempty"`
+	RuntimeConfig *APIPipelineSpecRuntimeConfig `json:"runtime_config,omitempty"`
 
 	// Optional input field. The marshalled raw argo JSON workflow.
 	// This will be deprecated when pipeline_manifest is in use.
