@@ -67,19 +67,23 @@ service AuthService {
 // and verb. User identity is not part of the message, because it is expected
 // to be parsed from request headers. Caller should proxy user request's headers.
 message AuthorizeRequest {
+  string namespace = 1;    // Namespace the resource belongs to.
+
   // Type of resources in pipelines system.
   enum Resources {
-    UNASSIGNED_RESOURCES = 0;
+    RESOURCES_UNSPECIFIED = 0;
     VIEWERS = 1;
   }
+
+  Resources resources = 2; // Resource type asking for authorization.
+
   // Type of verbs that act on the resources.
   enum Verb {
-    UNASSIGNED_VERB = 0;
+    VERB_UNSPECIFIED = 0;
     CREATE = 1;
     GET = 2;
     DELETE = 3;
   }
-  string namespace = 1;    // Namespace the resource belongs to.
-  Resources resources = 2; // Resource type asking for authorization.
+
   Verb verb = 3;           // Verb on the resource asking for authorization.
 }
