@@ -22,7 +22,6 @@ import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 import "protoc-gen-swagger/options/annotations.proto";
-import "backend/api/v2beta1/experiment.proto";
 import "backend/api/v2beta1/error.proto";
 
 option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
@@ -194,6 +193,18 @@ message Run {
   // evolving over time.
   // Being discussed. Planned as a P1 feature.
   repeated RuntimeStatus state_history = 17;
+}
+
+// Describes whether an entity is available or archived.
+enum StorageState {
+  // Default state. This state in not used
+  STORAGESTATE_UNSPECIFIED = 0;
+
+  // Entity is available.
+  AVAILABLE = 1;
+
+  // Entity is archived.
+  ARCHIVED = 2;
 }
 
 // Describes the state of a runtime entity.
