@@ -18,8 +18,8 @@ option go_package = "github.com/kubeflow/pipelines/backend/api/v2beta1/go_client
 package api;
 
 import "google/api/annotations.proto";
-import "backend/api/v2beta1/error.proto";
 import "protoc-gen-swagger/options/annotations.proto";
+import "backend/api/v2beta1/error.proto";
 
 option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
   responses: {
@@ -64,25 +64,28 @@ service VisualizationService {
   }
 }
 
-// Create visualization by providing the type of visualization that is desired
-// and input data paths. Input dat paths are assumed to be unique and are used
-// for determining output path.
-message CreateVisualizationRequest {
-  Visualization visualization = 1;
-  string namespace = 2;
-}
-
 message Visualization {
   // Type of visualization to be generated.
   // This is required when creating the pipeline through CreateVisualization
   // API.
   enum Type {
-    ROC_CURVE = 0;
+    // ROC curve.
+    TYPE_ROC_CURVE = 0;
+    
+    // TFDV.
     TFDV = 1;
+    
+    // TFMA.
     TFMA = 2;
+
+    // TABLE data.
     TABLE = 3;
+
+    // Custom visualization.
     CUSTOM = 4;
   };
+
+  // Type of the visualization
   Type type = 1;
 
   // Path pattern of input data to be used during generation of visualizations.
@@ -103,4 +106,15 @@ message Visualization {
   // visualization ID and the error message are returned. Client has the
   // flexibility of choosing how to handle the error.
   string error = 5;
+}
+
+// Create visualization by providing the type of visualization that is desired
+// and input data paths. Input dat paths are assumed to be unique and are used
+// for determining output path.
+message CreateVisualizationRequest {
+  // Visualizeing data.
+  Visualization visualization = 1;
+  
+  // Namespace
+  string namespace = 2;
 }
