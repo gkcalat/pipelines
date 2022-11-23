@@ -20,12 +20,20 @@ package api;
 import "google/protobuf/any.proto";
 
 message Error {
+  // Error message.
   string error_message = 1;
+
+  // Error details.
   string error_details = 2;
 }
 
 message Status {
+  // String representation of the error (error message).
   string error = 1;
+
+  // Error code.
   int32 code = 2;
+
+  // Any details about the error.
   repeated google.protobuf.Any details = 3;
 }

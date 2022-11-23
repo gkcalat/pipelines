@@ -17,11 +17,11 @@ syntax = "proto3";
 option go_package = "github.com/kubeflow/pipelines/backend/api/v2beta1/go_client";
 package api;
 
-import "backend/api/v2beta1/error.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-swagger/options/annotations.proto";
+import "backend/api/v2beta1/error.proto";
 
 service ExperimentService {
   // Creates a new experiment.
@@ -87,14 +87,26 @@ message Experiment {
   // Optional input field. Specify the namespace this experiment belongs to.
   string namespace = 5;
 
-  enum StorageState {
-    STORAGESTATE_UNSPECIFIED = 0;
-    AVAILABLE = 1;
-    ARCHIVED = 2;
-  }
-
   // Output. Specifies whether this experiment is in archived or available state.
   StorageState storage_state = 6;
+}
+
+// Describes whether an entity is available or archived.
+enum StorageState {
+  // Default state. This state in not used
+  STORAGESTATE_UNSPECIFIED = 0;
+
+  // Entity is available.
+  AVAILABLE = 1;
+
+  // Entity is archived.
+  ARCHIVED = 2;
+
+  // State is in transition to AVAILABLE state.
+  UNARCHIVING = 3;
+
+  // State is in transition to ARCHIVED state.
+  ARCHIVING = 4;
 }
 
 message CreateExperimentRequest {
