@@ -66,6 +66,17 @@ service HealthzService {
 }
 
 message GetHealthzResponse {
-  // Returns if KFP in multi-user mode
-  bool multi_user = 3;
+  enum ServerStatus {
+    // Default value. This value is not used.
+    SERVERSTATUS_UNSPECIFIED = 0;
+
+    // Server is running.
+    OK = 1;
+
+    // Server is not ready.
+    NOT_READY = 2;
+  }
+  
+  // The server status
+  ServerStatus status = 1;
 }
