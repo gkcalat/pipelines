@@ -18,7 +18,7 @@ Name | Type | Description | Notes
 **error** | [**ApiError**](ApiError.md) |  | [optional] 
 **namespace** | **str** | Namespace this run belongs to. | [optional] 
 **experiment_id** | **str** | Id of the experiment this run belongs to. | [optional] 
-**runtime_details** | [**ApiRuntimeDetails**](ApiRuntimeDetails.md) |  | [optional] 
+**run_details** | [**ApiRunDetails**](ApiRunDetails.md) |  | [optional] 
 **state_history** | [**list[ApiRuntimeStatus]**](ApiRuntimeStatus.md) | Output. A list of Run statuses. This field keeps a record of status evolving over time. Being discussed. Planned as a P1 feature. | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

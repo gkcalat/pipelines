@@ -187,7 +187,7 @@ message Run {
   string experiment_id = 15;
  
   // Output. The runtime details of a Run.
-  RuntimeDetails runtime_details = 16;
+  RunDetails run_details = 16;
 
   // Output. A list of Run statuses. This field keeps a record of status
   // evolving over time.
@@ -301,7 +301,7 @@ message RunMetric {
 }
 
 // The runtime details of a Run.
-message RuntimeDetails {
+message RunDetails {
   // The context id of the pipeline.
   int64 pipeline_context_id = 1;
 

@@ -1,4 +1,4 @@
-# ApiRuntimeDetails
+# ApiRunDetails
 
 The runtime details of a Run.
 ## Properties

@@ -14,9 +14,9 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// APIRuntimeDetails The runtime details of a Run.
-// swagger:model apiRuntimeDetails
-type APIRuntimeDetails struct {
+// APIRunDetails The runtime details of a Run.
+// swagger:model apiRunDetails
+type APIRunDetails struct {
 
 	// The context id of the pipeline.
 	PipelineContextID string `json:"pipeline_context_id,omitempty"`
@@ -28,8 +28,8 @@ type APIRuntimeDetails struct {
 	TaskDetails []*APIPipelineTaskDetail `json:"task_details"`
 }
 
-// Validate validates this api runtime details
-func (m *APIRuntimeDetails) Validate(formats strfmt.Registry) error {
+// Validate validates this api run details
+func (m *APIRunDetails) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateTaskDetails(formats); err != nil {
@@ -42,7 +42,7 @@ func (m *APIRuntimeDetails) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *APIRuntimeDetails) validateTaskDetails(formats strfmt.Registry) error {
+func (m *APIRunDetails) validateTaskDetails(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.TaskDetails) { // not required
 		return nil
@@ -68,7 +68,7 @@ func (m *APIRuntimeDetails) validateTaskDetails(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *APIRuntimeDetails) MarshalBinary() ([]byte, error) {
+func (m *APIRunDetails) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -76,8 +76,8 @@ func (m *APIRuntimeDetails) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *APIRuntimeDetails) UnmarshalBinary(b []byte) error {
-	var res APIRuntimeDetails
+func (m *APIRunDetails) UnmarshalBinary(b []byte) error {
+	var res APIRunDetails
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

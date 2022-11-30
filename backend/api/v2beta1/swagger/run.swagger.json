@@ -652,8 +652,8 @@
           "type": "string",
           "description": "Id of the experiment this run belongs to."
         },
-        "runtime_details": {
-          "$ref": "#/definitions/apiRuntimeDetails",
+        "run_details": {
+          "$ref": "#/definitions/apiRunDetails",
           "description": "Output. The runtime details of a Run."
         },
         "state_history": {
@@ -664,6 +664,29 @@
           "description": "Output. A list of Run statuses. This field keeps a record of status\nevolving over time.\nBeing discussed. Planned as a P1 feature."
         }
       }
+    },
+    "apiRunDetails": {
+      "type": "object",
+      "properties": {
+        "pipeline_context_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "The context id of the pipeline."
+        },
+        "pipeline_run_context_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "The context id of the current Run."
+        },
+        "task_details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiPipelineTaskDetail"
+          },
+          "description": "The runtime details of the tasks under the Run."
+        }
+      },
+      "description": "The runtime details of a Run."
     },
     "apiRunMetric": {
       "type": "object",
@@ -703,29 +726,6 @@
         }
       },
       "description": "The runtime config."
-    },
-    "apiRuntimeDetails": {
-      "type": "object",
-      "properties": {
-        "pipeline_context_id": {
-          "type": "string",
-          "format": "int64",
-          "description": "The context id of the pipeline."
-        },
-        "pipeline_run_context_id": {
-          "type": "string",
-          "format": "int64",
-          "description": "The context id of the current Run."
-        },
-        "task_details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/apiPipelineTaskDetail"
-          },
-          "description": "The runtime details of the tasks under the Run."
-        }
-      },
-      "description": "The runtime details of a Run."
     },
     "apiRuntimeState": {
       "type": "string",

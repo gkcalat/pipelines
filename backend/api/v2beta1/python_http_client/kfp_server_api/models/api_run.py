@@ -48,7 +48,7 @@ class ApiRun(object):
         'error': 'ApiError',
         'namespace': 'str',
         'experiment_id': 'str',
-        'runtime_details': 'ApiRuntimeDetails',
+        'run_details': 'ApiRunDetails',
         'state_history': 'list[ApiRuntimeStatus]'
     }
 
@@ -68,11 +68,11 @@ class ApiRun(object):
         'error': 'error',
         'namespace': 'namespace',
         'experiment_id': 'experiment_id',
-        'runtime_details': 'runtime_details',
+        'run_details': 'run_details',
         'state_history': 'state_history'
     }
 
-    def __init__(self, run_id=None, display_name=None, storage_state=None, description=None, pipeline_id=None, pipeline_spec=None, runtime_config=None, service_account=None, created_at=None, scheduled_at=None, finished_at=None, state=None, error=None, namespace=None, experiment_id=None, runtime_details=None, state_history=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, run_id=None, display_name=None, storage_state=None, description=None, pipeline_id=None, pipeline_spec=None, runtime_config=None, service_account=None, created_at=None, scheduled_at=None, finished_at=None, state=None, error=None, namespace=None, experiment_id=None, run_details=None, state_history=None, local_vars_configuration=None):  # noqa: E501
         """ApiRun - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -93,7 +93,7 @@ class ApiRun(object):
         self._error = None
         self._namespace = None
         self._experiment_id = None
-        self._runtime_details = None
+        self._run_details = None
         self._state_history = None
         self.discriminator = None
 
@@ -127,8 +127,8 @@ class ApiRun(object):
             self.namespace = namespace
         if experiment_id is not None:
             self.experiment_id = experiment_id
-        if runtime_details is not None:
-            self.runtime_details = runtime_details
+        if run_details is not None:
+            self.run_details = run_details
         if state_history is not None:
             self.state_history = state_history
 
@@ -470,25 +470,25 @@ class ApiRun(object):
         self._experiment_id = experiment_id
 
     @property
-    def runtime_details(self):
-        """Gets the runtime_details of this ApiRun.  # noqa: E501
+    def run_details(self):
+        """Gets the run_details of this ApiRun.  # noqa: E501
 
 
-        :return: The runtime_details of this ApiRun.  # noqa: E501
-        :rtype: ApiRuntimeDetails
+        :return: The run_details of this ApiRun.  # noqa: E501
+        :rtype: ApiRunDetails
         """
-        return self._runtime_details
+        return self._run_details
 
-    @runtime_details.setter
-    def runtime_details(self, runtime_details):
-        """Sets the runtime_details of this ApiRun.
+    @run_details.setter
+    def run_details(self, run_details):
+        """Sets the run_details of this ApiRun.
 
 
-        :param runtime_details: The runtime_details of this ApiRun.  # noqa: E501
-        :type runtime_details: ApiRuntimeDetails
+        :param run_details: The run_details of this ApiRun.  # noqa: E501
+        :type run_details: ApiRunDetails
         """
 
-        self._runtime_details = runtime_details
+        self._run_details = run_details
 
     @property
     def state_history(self):

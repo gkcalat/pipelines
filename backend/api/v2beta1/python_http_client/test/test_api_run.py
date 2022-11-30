@@ -57,7 +57,7 @@ class TestApiRun(unittest.TestCase):
                     error_details = '0', ), 
                 namespace = '0', 
                 experiment_id = '0', 
-                runtime_details = kfp_server_api.models.api_runtime_details.apiRuntimeDetails(
+                run_details = kfp_server_api.models.api_run_details.apiRunDetails(
                     pipeline_context_id = '0', 
                     pipeline_run_context_id = '0', 
                     task_details = [

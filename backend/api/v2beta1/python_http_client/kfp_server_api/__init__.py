@@ -47,9 +47,9 @@ from kfp_server_api.models.api_recurring_run_status import ApiRecurringRunStatus
 from kfp_server_api.models.api_report_run_metrics_request import ApiReportRunMetricsRequest
 from kfp_server_api.models.api_report_run_metrics_response import ApiReportRunMetricsResponse
 from kfp_server_api.models.api_run import ApiRun
+from kfp_server_api.models.api_run_details import ApiRunDetails
 from kfp_server_api.models.api_run_metric import ApiRunMetric
 from kfp_server_api.models.api_runtime_config import ApiRuntimeConfig
-from kfp_server_api.models.api_runtime_details import ApiRuntimeDetails
 from kfp_server_api.models.api_runtime_state import ApiRuntimeState
 from kfp_server_api.models.api_runtime_status import ApiRuntimeStatus
 from kfp_server_api.models.api_status import ApiStatus
