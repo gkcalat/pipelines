@@ -4,7 +4,7 @@ The runtime detail of a task execution.
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**task_id** | **str** | The system generated ID of the task. | [optional] 
+**task_id** | **str** | The system-generated ID of the task. | [optional] 
 **run_id** | **str** | The id of the parent Run. | [optional] 
 **display_name** | **str** | The user specified name of the task that is defined in [Pipeline.spec][]. | [optional] 
 **create_time** | **datetime** | Task create time. | [optional] 

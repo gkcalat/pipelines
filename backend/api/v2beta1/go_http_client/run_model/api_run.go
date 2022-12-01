@@ -51,6 +51,12 @@ type APIRun struct {
 	// The pipeline spec.
 	PipelineSpec interface{} `json:"pipeline_spec,omitempty"`
 
+	// Id of the RecurringRun that triggered this Run
+	RecurringRunID string `json:"recurring_run_id,omitempty"`
+
+	// Name of the RecurringRun that triggered this Run
+	RecurringRunName string `json:"recurring_run_name,omitempty"`
+
 	// Output. The runtime details of a Run.
 	RunDetails *APIRunDetails `json:"run_details,omitempty"`
 
@@ -79,7 +85,7 @@ type APIRun struct {
 	StateHistory []*APIRuntimeStatus `json:"state_history"`
 
 	// Output. Specifies whether this run is in archived or available mode.
-	StorageState APIStorageState `json:"storage_state,omitempty"`
+	StorageState RunStorageState `json:"storage_state,omitempty"`
 }
 
 // Validate validates this api run

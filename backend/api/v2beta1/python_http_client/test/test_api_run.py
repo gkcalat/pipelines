@@ -97,6 +97,8 @@ class TestApiRun(unittest.TestCase):
                                     update_time = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), )
                                 ], )
                         ], ), 
+                recurring_run_id = '0', 
+                recurring_run_name = '0', 
                 state_history = [
                     kfp_server_api.models.api_runtime_status.apiRuntimeStatus(
                         update_time = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 

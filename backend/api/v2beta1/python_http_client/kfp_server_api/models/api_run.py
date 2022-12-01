@@ -35,7 +35,7 @@ class ApiRun(object):
     openapi_types = {
         'run_id': 'str',
         'display_name': 'str',
-        'storage_state': 'ApiStorageState',
+        'storage_state': 'RunStorageState',
         'description': 'str',
         'pipeline_id': 'str',
         'pipeline_spec': 'object',
@@ -49,6 +49,8 @@ class ApiRun(object):
         'namespace': 'str',
         'experiment_id': 'str',
         'run_details': 'ApiRunDetails',
+        'recurring_run_id': 'str',
+        'recurring_run_name': 'str',
         'state_history': 'list[ApiRuntimeStatus]'
     }
 
@@ -69,10 +71,12 @@ class ApiRun(object):
         'namespace': 'namespace',
         'experiment_id': 'experiment_id',
         'run_details': 'run_details',
+        'recurring_run_id': 'recurring_run_id',
+        'recurring_run_name': 'recurring_run_name',
         'state_history': 'state_history'
     }
 
-    def __init__(self, run_id=None, display_name=None, storage_state=None, description=None, pipeline_id=None, pipeline_spec=None, runtime_config=None, service_account=None, created_at=None, scheduled_at=None, finished_at=None, state=None, error=None, namespace=None, experiment_id=None, run_details=None, state_history=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, run_id=None, display_name=None, storage_state=None, description=None, pipeline_id=None, pipeline_spec=None, runtime_config=None, service_account=None, created_at=None, scheduled_at=None, finished_at=None, state=None, error=None, namespace=None, experiment_id=None, run_details=None, recurring_run_id=None, recurring_run_name=None, state_history=None, local_vars_configuration=None):  # noqa: E501
         """ApiRun - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -94,6 +98,8 @@ class ApiRun(object):
         self._namespace = None
         self._experiment_id = None
         self._run_details = None
+        self._recurring_run_id = None
+        self._recurring_run_name = None
         self._state_history = None
         self.discriminator = None
 
@@ -129,6 +135,10 @@ class ApiRun(object):
             self.experiment_id = experiment_id
         if run_details is not None:
             self.run_details = run_details
+        if recurring_run_id is not None:
+            self.recurring_run_id = recurring_run_id
+        if recurring_run_name is not None:
+            self.recurring_run_name = recurring_run_name
         if state_history is not None:
             self.state_history = state_history
 
@@ -184,7 +194,7 @@ class ApiRun(object):
 
 
         :return: The storage_state of this ApiRun.  # noqa: E501
-        :rtype: ApiStorageState
+        :rtype: RunStorageState
         """
         return self._storage_state
 
@@ -194,7 +204,7 @@ class ApiRun(object):
 
 
         :param storage_state: The storage_state of this ApiRun.  # noqa: E501
-        :type storage_state: ApiStorageState
+        :type storage_state: RunStorageState
         """
 
         self._storage_state = storage_state
@@ -489,6 +499,48 @@ class ApiRun(object):
         """
 
         self._run_details = run_details
+
+    @property
+    def recurring_run_id(self):
+        """Gets the recurring_run_id of this ApiRun.  # noqa: E501
+
+
+        :return: The recurring_run_id of this ApiRun.  # noqa: E501
+        :rtype: str
+        """
+        return self._recurring_run_id
+
+    @recurring_run_id.setter
+    def recurring_run_id(self, recurring_run_id):
+        """Sets the recurring_run_id of this ApiRun.
+
+
+        :param recurring_run_id: The recurring_run_id of this ApiRun.  # noqa: E501
+        :type recurring_run_id: str
+        """
+
+        self._recurring_run_id = recurring_run_id
+
+    @property
+    def recurring_run_name(self):
+        """Gets the recurring_run_name of this ApiRun.  # noqa: E501
+
+
+        :return: The recurring_run_name of this ApiRun.  # noqa: E501
+        :rtype: str
+        """
+        return self._recurring_run_name
+
+    @recurring_run_name.setter
+    def recurring_run_name(self, recurring_run_name):
+        """Sets the recurring_run_name of this ApiRun.
+
+
+        :param recurring_run_name: The recurring_run_name of this ApiRun.  # noqa: E501
+        :type recurring_run_name: str
+        """
+
+        self._recurring_run_name = recurring_run_name
 
     @property
     def state_history(self):

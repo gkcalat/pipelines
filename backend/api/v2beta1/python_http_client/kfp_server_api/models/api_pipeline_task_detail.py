@@ -121,7 +121,7 @@ class ApiPipelineTaskDetail(object):
     def task_id(self):
         """Gets the task_id of this ApiPipelineTaskDetail.  # noqa: E501
 
-        The system generated ID of the task.  # noqa: E501
+        The system-generated ID of the task.  # noqa: E501
 
         :return: The task_id of this ApiPipelineTaskDetail.  # noqa: E501
         :rtype: str
@@ -132,7 +132,7 @@ class ApiPipelineTaskDetail(object):
     def task_id(self, task_id):
         """Sets the task_id of this ApiPipelineTaskDetail.
 
-        The system generated ID of the task.  # noqa: E501
+        The system-generated ID of the task.  # noqa: E501
 
         :param task_id: The task_id of this ApiPipelineTaskDetail.  # noqa: E501
         :type task_id: str

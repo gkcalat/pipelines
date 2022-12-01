@@ -65,7 +65,7 @@ type APIPipelineTaskDetail struct {
 	// over time.
 	StateHistory []*APIRuntimeStatus `json:"state_history"`
 
-	// The system generated ID of the task.
+	// The system-generated ID of the task.
 	TaskID string `json:"task_id,omitempty"`
 }
 

@@ -60,4 +60,5 @@ from kfp_server_api.models.protobuf_null_value import ProtobufNullValue
 from kfp_server_api.models.recurring_run_mode import RecurringRunMode
 from kfp_server_api.models.report_run_metrics_response_metric_status import ReportRunMetricsResponseMetricStatus
 from kfp_server_api.models.run_metric_format import RunMetricFormat
+from kfp_server_api.models.run_storage_state import RunStorageState
 

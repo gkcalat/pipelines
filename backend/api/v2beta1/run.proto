@@ -138,6 +138,18 @@ message Run {
   // or auto generated if Run is created by scheduled job. Not unique.
   string display_name = 2;
  
+  // Describes whether an entity is available or archived.
+  enum StorageState {
+    // Default state. This state in not used
+    STORAGESTATE_UNSPECIFIED = 0;
+
+    // Entity is available.
+    AVAILABLE = 1;
+
+    // Entity is archived.
+    ARCHIVED = 2;
+  }
+
   // Output. Specifies whether this run is in archived or available mode.
   StorageState storage_state = 3;
  
@@ -189,23 +201,18 @@ message Run {
   // Output. The runtime details of a Run.
   RunDetails run_details = 16;
 
+  // Id of the RecurringRun that triggered this Run
+  string recurring_run_id = 17;
+
+  // Name of the RecurringRun that triggered this Run
+  string recurring_run_name = 18;
+
   // Output. A list of Run statuses. This field keeps a record of status
   // evolving over time.
   // Being discussed. Planned as a P1 feature.
-  repeated RuntimeStatus state_history = 17;
+  repeated RuntimeStatus state_history = 19;
 }
 
-// Describes whether an entity is available or archived.
-enum StorageState {
-  // Default state. This state in not used
-  STORAGESTATE_UNSPECIFIED = 0;
-
-  // Entity is available.
-  AVAILABLE = 1;
-
-  // Entity is archived.
-  ARCHIVED = 2;
-}
 
 // Describes the state of a runtime entity.
 enum RuntimeState {
@@ -314,11 +321,11 @@ message RunDetails {
 
 // The runtime detail of a task execution.
 message PipelineTaskDetail {
-  // The system generated ID of the task.
+  // The system-generated ID of the task.
   string task_id = 1;
 
-    // The id of the parent Run.
-    string run_id = 2;
+  // The id of the parent Run.
+  string run_id = 2;
 
   // The user specified name of the task that is defined in
   // [Pipeline.spec][].
@@ -383,7 +390,6 @@ message PipelineTaskExecutorDetail {
   // The list includes the all attempts in chronological order.
   repeated string failed_pre_caching_check_jobs = 4;
 }
-
 
 // A list of artifact metadata.
 message ArtifactList {

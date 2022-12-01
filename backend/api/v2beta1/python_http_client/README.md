@@ -152,6 +152,7 @@ Class | Method | HTTP request | Description
  - [RecurringRunMode](docs/RecurringRunMode.md)
  - [ReportRunMetricsResponseMetricStatus](docs/ReportRunMetricsResponseMetricStatus.md)
  - [RunMetricFormat](docs/RunMetricFormat.md)
+ - [RunStorageState](docs/RunStorageState.md)
 
 
 ## Documentation For Authorization
