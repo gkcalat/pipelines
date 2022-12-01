@@ -317,45 +317,48 @@ message PipelineTaskDetail {
   // The system generated ID of the task.
   string task_id = 1;
 
-  // The id of the parent task if the task is within a component scope.
-  // Empty if the task is at the root level.
-  string parent_task_id = 12;
+    // The id of the parent Run.
+    string run_id = 2;
 
   // The user specified name of the task that is defined in
   // [Pipeline.spec][].
-  string task_name = 2;
+  string display_name = 3;
 
   // Task create time.
-  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp create_time = 4;
 
   // Task start time.
-  google.protobuf.Timestamp start_time = 4;
+  google.protobuf.Timestamp start_time = 5;
 
   // Task end time.
-  google.protobuf.Timestamp end_time = 5;
+  google.protobuf.Timestamp end_time = 6;
 
   // The detailed execution info.
-  PipelineTaskExecutorDetail executor_detail = 6;
+  PipelineTaskExecutorDetail executor_detail = 7;
 
   // State of the task.
-  RuntimeState state = 7;
+  RuntimeState state = 8;
 
   // The execution metadata of the task.
-  int64 execution_id = 8;
+  int64 execution_id = 9;
 
   // The error that occurred during task execution.
   // Only populated when the task's state is FAILED or CANCELED.
-  Error error = 9;
+  Error error = 10;
 
   // The runtime input artifacts of the task.
-  map<string, ArtifactList> inputs = 10;
+  map<string, ArtifactList> inputs = 11;
 
   // The runtime output artifacts of the task.
-  map<string, ArtifactList> outputs = 11;
+  map<string, ArtifactList> outputs = 12;
+
+  // The id of the parent task if the task is within a component scope.
+  // Empty if the task is at the root level.
+  string parent_task_id = 13;
 
   // A list of task statuses. This field keeps a record of task status evolving
   // over time.
-  repeated RuntimeStatus state_history = 13;
+  repeated RuntimeStatus state_history = 14;
 }
 
 // The runtime detail of a PipelineTask executor.

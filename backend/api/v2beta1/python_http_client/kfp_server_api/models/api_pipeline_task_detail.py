@@ -34,8 +34,8 @@ class ApiPipelineTaskDetail(object):
     """
     openapi_types = {
         'task_id': 'str',
-        'parent_task_id': 'str',
-        'task_name': 'str',
+        'run_id': 'str',
+        'display_name': 'str',
         'create_time': 'datetime',
         'start_time': 'datetime',
         'end_time': 'datetime',
@@ -45,13 +45,14 @@ class ApiPipelineTaskDetail(object):
         'error': 'ApiError',
         'inputs': 'dict(str, ApiArtifactList)',
         'outputs': 'dict(str, ApiArtifactList)',
+        'parent_task_id': 'str',
         'state_history': 'list[ApiRuntimeStatus]'
     }
 
     attribute_map = {
         'task_id': 'task_id',
-        'parent_task_id': 'parent_task_id',
-        'task_name': 'task_name',
+        'run_id': 'run_id',
+        'display_name': 'display_name',
         'create_time': 'create_time',
         'start_time': 'start_time',
         'end_time': 'end_time',
@@ -61,18 +62,19 @@ class ApiPipelineTaskDetail(object):
         'error': 'error',
         'inputs': 'inputs',
         'outputs': 'outputs',
+        'parent_task_id': 'parent_task_id',
         'state_history': 'state_history'
     }
 
-    def __init__(self, task_id=None, parent_task_id=None, task_name=None, create_time=None, start_time=None, end_time=None, executor_detail=None, state=None, execution_id=None, error=None, inputs=None, outputs=None, state_history=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, task_id=None, run_id=None, display_name=None, create_time=None, start_time=None, end_time=None, executor_detail=None, state=None, execution_id=None, error=None, inputs=None, outputs=None, parent_task_id=None, state_history=None, local_vars_configuration=None):  # noqa: E501
         """ApiPipelineTaskDetail - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
         self._task_id = None
-        self._parent_task_id = None
-        self._task_name = None
+        self._run_id = None
+        self._display_name = None
         self._create_time = None
         self._start_time = None
         self._end_time = None
@@ -82,15 +84,16 @@ class ApiPipelineTaskDetail(object):
         self._error = None
         self._inputs = None
         self._outputs = None
+        self._parent_task_id = None
         self._state_history = None
         self.discriminator = None
 
         if task_id is not None:
             self.task_id = task_id
-        if parent_task_id is not None:
-            self.parent_task_id = parent_task_id
-        if task_name is not None:
-            self.task_name = task_name
+        if run_id is not None:
+            self.run_id = run_id
+        if display_name is not None:
+            self.display_name = display_name
         if create_time is not None:
             self.create_time = create_time
         if start_time is not None:
@@ -109,6 +112,8 @@ class ApiPipelineTaskDetail(object):
             self.inputs = inputs
         if outputs is not None:
             self.outputs = outputs
+        if parent_task_id is not None:
+            self.parent_task_id = parent_task_id
         if state_history is not None:
             self.state_history = state_history
 
@@ -136,50 +141,50 @@ class ApiPipelineTaskDetail(object):
         self._task_id = task_id
 
     @property
-    def parent_task_id(self):
-        """Gets the parent_task_id of this ApiPipelineTaskDetail.  # noqa: E501
+    def run_id(self):
+        """Gets the run_id of this ApiPipelineTaskDetail.  # noqa: E501
 
-        The id of the parent task if the task is within a component scope. Empty if the task is at the root level.  # noqa: E501
+        The id of the parent Run.  # noqa: E501
 
-        :return: The parent_task_id of this ApiPipelineTaskDetail.  # noqa: E501
+        :return: The run_id of this ApiPipelineTaskDetail.  # noqa: E501
         :rtype: str
         """
-        return self._parent_task_id
+        return self._run_id
 
-    @parent_task_id.setter
-    def parent_task_id(self, parent_task_id):
-        """Sets the parent_task_id of this ApiPipelineTaskDetail.
+    @run_id.setter
+    def run_id(self, run_id):
+        """Sets the run_id of this ApiPipelineTaskDetail.
 
-        The id of the parent task if the task is within a component scope. Empty if the task is at the root level.  # noqa: E501
+        The id of the parent Run.  # noqa: E501
 
-        :param parent_task_id: The parent_task_id of this ApiPipelineTaskDetail.  # noqa: E501
-        :type parent_task_id: str
+        :param run_id: The run_id of this ApiPipelineTaskDetail.  # noqa: E501
+        :type run_id: str
         """
 
-        self._parent_task_id = parent_task_id
+        self._run_id = run_id
 
     @property
-    def task_name(self):
-        """Gets the task_name of this ApiPipelineTaskDetail.  # noqa: E501
+    def display_name(self):
+        """Gets the display_name of this ApiPipelineTaskDetail.  # noqa: E501
 
         The user specified name of the task that is defined in [Pipeline.spec][].  # noqa: E501
 
-        :return: The task_name of this ApiPipelineTaskDetail.  # noqa: E501
+        :return: The display_name of this ApiPipelineTaskDetail.  # noqa: E501
         :rtype: str
         """
-        return self._task_name
+        return self._display_name
 
-    @task_name.setter
-    def task_name(self, task_name):
-        """Sets the task_name of this ApiPipelineTaskDetail.
+    @display_name.setter
+    def display_name(self, display_name):
+        """Sets the display_name of this ApiPipelineTaskDetail.
 
         The user specified name of the task that is defined in [Pipeline.spec][].  # noqa: E501
 
-        :param task_name: The task_name of this ApiPipelineTaskDetail.  # noqa: E501
-        :type task_name: str
+        :param display_name: The display_name of this ApiPipelineTaskDetail.  # noqa: E501
+        :type display_name: str
         """
 
-        self._task_name = task_name
+        self._display_name = display_name
 
     @property
     def create_time(self):
@@ -381,6 +386,29 @@ class ApiPipelineTaskDetail(object):
         """
 
         self._outputs = outputs
+
+    @property
+    def parent_task_id(self):
+        """Gets the parent_task_id of this ApiPipelineTaskDetail.  # noqa: E501
+
+        The id of the parent task if the task is within a component scope. Empty if the task is at the root level.  # noqa: E501
+
+        :return: The parent_task_id of this ApiPipelineTaskDetail.  # noqa: E501
+        :rtype: str
+        """
+        return self._parent_task_id
+
+    @parent_task_id.setter
+    def parent_task_id(self, parent_task_id):
+        """Sets the parent_task_id of this ApiPipelineTaskDetail.
+
+        The id of the parent task if the task is within a component scope. Empty if the task is at the root level.  # noqa: E501
+
+        :param parent_task_id: The parent_task_id of this ApiPipelineTaskDetail.  # noqa: E501
+        :type parent_task_id: str
+        """
+
+        self._parent_task_id = parent_task_id
 
     @property
     def state_history(self):

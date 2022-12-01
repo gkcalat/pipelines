@@ -37,8 +37,8 @@ class TestApiPipelineTaskDetail(unittest.TestCase):
         if include_optional :
             return ApiPipelineTaskDetail(
                 task_id = '0', 
-                parent_task_id = '0', 
-                task_name = '0', 
+                run_id = '0', 
+                display_name = '0', 
                 create_time = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
                 start_time = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
                 end_time = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
@@ -68,6 +68,7 @@ class TestApiPipelineTaskDetail(unittest.TestCase):
                             '0'
                             ], )
                     }, 
+                parent_task_id = '0', 
                 state_history = [
                     kfp_server_api.models.api_runtime_status.apiRuntimeStatus(
                         update_time = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 

@@ -23,6 +23,10 @@ type APIPipelineTaskDetail struct {
 	// Format: date-time
 	CreateTime strfmt.DateTime `json:"create_time,omitempty"`
 
+	// The user specified name of the task that is defined in
+	// [Pipeline.spec][].
+	DisplayName string `json:"display_name,omitempty"`
+
 	// Task end time.
 	// Format: date-time
 	EndTime strfmt.DateTime `json:"end_time,omitempty"`
@@ -47,6 +51,9 @@ type APIPipelineTaskDetail struct {
 	// Empty if the task is at the root level.
 	ParentTaskID string `json:"parent_task_id,omitempty"`
 
+	// The id of the parent Run.
+	RunID string `json:"run_id,omitempty"`
+
 	// Task start time.
 	// Format: date-time
 	StartTime strfmt.DateTime `json:"start_time,omitempty"`
@@ -60,10 +67,6 @@ type APIPipelineTaskDetail struct {
 
 	// The system generated ID of the task.
 	TaskID string `json:"task_id,omitempty"`
-
-	// The user specified name of the task that is defined in
-	// [Pipeline.spec][].
-	TaskName string `json:"task_name,omitempty"`
 }
 
 // Validate validates this api pipeline task detail

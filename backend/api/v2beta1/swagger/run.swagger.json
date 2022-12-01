@@ -447,11 +447,11 @@
           "type": "string",
           "description": "The system generated ID of the task."
         },
-        "parent_task_id": {
+        "run_id": {
           "type": "string",
-          "description": "The id of the parent task if the task is within a component scope.\nEmpty if the task is at the root level."
+          "description": "The id of the parent Run."
         },
-        "task_name": {
+        "display_name": {
           "type": "string",
           "description": "The user specified name of the task that is defined in\n[Pipeline.spec][]."
         },
@@ -500,6 +500,10 @@
             "$ref": "#/definitions/apiArtifactList"
           },
           "description": "The runtime output artifacts of the task."
+        },
+        "parent_task_id": {
+          "type": "string",
+          "description": "The id of the parent task if the task is within a component scope.\nEmpty if the task is at the root level."
         },
         "state_history": {
           "type": "array",
