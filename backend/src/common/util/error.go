@@ -218,6 +218,14 @@ func NewPermissionDeniedError(err error, externalFormat string, a ...interface{}
 		codes.PermissionDenied)
 }
 
+func NewUnknownApiVersionError(a string, o string) *UserError {
+	externalMessage := fmt.Sprintf("Error using %s for %s.", a, o)
+	return newUserError(
+		errors.New(fmt.Sprintf("UnknownApiVersionError: %v", externalMessage)),
+		externalMessage,
+		codes.NotFound)
+}
+
 func (e *UserError) ExternalMessage() string {
 	return e.externalMessage
 }

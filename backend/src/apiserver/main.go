@@ -50,6 +50,7 @@ var (
 	configPath       = flag.String("config", "", "Path to JSON file containing config")
 	sampleConfigPath = flag.String("sampleconfig", "", "Path to samples")
 
+	apiVersion         = flag.String("apiVersion", "v2beta1", "Backend API version. Use 'v1beta1' or 'v2beta1' for KFP v1 and v2 respectively.")
 	collectMetricsFlag = flag.Bool("collectMetricsFlag", true, "Whether to collect Prometheus metrics in API server.")
 )
 
@@ -60,7 +61,7 @@ func main() {
 
 	initConfig()
 	clientManager := newClientManager()
-	resourceManager := resource.NewResourceManager(&clientManager)
+	resourceManager := resource.NewResourceManager(&clientManager, *apiVersion)
 	err := loadSamples(resourceManager)
 	if err != nil {
 		glog.Fatalf("Failed to load samples. Err: %v", err)
@@ -95,7 +96,7 @@ func startRpcServer(resourceManager *resource.ResourceManager) {
 	s := grpc.NewServer(grpc.UnaryInterceptor(apiServerInterceptor), grpc.MaxRecvMsgSize(math.MaxInt32))
 	api.RegisterPipelineServiceServer(s, server.NewPipelineServer(resourceManager, &server.PipelineServerOptions{CollectMetrics: *collectMetricsFlag}))
 	api.RegisterExperimentServiceServer(s, server.NewExperimentServer(resourceManager, &server.ExperimentServerOptions{CollectMetrics: *collectMetricsFlag}))
-	api.RegisterRunServiceServer(s, server.NewRunServer(resourceManager, &server.RunServerOptions{CollectMetrics: *collectMetricsFlag}))
+	api.RegisterRunServiceServer(s, server.NewRunServer(resourceManager, &server.RunServerOptions{CollectMetrics: *collectMetricsFlag, ApiVersion: *apiVersion}))
 	api.RegisterTaskServiceServer(s, server.NewTaskServer(resourceManager))
 	api.RegisterJobServiceServer(s, server.NewJobServer(resourceManager, &server.JobServerOptions{CollectMetrics: *collectMetricsFlag}))
 	api.RegisterReportServiceServer(s, server.NewReportServer(resourceManager))

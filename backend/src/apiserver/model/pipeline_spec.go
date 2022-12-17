@@ -35,6 +35,6 @@ type PipelineSpec struct {
 	// At most one of the fields `Parameters` and `RuntimeConfig` can be non-empty
 	Parameters string `gorm:"column:Parameters; size:65535"`
 
-	// Runtime config of the pipeline, only used for v2 API.
+	// Runtime config of the pipeline, only used for v2 template for API v1beta1.
 	RuntimeConfig
 }

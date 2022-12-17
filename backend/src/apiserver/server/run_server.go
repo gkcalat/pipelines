@@ -91,7 +91,8 @@ var (
 )
 
 type RunServerOptions struct {
-	CollectMetrics bool
+	CollectMetrics bool   `json:"collect_metrics,omitempty"`
+	ApiVersion     string `default:"v2beta1" json:"api_version,omitempty"`
 }
 
 type RunServer struct {
@@ -402,6 +403,6 @@ func (s *RunServer) canAccessRun(ctx context.Context, runId string, resourceAttr
 	return nil
 }
 
-func NewRunServer(resourceManager *resource.ResourceManager, options *RunServerOptions) *RunServer {
-	return &RunServer{resourceManager: resourceManager, options: options}
+func NewRunServer(resourceManager *resource.ResourceManager, opts *RunServerOptions) *RunServer {
+	return &RunServer{resourceManager: resourceManager, options: opts}
 }

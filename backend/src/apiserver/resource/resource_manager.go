@@ -96,9 +96,10 @@ type ResourceManager struct {
 	time                      util.TimeInterface
 	uuid                      util.UUIDGeneratorInterface
 	authenticators            []kfpauth.Authenticator
+	apiVersion                string
 }
 
-func NewResourceManager(clientManager ClientManagerInterface) *ResourceManager {
+func NewResourceManager(clientManager ClientManagerInterface, apiVersion string) *ResourceManager {
 	return &ResourceManager{
 		experimentStore:           clientManager.ExperimentStore(),
 		pipelineStore:             clientManager.PipelineStore(),
@@ -118,6 +119,7 @@ func NewResourceManager(clientManager ClientManagerInterface) *ResourceManager {
 		time:                      clientManager.Time(),
 		uuid:                      clientManager.UUID(),
 		authenticators:            clientManager.Authenticators(),
+		apiVersion:                apiVersion,
 	}
 }
 
@@ -333,7 +335,7 @@ func (r *ResourceManager) GetPipelineTemplate(pipelineId string) ([]byte, error)
 	return template, nil
 }
 
-func (r *ResourceManager) CreateRun(ctx context.Context, apiRun *api.Run) (*model.RunDetail, error) {
+func (r *ResourceManager) CreateRun(ctx context.Context, apiRun *api.Run) (*model.Run, error) {
 	// Get manifest from either of the two places:
 	// (1) raw manifest in pipeline_spec
 	// (2) pipeline version in resource_references
@@ -399,7 +401,7 @@ func (r *ResourceManager) CreateRun(ctx context.Context, apiRun *api.Run) (*mode
 	}
 
 	// Store run metadata into database
-	runDetail, err := r.ToModelRunDetail(apiRun, runId, newExecSpec, string(manifestBytes), tmpl.GetTemplateType())
+	runDetail, err := r.ToModelRun(apiRun, runId, newExecSpec, string(manifestBytes), tmpl.GetTemplateType())
 	if err != nil {
 		return nil, util.Wrap(err, "Failed to convert run model")
 	}
@@ -418,7 +420,7 @@ func (r *ResourceManager) CreateRun(ctx context.Context, apiRun *api.Run) (*mode
 	return r.runStore.CreateRun(runDetail)
 }
 
-func (r *ResourceManager) GetRun(runId string) (*model.RunDetail, error) {
+func (r *ResourceManager) GetRun(runId string) (*model.Run, error) {
 	return r.runStore.GetRun(runId)
 }
 
@@ -617,7 +619,7 @@ func (r *ResourceManager) ReadLog(ctx context.Context, runId string, nodeId stri
 	return err
 }
 
-func (r *ResourceManager) readRunLogFromPod(ctx context.Context, run *model.RunDetail, nodeId string, follow bool, dst io.Writer) error {
+func (r *ResourceManager) readRunLogFromPod(ctx context.Context, run *model.Run, nodeId string, follow bool, dst io.Writer) error {
 	logOptions := corev1.PodLogOptions{
 		Container:  "main",
 		Timestamps: false,
@@ -642,7 +644,7 @@ func (r *ResourceManager) readRunLogFromPod(ctx context.Context, run *model.RunD
 	return nil
 }
 
-func (r *ResourceManager) readRunLogFromArchive(run *model.RunDetail, nodeId string, dst io.Writer) error {
+func (r *ResourceManager) readRunLogFromArchive(run *model.Run, nodeId string, dst io.Writer) error {
 	if run.WorkflowRuntimeManifest == "" {
 		return util.NewBadRequestError(errors.New("archived log cannot be read"), "Failed to retrieve the runtime workflow from the run")
 	}
@@ -798,18 +800,18 @@ func (r *ResourceManager) DeleteJob(ctx context.Context, jobID string) error {
 }
 
 func (r *ResourceManager) ReportWorkflowResource(ctx context.Context, execSpec util.ExecutionSpec) error {
+	// Validate namespace
+	if len(execSpec.ExecutionNamespace()) == 0 {
+		return util.NewInvalidInputError("Workflow missing namespace")
+	}
 	objMeta := execSpec.ExecutionObjectMeta()
-	execStatus := execSpec.ExecutionStatus()
+	// Validate runId
 	if _, ok := objMeta.Labels[util.LabelKeyWorkflowRunId]; !ok {
 		// Skip reporting if the workflow doesn't have the run id label
 		return util.NewInvalidInputError("Workflow[%s] missing the Run ID label", execSpec.ExecutionName())
 	}
 	runId := objMeta.Labels[util.LabelKeyWorkflowRunId]
-	jobId := execSpec.ScheduledWorkflowUUIDAsStringOrEmpty()
-	if len(execSpec.ExecutionNamespace()) == 0 {
-		return util.NewInvalidInputError("Workflow missing namespace")
-	}
-
+	// Validate workflow's state
 	if execSpec.PersistedFinalState() {
 		// If workflow's final state has being persisted, the workflow should be garbage collected.
 		err := r.getWorkflowClient(execSpec.ExecutionNamespace()).Delete(ctx, execSpec.ExecutionName(), v1.DeleteOptions{})
@@ -826,12 +828,15 @@ func (r *ResourceManager) ReportWorkflowResource(ctx context.Context, execSpec u
 		// TODO(jingzhang36): find a proper way to pass collectMetricsFlag here.
 		workflowGCCounter.Inc()
 	}
+	execStatus := execSpec.ExecutionStatus()
 	// If the run was Running and got terminated (activeDeadlineSeconds set to 0),
 	// ignore its condition and mark it as such
 	condition := execStatus.Condition()
 	if execSpec.IsTerminating() {
 		condition = exec.ExecutionPhase(model.RunTerminatingConditions)
 	}
+	jobId := execSpec.ScheduledWorkflowUUIDAsStringOrEmpty()
+	// Validate workflow origin
 	if jobId == "" {
 		// If a run doesn't have job ID, it's a one-time run created by Pipeline API server.
 		// In this case the DB entry should already been created when argo workflow CR is created.
@@ -857,72 +862,69 @@ func (r *ResourceManager) ReportWorkflowResource(ctx context.Context, execSpec u
 			// Note, persistence agent will not retry reporting this workflow again, because updateError is a not found error.
 			return util.Wrapf(updateError, "Failed to report workflow name=%q namespace=%q runId=%q", execSpec.ExecutionName(), execSpec.ExecutionNamespace(), runId)
 		}
-	} else {
-		// Get the experiment resource reference for job.
-		experimentRef, err := r.resourceReferenceStore.GetResourceReference(jobId, common.Job, common.Experiment)
-		if err != nil {
-			return util.Wrap(err, "Failed to retrieve the experiment ID for the job that created the run.")
-		}
-		jobName, err := r.getResourceName(common.Job, jobId)
-		if err != nil {
-			return util.Wrap(err, "Failed to retrieve the job name for the job that created the run.")
-		}
-		// Scheduled time equals created time if it is not specified
-		var scheduledTimeInSec int64
-		if execSpec.ScheduledAtInSecOr0() == 0 {
-			scheduledTimeInSec = objMeta.CreationTimestamp.Unix()
-		} else {
-			scheduledTimeInSec = execSpec.ScheduledAtInSecOr0()
-		}
-		runDetail := &model.RunDetail{
-			Run: model.Run{
-				UUID:             runId,
-				ExperimentUUID:   experimentRef.ReferenceUUID,
-				DisplayName:      execSpec.ExecutionName(),
-				Name:             execSpec.ExecutionName(),
-				StorageState:     api.Run_STORAGESTATE_AVAILABLE.String(),
-				Namespace:        execSpec.ExecutionNamespace(),
-				CreatedAtInSec:   objMeta.CreationTimestamp.Unix(),
-				ScheduledAtInSec: scheduledTimeInSec,
-				FinishedAtInSec:  execStatus.FinishedAt(),
-				Conditions:       string(condition),
-				PipelineSpec: model.PipelineSpec{
-					WorkflowSpecManifest: execSpec.GetExecutionSpec().ToStringForStore(),
-				},
-				ResourceReferences: []*model.ResourceReference{
-					{
-						ResourceUUID:  runId,
-						ResourceType:  common.Run,
-						ReferenceUUID: jobId,
-						ReferenceName: jobName,
-						ReferenceType: common.Job,
-						Relationship:  common.Creator,
-					},
-					{
-						ResourceUUID:  runId,
-						ResourceType:  common.Run,
-						ReferenceUUID: experimentRef.ReferenceUUID,
-						ReferenceName: experimentRef.ReferenceName,
-						ReferenceType: common.Experiment,
-						Relationship:  common.Owner,
-					},
-				},
-			},
-			PipelineRuntime: model.PipelineRuntime{
-				WorkflowRuntimeManifest: execSpec.ToStringForStore(),
-			},
-		}
-		err = r.runStore.CreateOrUpdateRun(runDetail)
-		if err != nil {
-			return util.Wrap(err, "Failed to create or update the run.")
-		}
 	}
-
+	// Get the experiment resource reference for job.
+	experimentRef, err := r.resourceReferenceStore.GetResourceReference(jobId, common.Job, common.Experiment)
+	if err != nil {
+		return util.Wrap(err, "Failed to retrieve the experiment ID for the job that created the run.")
+	}
+	// Fetch workflow's JobName
+	jobName, err := r.getResourceName(common.Job, jobId)
+	if err != nil {
+		return util.Wrap(err, "Failed to retrieve the job name for the job that created the run.")
+	}
+	// Scheduled time equals created time if it is not specified
+	var scheduledTimeInSec int64
+	if execSpec.ScheduledAtInSecOr0() == 0 {
+		scheduledTimeInSec = objMeta.CreationTimestamp.Unix()
+	} else {
+		scheduledTimeInSec = execSpec.ScheduledAtInSecOr0()
+	}
+	run := &model.Run{
+		UUID:             runId,
+		ExperimentUUID:   experimentRef.ReferenceUUID,
+		DisplayName:      execSpec.ExecutionName(),
+		Name:             execSpec.ExecutionName(),
+		StorageState:     api.Run_AVAILABLE.String(),
+		Namespace:        execSpec.ExecutionNamespace(),
+		CreatedAtInSec:   objMeta.CreationTimestamp.Unix(),
+		ScheduledAtInSec: scheduledTimeInSec,
+		FinishedAtInSec:  execStatus.FinishedAt(),
+		Conditions:       string(condition),
+		PipelineSpec: model.PipelineSpec{
+			WorkflowSpecManifest: execSpec.GetExecutionSpec().ToStringForStore(),
+		},
+		ResourceReferences: []*model.ResourceReference{
+			{
+				ResourceUUID:  runId,
+				ResourceType:  common.Run,
+				ReferenceUUID: jobId,
+				ReferenceName: jobName,
+				ReferenceType: common.Job,
+				Relationship:  common.Creator,
+			},
+			{
+				ResourceUUID:  runId,
+				ResourceType:  common.Run,
+				ReferenceUUID: experimentRef.ReferenceUUID,
+				ReferenceName: experimentRef.ReferenceName,
+				ReferenceType: common.Experiment,
+				Relationship:  common.Owner,
+			},
+		},
+		WorkflowRuntimeManifest: execSpec.ToStringForStore(),
+		PipelineRuntimeManifest: execSpec.ToPipelineRuntime().ToString(),
+	}
+	err = r.runStore.CreateOrUpdateRun(run)
+	if err != nil {
+		return util.Wrap(err, "Failed to create or update a run.")
+	}
+	// Label workflow if it has reached a final state
 	if execStatus.IsInFinalState() {
 		err := AddWorkflowLabel(ctx, r.getWorkflowClient(execSpec.ExecutionNamespace()), execSpec.ExecutionName(), util.LabelKeyWorkflowPersistedFinalState, "true")
 		if err != nil {
 			message := fmt.Sprintf("Failed to add PersistedFinalState label to workflow %s", execSpec.ExecutionName())
-			// A fix for kubeflow/pipelines#4484, persistence agent might have an outdated item in its workqueue, so it will
+			// A fix for kubeflow/pipelines#4484, persistence agent might have an outdated item in its work queue, so it will
 			// report workflows that no longer exist. It's important to return a not found error, so that persistence
 			// agent won't retry again.
 			if util.IsNotFound(err) {
@@ -932,7 +934,6 @@ func (r *ResourceManager) ReportWorkflowResource(ctx context.Context, execSpec u
 			}
 		}
 	}
-
 	return nil
 }
 
@@ -986,12 +987,12 @@ func (r *ResourceManager) checkJobExist(ctx context.Context, jobID string) (*mod
 // checkRunExist The Kubernetes API doesn't support CRUD by UID. This method
 // retrieve the run metadata from the database, then retrieve the CR
 // using the run name, and compare the given run id is same as the CR.
-func (r *ResourceManager) checkRunExist(runID string) (*model.RunDetail, error) {
-	runDetail, err := r.runStore.GetRun(runID)
+func (r *ResourceManager) checkRunExist(runID string) (*model.Run, error) {
+	run, err := r.runStore.GetRun(runID)
 	if err != nil {
 		return nil, util.Wrap(err, "Check run exist failed")
 	}
-	return runDetail, nil
+	return run, nil
 }
 
 func (r *ResourceManager) getWorkflowSpecBytesFromPipelineSpec(spec *api.PipelineSpec) ([]byte, error) {

@@ -17,23 +17,24 @@ package resource
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 
 	"github.com/kubeflow/pipelines/backend/src/apiserver/template"
 
-	api "github.com/kubeflow/pipelines/backend/api/v1beta1/go_client"
+	apiV1beta1 "github.com/kubeflow/pipelines/backend/api/v1beta1/go_client"
 	"github.com/kubeflow/pipelines/backend/src/apiserver/common"
 	"github.com/kubeflow/pipelines/backend/src/apiserver/model"
 	"github.com/kubeflow/pipelines/backend/src/common/util"
 	"github.com/pkg/errors"
 )
 
-func (r *ResourceManager) ToModelExperiment(apiExperiment *api.Experiment) (*model.Experiment, error) {
+func (r *ResourceManager) ToModelExperiment(apiExperiment *apiV1beta1.Experiment) (*model.Experiment, error) {
 	namespace := ""
 	resourceReferences := apiExperiment.GetResourceReferences()
 	if resourceReferences != nil {
 		if len(resourceReferences) != 1 ||
-			resourceReferences[0].Key.Type != api.ResourceType_NAMESPACE ||
-			resourceReferences[0].Relationship != api.Relationship_OWNER {
+			resourceReferences[0].Key.Type != apiV1beta1.ResourceType_NAMESPACE ||
+			resourceReferences[0].Relationship != apiV1beta1.Relationship_OWNER {
 			return nil, util.NewInternalServerError(errors.New("Invalid resource references for experiment"), "Unable to convert to model experiment.")
 		}
 		namespace = resourceReferences[0].Key.Id
@@ -45,7 +46,7 @@ func (r *ResourceManager) ToModelExperiment(apiExperiment *api.Experiment) (*mod
 	}, nil
 }
 
-func (r *ResourceManager) ToModelRunMetric(metric *api.RunMetric, runUUID string) *model.RunMetric {
+func (r *ResourceManager) ToModelRunMetric(metric *apiV1beta1.RunMetric, runUUID string) *model.RunMetric {
 	return &model.RunMetric{
 		RunUUID:     runUUID,
 		Name:        metric.GetName(),
@@ -57,68 +58,145 @@ func (r *ResourceManager) ToModelRunMetric(metric *api.RunMetric, runUUID string
 
 // The input run might not contain workflowSpecManifest and pipelineSpecManifest, but instead a pipeline ID.
 // The caller would retrieve manifest and pass in.
-func (r *ResourceManager) ToModelRunDetail(run *api.Run, runId string, workflow util.ExecutionSpec, manifest string, templateType template.TemplateType) (*model.RunDetail, error) {
-	resourceReferences, err := r.toModelResourceReferences(runId, common.Run, run.GetResourceReferences())
+func (r *ResourceManager) ToModelRun(
+	runInterface common.ProtoRunInterface,
+	runId string,
+	workflow util.ExecutionSpec,
+	manifest string,
+	templateType template.TemplateType) (*model.Run, error) {
+
+	// Fetch PipelineId
+	pipelineId, err := common.GetPipelineIdFromRunInterface(runInterface)
 	if err != nil {
-		return nil, util.Wrap(err, "Unable to convert resource references.")
+		return nil, util.Wrap(err, fmt.Sprintf("Error fetching PipelineId from %T", reflect.TypeOf(runInterface)))
 	}
-	var pipelineName string
-	if run.GetPipelineSpec().GetPipelineId() != "" {
-		pipelineName, err = r.getResourceName(common.Pipeline, run.GetPipelineSpec().GetPipelineId())
-		if err != nil {
-			return nil, util.Wrap(err, "Error getting the pipeline name")
-		}
+	// If PipelineId is missing Run is invalid
+	if pipelineId == "" {
+		return nil, util.NewResourceNotFoundError(fmt.Sprintf("%T.PipelineId", reflect.TypeOf(runInterface)), runId)
 	}
 
-	experimentUUID, err := r.getOwningExperimentUUID(run.ResourceReferences)
+	// Fetch PipelineName
+	pipelineName, err := r.getResourceName(common.Pipeline, pipelineId)
 	if err != nil {
-		return nil, util.Wrap(err, "Error getting the experiment UUID")
+		return nil, util.Wrap(err, fmt.Sprintf("Error fetching PipelineName from %T", reflect.TypeOf(runInterface)))
 	}
 
-	runDetail := &model.RunDetail{
-		Run: model.Run{
-			UUID:               runId,
-			ExperimentUUID:     experimentUUID,
-			DisplayName:        run.Name,
-			Name:               workflow.ExecutionName(),
-			Namespace:          workflow.ExecutionNamespace(),
-			ServiceAccount:     workflow.ServiceAccount(),
-			Conditions:         string(workflow.ExecutionStatus().Condition()),
-			Description:        run.Description,
-			ResourceReferences: resourceReferences,
-			PipelineSpec: model.PipelineSpec{
-				PipelineId:   run.GetPipelineSpec().GetPipelineId(),
-				PipelineName: pipelineName,
-			},
+	// Fetch ExperimentId
+	experimentUUID, err := common.GetExperimentIdFromRunInterface(runInterface)
+	if err != nil {
+		return nil, util.Wrap(err, fmt.Sprintf("Error fetching ExperimentId from %T", reflect.TypeOf(runInterface)))
+	}
+
+	// Fetch DisplayName
+	displayName, err := common.GetDisplayNameFromRunInterface(runInterface)
+	if err != nil {
+		return nil, util.Wrap(err, fmt.Sprintf("Error fetching DisplayName from %T", reflect.TypeOf(runInterface)))
+	}
+
+	// Fetch RuntimeConfig as a map
+	runtimeConfig, err := common.GetRuntimeConfigFromRunInterface(runInterface)
+	if err != nil {
+		return nil, util.Wrap(err, fmt.Sprintf("Error fetching RuntimeConfig from %T", reflect.TypeOf(runInterface)))
+	}
+
+	run := &model.Run{
+		UUID:           runId,
+		ExperimentUUID: experimentUUID,
+		DisplayName:    displayName,
+		Name:           workflow.ExecutionName(),
+		Namespace:      workflow.ExecutionNamespace(),
+		ServiceAccount: workflow.ServiceAccount(),
+		Conditions:     string(workflow.ExecutionStatus().Condition()),
+		Description:    runInterface.GetDescription(),
+		PipelineSpec: model.PipelineSpec{
+			PipelineId:   pipelineId,
+			PipelineName: pipelineName,
 		},
 	}
 
-	if templateType == template.V1 {
-		params, err := apiParametersToModelParameters(run.GetPipelineSpec().GetParameters())
+	switch r.apiVersion {
+	case "v1beta1":
+		// Construct Resource References
+		var resourceReferences []*model.ResourceReference
+		resourceRef, err := common.GetResourceReferenceFromRunInterface(runInterface)
 		if err != nil {
-			return nil, util.Wrap(err, "Unable to parse the V1 parameter.")
+			return nil, util.Wrap(err, fmt.Sprintf("Error fetching ResourceReferences from %T", reflect.TypeOf(runInterface)))
 		}
-		runDetail.Parameters = params
-		runDetail.WorkflowSpecManifest = manifest
-		runDetail.WorkflowRuntimeManifest = workflow.ToStringForStore()
-		return runDetail, nil
+		if resourceRef != nil {
+			resourceReferences, err = r.toModelResourceReferences(runId, common.Run, resourceRef)
+			if err != nil {
+				return nil, util.Wrap(err, fmt.Sprintf("Error converting ResourceReferences for %T", reflect.TypeOf(runInterface)))
+			}
+		}
+		run.ResourceReferences = resourceReferences
 
-	} else if templateType == template.V2 {
-		params, err := runtimeConfigToModelParameters(run.GetPipelineSpec().GetRuntimeConfig())
+		// Try fetching ExperimentId from ResourceReference
+		if experimentUUID == "" {
+			experimentUUID, err = r.getOwningExperimentUUID(resourceRef)
+			if err != nil {
+				return nil, util.Wrap(err, fmt.Sprintf("Error fetching ExperimentId from %T", reflect.TypeOf(runInterface)))
+			}
+		}
+		// If ExperimentId is missing, we assume invalid Run
+		if experimentUUID == "" {
+			return nil, util.NewResourceNotFoundError(fmt.Sprintf("%T.ExperimentId", reflect.TypeOf(runInterface)), runId)
+		}
+
+		// Fetch parameters from PipelineSpec struct
+		params, err := runtimeConfigMapToModelParameters(runtimeConfig)
 		if err != nil {
-			return nil, util.Wrap(err, "Unable to parse the V2 parameter.")
+			return nil, util.Wrap(err, "Error parsing parameters from RuntimeConfig map")
 		}
-		runDetail.PipelineSpecManifest = manifest
-		runDetail.PipelineSpec.RuntimeConfig.Parameters = params
-		runDetail.PipelineSpec.RuntimeConfig.PipelineRoot = run.GetPipelineSpec().GetRuntimeConfig().GetPipelineRoot()
-		return runDetail, nil
 
-	} else {
-		return nil, fmt.Errorf("failed to generate RunDetail with templateType %s", templateType)
+		switch templateType {
+		case template.V1:
+			run.Parameters = params
+			run.WorkflowRuntimeManifest = workflow.ToStringForStore()
+			run.WorkflowSpecManifest = manifest
+			return run, nil
+		case template.V2:
+			run.PipelineSpec.RuntimeConfig.Parameters = params
+			// Fetch PipelineRoot
+			pipelineRoot, err := common.GetPipelineRootFromRunInterface(runInterface)
+			if err != nil {
+				return nil, util.Wrap(err, fmt.Sprintf("Error fetching PipelineRoot from %T", reflect.TypeOf(runInterface)))
+			}
+			run.PipelineSpec.RuntimeConfig.PipelineRoot = pipelineRoot
+			run.PipelineSpecManifest = manifest
+			return run, nil
+		default:
+			return nil, fmt.Errorf("Error generating Run with templateType %s", templateType)
+		}
+	case "v2beta1":
+		// Fetch State
+		state, err := common.GetStateFromRunInterface(runInterface)
+		if err != nil {
+			return nil, util.Wrap(err, fmt.Sprintf("Error fetching RuntimeState from %T", reflect.TypeOf(runInterface)))
+		}
+		run.State = state
+		// Fetch StateHistory
+		stateHistory, err := common.GetStateHistoryFromRunInterface(runInterface)
+		if err != nil {
+			return nil, util.Wrap(err, fmt.Sprintf("Error fetching RuntimeStateHistory from %T", reflect.TypeOf(runInterface)))
+		}
+		run.StateHistory = stateHistory
+		// Fetch RunDetails
+		runDetails, err := common.GetRunDetailsFromRunInterface(runInterface)
+		if err != nil {
+			return nil, util.Wrap(err, fmt.Sprintf("Error fetching RunDetails from %T", reflect.TypeOf(runInterface)))
+		}
+		run.PipelineRuntimeManifest = runDetails
+
+		run.WorkflowRuntimeManifest = workflow.ToStringForStore() // this may be unnecessary
+		run.PipelineSpecManifest = manifest
+		run.RuntimeConfig = run.RuntimeConfig
+	default:
+		return nil, util.NewUnknownApiVersionError("ToModelRun()", fmt.Sprintf("API %v", r.apiVersion))
 	}
+	return nil, util.NewInternalServerError(errors.New("Unknown error"), "Unable to convert to model run")
 }
 
-func (r *ResourceManager) ToModelJob(job *api.Job, swf *util.ScheduledWorkflow, manifest string, templateType template.TemplateType) (*model.Job, error) {
+func (r *ResourceManager) ToModelJob(job *apiV1beta1.Job, swf *util.ScheduledWorkflow, manifest string, templateType template.TemplateType) (*model.Job, error) {
 	resourceReferences, err := r.toModelResourceReferences(string(swf.UID), common.Job, job.GetResourceReferences())
 	if err != nil {
 		return nil, util.Wrap(err, "Error to convert resource references.")
@@ -179,7 +257,7 @@ func (r *ResourceManager) ToModelJob(job *api.Job, swf *util.ScheduledWorkflow, 
 	}
 }
 
-func (r *ResourceManager) ToModelPipelineVersion(version *api.PipelineVersion) (*model.PipelineVersion, error) {
+func (r *ResourceManager) ToModelPipelineVersion(version *apiV1beta1.PipelineVersion) (*model.PipelineVersion, error) {
 	paramStr, err := apiParametersToModelParameters(version.Parameters)
 	if err != nil {
 		return nil, err
@@ -187,7 +265,7 @@ func (r *ResourceManager) ToModelPipelineVersion(version *api.PipelineVersion) (
 
 	var pipelineId string
 	for _, resourceReference := range version.ResourceReferences {
-		if resourceReference.Key.Type == api.ResourceType_PIPELINE {
+		if resourceReference.Key.Type == apiV1beta1.ResourceType_PIPELINE {
 			pipelineId = resourceReference.Key.Id
 		}
 	}
@@ -202,7 +280,8 @@ func (r *ResourceManager) ToModelPipelineVersion(version *api.PipelineVersion) (
 	}, nil
 }
 
-func toModelTrigger(trigger *api.Trigger) model.Trigger {
+// Converts Trigger V1 into a model.Trigger
+func toModelTrigger(trigger *apiV1beta1.Trigger) model.Trigger {
 	modelTrigger := model.Trigger{}
 	if trigger == nil {
 		return modelTrigger
@@ -232,7 +311,8 @@ func toModelTrigger(trigger *api.Trigger) model.Trigger {
 	return modelTrigger
 }
 
-func apiParametersToModelParameters(apiParams []*api.Parameter) (string, error) {
+// Serializes Parameters V1 into a string
+func apiParametersToModelParameters(apiParams []*apiV1beta1.Parameter) (string, error) {
 	if apiParams == nil || len(apiParams) == 0 {
 		return "", nil
 	}
@@ -246,24 +326,40 @@ func apiParametersToModelParameters(apiParams []*api.Parameter) (string, error) 
 	}
 	paramsBytes, err := util.MarshalParameters(util.ArgoWorkflow, params)
 	if err != nil {
-		return "", util.NewInternalServerError(err, "Failed to stream API parameter as string.")
+		return "", util.NewInternalServerError(err, "Failed to stream API v1 parameters as a string.")
 	}
 	return string(paramsBytes), nil
 }
 
-func runtimeConfigToModelParameters(runtimeConfig *api.PipelineSpec_RuntimeConfig) (string, error) {
+// Serializes RuntimeConfig V1 into a string
+func runtimeConfigToModelParameters(runtimeConfig *apiV1beta1.PipelineSpec_RuntimeConfig) (string, error) {
 	if runtimeConfig == nil {
 		return "", nil
 	}
 	paramsBytes, err := json.Marshal(runtimeConfig.GetParameters())
 	if err != nil {
-		return "", util.NewInternalServerError(err, "Failed to marshal RuntimeConfig API parameters as string.")
+		return "", util.NewInternalServerError(err, "Failed to marshal RuntimeConfig's parameters as a string.")
+	}
+	return string(paramsBytes), nil
+}
+
+// Serializes RuntimeConfig (map[string]interface) into a string
+func runtimeConfigMapToModelParameters(runtimeConfigMap map[string]interface{}) (string, error) {
+	if runtimeConfigMap == nil {
+		return "", nil
+	}
+	paramsBytes, err := json.Marshal(runtimeConfigMap["Parameters"])
+	if err != nil {
+		return "", util.NewInternalServerError(err, "Error marshalling RuntimeConfig map's parameters into a string")
 	}
 	return string(paramsBytes), nil
 }
 
 func (r *ResourceManager) toModelResourceReferences(
-	resourceId string, resourceType model.ResourceType, apiRefs []*api.ResourceReference) ([]*model.ResourceReference, error) {
+	resourceId string, resourceType model.ResourceType, apiRefs []*apiV1beta1.ResourceReference) ([]*model.ResourceReference, error) {
+	if apiRefs == nil {
+		return nil, nil
+	}
 	var modelRefs []*model.ResourceReference
 	for _, apiRef := range apiRefs {
 		modelReferenceType, err := common.ToModelResourceType(apiRef.Key.Type)
@@ -332,10 +428,13 @@ func (r *ResourceManager) getResourceName(resourceType model.ResourceType, resou
 	}
 }
 
-func (r *ResourceManager) getOwningExperimentUUID(references []*api.ResourceReference) (string, error) {
+func (r *ResourceManager) getOwningExperimentUUID(references []*apiV1beta1.ResourceReference) (string, error) {
+	if references == nil {
+		return "", nil
+	}
 	var experimentUUID string
 	for _, ref := range references {
-		if ref.Key.Type == api.ResourceType_EXPERIMENT && ref.Relationship == api.Relationship_OWNER {
+		if ref.Key.Type == apiV1beta1.ResourceType_EXPERIMENT && ref.Relationship == apiV1beta1.Relationship_OWNER {
 			experimentUUID = ref.Key.Id
 			break
 		}
@@ -345,4 +444,16 @@ func (r *ResourceManager) getOwningExperimentUUID(references []*api.ResourceRefe
 		return "", util.NewInternalServerError(nil, "Missing owning experiment UUID")
 	}
 	return experimentUUID, nil
+}
+
+// Serializes ExecutionSpec into a string manifest
+func execspecToModelPipelineRuntimeManifest(es util.ExecutionSpec) (string, error) {
+	if es == nil {
+		return "", nil
+	}
+	rtBytes, err := json.Marshal(es)
+	if err != nil {
+		return "", util.NewInternalServerError(err, "Error marshalling ExecutionSpec into a string")
+	}
+	return string(rtBytes), nil
 }

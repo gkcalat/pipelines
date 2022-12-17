@@ -34,21 +34,34 @@ type Run struct {
 	CreatedAtInSec     int64  `gorm:"column:CreatedAtInSec; not null;"`
 	ScheduledAtInSec   int64  `gorm:"column:ScheduledAtInSec; default:0;"`
 	FinishedAtInSec    int64  `gorm:"column:FinishedAtInSec; default:0;"`
-	Conditions         string `gorm:"column:Conditions; not null"`
+	Conditions         string `gorm:"column:Conditions; not null;"`
 	Metrics            []*RunMetric
 	ResourceReferences []*ResourceReference
 	PipelineSpec
+	State                   string `gorm:"column:State; default:null;"`
+	StateHistory            string `gorm:"column:StateHistory; default:null;"`
+	PipelineRuntimeManifest string `gorm:"column:PipelineRuntimeManifest; not null; size:65535;"` // KFP v2
+	WorkflowRuntimeManifest string `gorm:"column:WorkflowRuntimeManifest; not null; size:65535;"` // KFP v1
+	JobUUID                 string `gorm:"column:JobUUID; default:null; size:65535;"`
+	RunDetails              *RunDetails
 }
 
-type PipelineRuntime struct {
-	PipelineRuntimeManifest string `gorm:"column:PipelineRuntimeManifest; not null; size:65535"`
-	/* Argo CRD. Set size to 65535 so it will be stored as longtext. https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html */
-	WorkflowRuntimeManifest string `gorm:"column:WorkflowRuntimeManifest; not null; size:65535"`
-}
+// type PipelineRuntime struct {
+// 	PipelineRuntimeManifest string `gorm:"column:PipelineRuntimeManifest; not null; size:65535"`
+// 	/* Argo CRD. Set size to 65535 so it will be stored as longtext. https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html */
+// 	WorkflowRuntimeManifest string `gorm:"column:WorkflowRuntimeManifest; not null; size:65535"`
+// }
 
-type RunDetail struct {
-	Run
-	PipelineRuntime
+// type RunDetail struct {
+// 	Run
+// 	PipelineRuntime
+// }
+
+// Stores runtime information about a Run
+type RunDetails struct {
+	PipelineContextId    int64
+	PipelineRunContextId int64
+	TaskDetails          []*Task
 }
 
 type RunMetric struct {
@@ -79,13 +92,21 @@ func (r *Run) DefaultSortField() string {
 }
 
 var runAPIToModelFieldMap = map[string]string{
-	"id":            "UUID",
-	"name":          "DisplayName",
-	"created_at":    "CreatedAtInSec",
-	"description":   "Description",
-	"scheduled_at":  "ScheduledAtInSec",
-	"storage_state": "StorageState",
-	"status":        "Conditions",
+	"run_id":           "UUID", // added in API v2
+	"id":               "UUID",
+	"display_name":     "DisplayName", // added in API v2
+	"name":             "DisplayName",
+	"created_at":       "CreatedAtInSec",
+	"description":      "Description",
+	"scheduled_at":     "ScheduledAtInSec",
+	"storage_state":    "StorageState",
+	"status":           "Conditions",
+	"namespace":        "Namespace",               // added in API v2
+	"experiment_id":    "ExperimentUUID",          // added in API v2
+	"state":            "State",                   // added in API v2
+	"state_history":    "StateHistory",            // added in API v2
+	"runtime_details":  "PipelineRuntimeManifest", // added in API v2
+	"recurring_run_id": "JobUUID",                 // added in API v2
 }
 
 // APIToModelFieldMap returns a map from API names to field names for model Run.
@@ -129,6 +150,18 @@ func (r *Run) GetFieldValue(name string) interface{} {
 		return r.StorageState
 	case "Conditions":
 		return r.Conditions
+	case "Namespace":
+		return r.Namespace
+	case "ExperimentUUID":
+		return r.ExperimentUUID
+	case "State":
+		return r.State
+	case "StateHistory":
+		return r.StateHistory
+	case "PipelineRuntimeManifest":
+		return r.PipelineRuntimeManifest
+	case "JobUUID":
+		return r.JobUUID
 	}
 	// Second, try to find the match of "name" inside an array typed field
 	for _, metric := range r.Metrics {

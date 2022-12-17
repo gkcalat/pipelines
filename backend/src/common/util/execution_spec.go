@@ -45,10 +45,10 @@ type SpecParameter struct {
 // Represent the Parameter which is a list of SpecParameters
 type SpecParameters []SpecParameter
 
-// Abastract interface to encapsulate the resource needed by the underlying execution runtime
+// Abstract interface to encapsulate the resource needed by the underlying execution runtime
 // i.e Workflow is for Argo, PipelineRun is for Tekton and etc.
 // Status related information will go to ExecutionStatus interface.
-// TODO: add more methods to make ExecutionSpec fullly represent Workflow. At the beginning
+// TODO: add more methods to make ExecutionSpec fully represent Workflow. At the beginning
 //
 //	phase, gradually add methods and not break the existing functions. Later on,
 //	other execution runtime support could be added too.
@@ -268,3 +268,5 @@ func ScheduleSpecToExecutionSpec(
 			errors.New("ExecutionType is not supported"), "type:%s", execType)
 	}
 }
+
+// Converts ExecutionSpec into a PipelineRuntime

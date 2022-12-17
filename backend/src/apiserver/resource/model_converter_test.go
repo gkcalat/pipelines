@@ -25,7 +25,8 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	api "github.com/kubeflow/pipelines/backend/api/v1beta1/go_client"
+	apiV1beta1 "github.com/kubeflow/pipelines/backend/api/v1beta1/go_client"
+	apiV2beta1 "github.com/kubeflow/pipelines/backend/api/v2beta1/go_client"
 	"github.com/kubeflow/pipelines/backend/src/apiserver/common"
 	"github.com/kubeflow/pipelines/backend/src/apiserver/model"
 	"github.com/kubeflow/pipelines/backend/src/apiserver/template"
@@ -44,7 +45,7 @@ func TestToModelExperiment(t *testing.T) {
 
 	tests := []struct {
 		name                    string
-		experiment              *api.Experiment
+		experiment              *apiV1beta1.Experiment
 		wantError               bool
 		errorMessage            string
 		expectedModelExperiment *model.Experiment
@@ -177,11 +178,11 @@ func TestToModelRunDetail(t *testing.T) {
 		expectedModelRunDetail *model.RunDetail
 	}{
 		{
-			name: "v1",
-			apiRun: &api.Run{
+			name: "template v1 (api V1)",
+			apiRun: &apiV1beta1.Run{
 				Id:          "run1",
 				Name:        "name1",
-				Description: "this is a run",
+				Description: "this is a run template v1 using API v1",
 				PipelineSpec: &api.PipelineSpec{
 					Parameters: []*api.Parameter{{Name: "param2", Value: "world"}},
 				},
@@ -203,7 +204,7 @@ func TestToModelRunDetail(t *testing.T) {
 					DisplayName:    "name1",
 					Name:           "workflow-name",
 					Conditions:     "running",
-					Description:    "this is a run",
+					Description:    "this is a run template v1 using API v1",
 					PipelineSpec: model.PipelineSpec{
 						WorkflowSpecManifest: "workflow spec",
 						Parameters:           `[{"name":"param2","value":"world"}]`,
@@ -227,11 +228,11 @@ func TestToModelRunDetail(t *testing.T) {
 			},
 		},
 		{
-			name: "v2",
-			apiRun: &api.Run{
+			name: "template v2 (api V1)",
+			apiRun: &apiV1beta1.Run{
 				Id:          "run1",
 				Name:        "name1",
-				Description: "this is a run",
+				Description: "this is a run template v2 using API v1",
 				PipelineSpec: &api.PipelineSpec{
 					RuntimeConfig: &api.PipelineSpec_RuntimeConfig{
 						Parameters: v2RuntimeParams,
@@ -254,7 +255,105 @@ func TestToModelRunDetail(t *testing.T) {
 					DisplayName:    "name1",
 					Name:           "workflow-name",
 					Conditions:     "running",
-					Description:    "this is a run",
+					Description:    "this is a run template v2 using API v1",
+					PipelineSpec: model.PipelineSpec{
+						PipelineSpecManifest: "pipeline spec",
+						RuntimeConfig: model.RuntimeConfig{
+							// Note: for some versions of structpb.Value.MarshalJSON(), there is a trailing space after array items or struct items
+							Parameters: "{\"param2\":\"world\",\"param3\":true,\"param4\":[1,2,3],\"param5\":12,\"param6\":{\"structParam1\":\"hello\",\"structParam2\":32}}",
+						},
+					},
+					ResourceReferences: []*model.ResourceReference{
+						{
+							ResourceUUID:  "123",
+							ResourceType:  common.Run,
+							ReferenceUUID: experiment.UUID,
+							ReferenceName: experiment.Name,
+							ReferenceType: common.Experiment,
+							Relationship:  common.Owner},
+					},
+				},
+			},
+		},
+		{
+			name: "template v1 (api V2)",
+			apiRun: &apiV2beta1.Run{
+				RunId:       "run1",
+				DisplayName: "name1",
+				Description: "this is a run template v1 using API v1",
+				PipelineSpec: &api.PipelineSpec{
+					Parameters: []*api.Parameter{{Name: "param2", Value: "world"}},
+				},
+				ResourceReferences: []*api.ResourceReference{
+					{
+						Key:          &api.ResourceKey{Type: api.ResourceType_EXPERIMENT, Id: experiment.UUID},
+						Relationship: api.Relationship_OWNER}},
+			},
+			workflow: util.NewWorkflow(&v1alpha1.Workflow{
+				ObjectMeta: v1.ObjectMeta{Name: "workflow-name", UID: "123"},
+				Status:     v1alpha1.WorkflowStatus{Phase: "running"},
+			}),
+			manifest:     "workflow spec",
+			templateType: template.V1,
+			expectedModelRunDetail: &model.RunDetail{
+				Run: model.Run{
+					UUID:           "123",
+					ExperimentUUID: experiment.UUID,
+					DisplayName:    "name1",
+					Name:           "workflow-name",
+					Conditions:     "running",
+					Description:    "this is a run template v1 using API v2",
+					PipelineSpec: model.PipelineSpec{
+						WorkflowSpecManifest: "workflow spec",
+						Parameters:           `[{"name":"param2","value":"world"}]`,
+					},
+					ResourceReferences: []*model.ResourceReference{
+						{
+							ResourceUUID:  "123",
+							ResourceType:  common.Run,
+							ReferenceUUID: experiment.UUID,
+							ReferenceName: experiment.Name,
+							ReferenceType: common.Experiment,
+							Relationship:  common.Owner},
+					},
+				},
+				PipelineRuntime: model.PipelineRuntime{
+					WorkflowRuntimeManifest: util.NewWorkflow(&v1alpha1.Workflow{
+						ObjectMeta: v1.ObjectMeta{Name: "workflow-name", UID: "123"},
+						Status:     v1alpha1.WorkflowStatus{Phase: "running"},
+					}).ToStringForStore(),
+				},
+			},
+		},
+		{
+			name: "template v2 (api V2)",
+			apiRun: &apiV2beta1.Run{
+				Id:          "run1",
+				Name:        "name1",
+				Description: "this is a run template v2 using API v2",
+				PipelineSpec: &api.PipelineSpec{
+					RuntimeConfig: &api.PipelineSpec_RuntimeConfig{
+						Parameters: v2RuntimeParams,
+					}},
+				ResourceReferences: []*api.ResourceReference{
+					{
+						Key:          &api.ResourceKey{Type: api.ResourceType_EXPERIMENT, Id: experiment.UUID},
+						Relationship: api.Relationship_OWNER}},
+			},
+			workflow: util.NewWorkflow(&v1alpha1.Workflow{
+				ObjectMeta: v1.ObjectMeta{Name: "workflow-name", UID: "123"},
+				Status:     v1alpha1.WorkflowStatus{Phase: "running"},
+			}),
+			manifest:     "pipeline spec",
+			templateType: template.V2,
+			expectedModelRunDetail: &model.RunDetail{
+				Run: model.Run{
+					UUID:           "123",
+					ExperimentUUID: experiment.UUID,
+					DisplayName:    "name1",
+					Name:           "workflow-name",
+					Conditions:     "running",
+					Description:    "this is a run template v2 using API v2",
 					PipelineSpec: model.PipelineSpec{
 						PipelineSpecManifest: "pipeline spec",
 						RuntimeConfig: model.RuntimeConfig{
