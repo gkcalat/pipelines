@@ -32,6 +32,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 func TestBuildPipelineName_QueryStringNotEmpty(t *testing.T) {
@@ -574,7 +575,7 @@ func TestCreatePipelineVersionAndCheckLatestVersion(t *testing.T) {
 	assert.Nil(t, err)
 
 	pipeline2, err := pipelineServer.GetPipelineV1(context.Background(), &api.GetPipelineRequest{Id: pipeline.Id})
-	assert.Nil(t, nil)
+	assert.Nil(t, err)
 	assert.NotNil(t, pipelineVersion.Id)
 	assert.Equal(t, pipeline2.DefaultVersion.Id, pipelineVersion.Id)
 	assert.NotEqual(t, pipeline2.DefaultVersion.Id, pipeline.DefaultVersion.Id)
@@ -673,6 +674,166 @@ func TestPipelineServer_CreatePipeline(t *testing.T) {
 			resourceManager = resource.NewResourceManager(clientManager, "default")
 			pipelineServer = PipelineServer{resourceManager: resourceManager, httpClient: httpServer.Client(), options: &PipelineServerOptions{CollectMetrics: false}}
 			got, err := pipelineServer.CreatePipeline(context.Background(), &apiv2.CreatePipelineRequest{Pipeline: tt.arg})
+			if tt.wantErr {
+				assert.NotNil(t, err)
+				assert.Contains(t, err.Error(), tt.errMsg)
+			} else {
+				assert.Nil(t, err)
+				assert.NotEmpty(t, got.GetPipelineId())
+				assert.NotEmpty(t, got.GetCreatedAt())
+				tt.want.CreatedAt = got.GetCreatedAt()
+				tt.want.PipelineId = got.GetPipelineId()
+			}
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestPipelineServer_CreatePipelineVersion(t *testing.T) {
+	httpServer := getMockServer(t)
+	defer httpServer.Close()
+	clientManager := resource.NewFakeClientManagerOrFatal(util.NewFakeTimeForEpoch())
+	resourceManager := resource.NewResourceManager(clientManager, "default")
+	pipelineServer := PipelineServer{resourceManager: resourceManager, httpClient: httpServer.Client(), options: &PipelineServerOptions{CollectMetrics: false}}
+	p1 := &apiv2.Pipeline{
+		DisplayName: "pipeline 1",
+		Namespace:   "namespace1",
+	}
+	parent, err := pipelineServer.CreatePipeline(context.Background(), &apiv2.CreatePipelineRequest{Pipeline: p1})
+	assert.Nil(t, err)
+	spec := &structpb.Struct{
+		Fields: map[string]*structpb.Value{
+			"String":  structpb.NewStringValue("pv2"),
+			"Boolean": structpb.NewBoolValue(false),
+			"Number":  structpb.NewNumberValue(19.1),
+			"Struct": structpb.NewStructValue(
+				&structpb.Struct{
+					Fields: map[string]*structpb.Value{
+						"InnerNull": structpb.NewNullValue(),
+						"InnerList": structpb.NewListValue(
+							&structpb.ListValue{
+								Values: []*structpb.Value{
+									structpb.NewStringValue("a"),
+									structpb.NewStringValue("b"),
+								},
+							},
+						),
+					},
+				},
+			),
+		},
+	}
+
+	type args struct {
+		pipeline *model.Pipeline
+	}
+	tests := []struct {
+		name    string
+		id      string
+		arg     *apiv2.PipelineVersion
+		want    *apiv2.PipelineVersion
+		wantErr bool
+		errMsg  string
+	}{
+		{
+			"Valid - single user",
+			DefaultFakeIdOne,
+			&apiv2.PipelineVersion{
+				DisplayName:  "pipeline version 1",
+				PipelineSpec: spec,
+				PackageUrl:   &apiv2.Url{PipelineUrl: "pv1.yaml"},
+			},
+			&apiv2.PipelineVersion{
+				PipelineSpec: spec,
+				DisplayName:  "pipeline version 1",
+				PackageUrl:   &apiv2.Url{PipelineUrl: "pv1.yaml"},
+			},
+			false,
+			"",
+		},
+		{
+			"Valid - package url",
+			DefaultFakeIdOne,
+			&apiv2.PipelineVersion{
+				DisplayName: "pipeline version 4",
+				PackageUrl:  &apiv2.Url{PipelineUrl: "pv4.yaml"},
+			},
+			&apiv2.PipelineVersion{
+				PackageUrl:  &apiv2.Url{PipelineUrl: "pv4.yaml"},
+				DisplayName: "pipeline version 1",
+			},
+			false,
+			"",
+		},
+		{
+			"Valid - empty namespace",
+			DefaultFakeIdTwo,
+			&apiv2.PipelineVersion{
+				PipelineSpec: spec,
+				DisplayName:  "pipeline version 2",
+				PackageUrl:   &apiv2.Url{PipelineUrl: "pv2.yaml"},
+			},
+			&apiv2.PipelineVersion{
+				PipelineSpec: spec,
+				DisplayName:  "pipeline version 2",
+				PackageUrl:   &apiv2.Url{PipelineUrl: "pv1.yaml"},
+			},
+			false,
+			"",
+		},
+		{
+			"Invalid - duplicate name",
+			DefaultFakeIdThree,
+			&apiv2.PipelineVersion{
+				PipelineSpec: spec,
+				DisplayName:  "pipeline version 2",
+				PackageUrl:   &apiv2.Url{PipelineUrl: "pv2.yaml"},
+			},
+			nil,
+			true,
+			"The name pipeline version 2 already exist. Please specify a new name",
+		},
+		{
+			"Invalid - missing name",
+			DefaultFakeIdFour,
+			&apiv2.PipelineVersion{
+				PipelineSpec: spec,
+				PackageUrl:   &apiv2.Url{PipelineUrl: "pv0.yaml"},
+			},
+			nil,
+			true,
+			"Failed create to a pipeline due to empty name. Please specify a valid name",
+		},
+		{
+			"Invalid - missing spec",
+			DefaultFakeIdFour,
+			&apiv2.PipelineVersion{
+				DisplayName: "pipeline version 3",
+				PackageUrl:  &apiv2.Url{PipelineUrl: "pv3.yaml"},
+			},
+			nil,
+			true,
+			"Failed create to a pipeline version due to empty name. Please specify a valid name",
+		},
+		{
+			"Invalid - missing package url",
+			DefaultFakeIdFour,
+			&apiv2.PipelineVersion{
+				DisplayName:  "pipeline version 5",
+				PipelineSpec: spec,
+			},
+			nil,
+			true,
+			"Failed to create a pipeline version. Package URL is nil",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			clientManager.UpdateUUID(util.NewFakeUUIDGeneratorOrFatal(tt.id, nil))
+			resourceManager = resource.NewResourceManager(clientManager, "default")
+			pipelineServer = PipelineServer{resourceManager: resourceManager, httpClient: httpServer.Client(), options: &PipelineServerOptions{CollectMetrics: false}}
+			assert.Nil(t, err)
+			got, err := pipelineServer.CreatePipelineVersion(context.Background(), &apiv2.CreatePipelineVersionRequest{PipelineId: parent.GetPipelineId(), PipelineVersion: tt.arg})
 			if tt.wantErr {
 				assert.NotNil(t, err)
 				assert.Contains(t, err.Error(), tt.errMsg)
