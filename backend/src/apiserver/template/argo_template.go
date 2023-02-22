@@ -190,9 +190,9 @@ func (t *Argo) OverrideV2PipelineName(name, namespace string) {
 	}
 	var pipelineRef string
 	if namespace != "" {
-		pipelineRef = fmt.Sprintf("namespaces/%s/pipelines/%s", namespace, name)
+		pipelineRef = fmt.Sprintf("namespace/%s/pipeline/%s", namespace, name)
 	} else {
-		pipelineRef = fmt.Sprintf("pipelines/%s", name)
+		pipelineRef = fmt.Sprintf("pipeline/%s", name)
 	}
 	overrides := make(map[string]string)
 	overrides[paramV2compatPipelineName] = pipelineRef
