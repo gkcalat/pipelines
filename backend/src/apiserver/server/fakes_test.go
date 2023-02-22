@@ -48,6 +48,8 @@ const (
 	DefaultFakeIdSix         = "123e4567-e89b-12d3-a456-426655440005"
 	DefaultFakeIdSeven       = "123e4567-e89b-12d3-a456-426655440006"
 	DefaultFakeIdEight       = "123e4567-e89b-12d3-a456-426655440007"
+	DefaultFakeIdNine        = "123e4567-e89b-12d3-a456-426655440008"
+	DefaultFakeIdTen         = "123e4567-e89b-12d3-a456-426655440009"
 )
 
 var testWorkflowPatch = util.NewWorkflow(&v1alpha1.Workflow{

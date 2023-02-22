@@ -32,8 +32,67 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/protobuf/types/known/structpb"
 )
+
+var v1SpecManifest = "{\"kind\":\"Workflow\",\"apiVersion\":\"argoproj.io/v1alpha1\",\"metadata\":{\"generateName\":\"arguments-parameters-\",\"creationTimestamp\":null},\"spec\":{\"templates\":[{\"name\":\"whalesay\",\"inputs\":{\"parameters\":[{\"name\":\"param1\"},{\"name\":\"param2\"}]},\"outputs\":{},\"metadata\":{},\"container\":{\"name\":\"\",\"image\":\"docker/whalesay:latest\",\"command\":[\"cowsay\"],\"args\":[\"{{inputs.parameters.param1}}-{{inputs.parameters.param2}}\"],\"resources\":{}}}],\"entrypoint\":\"whalesay\",\"arguments\":{\"parameters\":[{\"name\":\"param1\",\"value\":\"hello\"},{\"name\":\"param2\"}]}},\"status\":{\"startedAt\":null,\"finishedAt\":null}}"
+var v2SpecManifest = `components:
+  comp-hello-world:
+    executorLabel: exec-hello-world
+    inputDefinitions:
+      parameters:
+        text:
+          type: STRING
+deploymentSpec:
+  executors:
+    exec-hello-world:
+      container:
+        args:
+        - "--text"
+        - "{{$.inputs.parameters['text']}}"
+        command:
+        - sh
+        - "-ec"
+        - |
+          program_path=$(mktemp)
+          printf "%s" "$0" > "$program_path"
+          python3 -u "$program_path" "$@"
+        - |
+          def hello_world(text):
+              print(text)
+              return text
+
+          import argparse
+          _parser = argparse.ArgumentParser(prog='Hello world', description='')
+          _parser.add_argument("--text", dest="text", type=str, required=True, default=argparse.SUPPRESS)
+          _parsed_args = vars(_parser.parse_args())
+
+          _outputs = hello_world(**_parsed_args)
+        image: python:3.7
+pipelineInfo:
+  name: pipelines/pipeline-hello-world
+root:
+  dag:
+    tasks:
+      hello-world:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-hello-world
+        inputs:
+          parameters:
+            text:
+              componentInputParameter: text
+        taskInfo:
+          name: hello-world
+  inputDefinitions:
+    parameters:
+      text:
+        type: STRING
+schemaVersion: 2.0.0
+sdkVersion: kfp-1.6.5
+`
+var protoSpecV2, _ = yamlStringToProtobufStruct(v2SpecManifest)
+var protoSpecV1, _ = yamlStringToProtobufStruct(v1SpecManifest)
 
 func TestBuildPipelineName_QueryStringNotEmpty(t *testing.T) {
 	pipelineName, err := buildPipelineName("pipeline%20one", "file one")
@@ -693,40 +752,15 @@ func TestPipelineServer_CreatePipelineVersion(t *testing.T) {
 	httpServer := getMockServer(t)
 	defer httpServer.Close()
 	clientManager := resource.NewFakeClientManagerOrFatal(util.NewFakeTimeForEpoch())
-	resourceManager := resource.NewResourceManager(clientManager, "default")
+	resourceManager := resource.NewResourceManager(clientManager, "")
 	pipelineServer := PipelineServer{resourceManager: resourceManager, httpClient: httpServer.Client(), options: &PipelineServerOptions{CollectMetrics: false}}
 	p1 := &apiv2.Pipeline{
-		DisplayName: "pipeline 1",
+		DisplayName: "pipeline-hello-world",
 		Namespace:   "namespace1",
 	}
 	parent, err := pipelineServer.CreatePipeline(context.Background(), &apiv2.CreatePipelineRequest{Pipeline: p1})
 	assert.Nil(t, err)
-	spec := &structpb.Struct{
-		Fields: map[string]*structpb.Value{
-			"String":  structpb.NewStringValue("pv2"),
-			"Boolean": structpb.NewBoolValue(false),
-			"Number":  structpb.NewNumberValue(19.1),
-			"Struct": structpb.NewStructValue(
-				&structpb.Struct{
-					Fields: map[string]*structpb.Value{
-						"InnerNull": structpb.NewNullValue(),
-						"InnerList": structpb.NewListValue(
-							&structpb.ListValue{
-								Values: []*structpb.Value{
-									structpb.NewStringValue("a"),
-									structpb.NewStringValue("b"),
-								},
-							},
-						),
-					},
-				},
-			),
-		},
-	}
 
-	type args struct {
-		pipeline *model.Pipeline
-	}
 	tests := []struct {
 		name    string
 		id      string
@@ -739,92 +773,129 @@ func TestPipelineServer_CreatePipelineVersion(t *testing.T) {
 			"Valid - single user",
 			DefaultFakeIdOne,
 			&apiv2.PipelineVersion{
-				DisplayName:  "pipeline version 1",
-				PipelineSpec: spec,
+				PipelineId:   parent.PipelineId,
+				DisplayName:  "pipeline version 1 v2",
+				PipelineSpec: protoSpecV2,
 				PackageUrl:   &apiv2.Url{PipelineUrl: "pv1.yaml"},
 			},
 			&apiv2.PipelineVersion{
-				PipelineSpec: spec,
-				DisplayName:  "pipeline version 1",
-				PackageUrl:   &apiv2.Url{PipelineUrl: "pv1.yaml"},
+				PipelineId:        parent.PipelineId,
+				PipelineVersionId: DefaultFakeIdOne,
+				PipelineSpec:      protoSpecV2,
+				DisplayName:       "pipeline version 1 v2",
+				PackageUrl:        &apiv2.Url{PipelineUrl: "pv1.yaml"},
 			},
 			false,
 			"",
 		},
 		{
-			"Valid - package url",
-			DefaultFakeIdOne,
+			"Valid - single user V1 spec",
+			DefaultFakeIdTwo,
 			&apiv2.PipelineVersion{
-				DisplayName: "pipeline version 4",
-				PackageUrl:  &apiv2.Url{PipelineUrl: "pv4.yaml"},
+				PipelineId:   parent.PipelineId,
+				DisplayName:  "pipeline version 1",
+				PipelineSpec: protoSpecV1,
+				PackageUrl:   &apiv2.Url{PipelineUrl: "pv1.yaml"},
 			},
 			&apiv2.PipelineVersion{
-				PackageUrl:  &apiv2.Url{PipelineUrl: "pv4.yaml"},
-				DisplayName: "pipeline version 1",
+				PipelineId:        parent.PipelineId,
+				PipelineVersionId: DefaultFakeIdTwo,
+				PipelineSpec:      protoSpecV1,
+				DisplayName:       "pipeline version 1",
+				PackageUrl:        &apiv2.Url{PipelineUrl: "pv1.yaml"},
 			},
 			false,
 			"",
+		},
+		{
+			"Invalid - package url",
+			DefaultFakeIdThree,
+			&apiv2.PipelineVersion{
+				PipelineId:  parent.PipelineId,
+				DisplayName: "pipeline version 4",
+				PackageUrl:  &apiv2.Url{PipelineUrl: "invalid url"},
+			},
+			nil,
+			true,
+			"Failed to create a pipeline version due to template creation error: InvalidInputError: unknown template format: pipeline spec is invalid",
 		},
 		{
 			"Valid - empty namespace",
-			DefaultFakeIdTwo,
+			DefaultFakeIdFour,
 			&apiv2.PipelineVersion{
-				PipelineSpec: spec,
+				PipelineId:   parent.PipelineId,
+				PipelineSpec: protoSpecV2,
 				DisplayName:  "pipeline version 2",
 				PackageUrl:   &apiv2.Url{PipelineUrl: "pv2.yaml"},
 			},
 			&apiv2.PipelineVersion{
-				PipelineSpec: spec,
-				DisplayName:  "pipeline version 2",
-				PackageUrl:   &apiv2.Url{PipelineUrl: "pv1.yaml"},
+				PipelineVersionId: DefaultFakeIdFour,
+				PipelineSpec:      protoSpecV2,
+				DisplayName:       "pipeline version 2",
+				PackageUrl:        &apiv2.Url{PipelineUrl: "pv2.yaml"},
 			},
 			false,
 			"",
 		},
 		{
 			"Invalid - duplicate name",
-			DefaultFakeIdThree,
+			DefaultFakeIdFive,
 			&apiv2.PipelineVersion{
-				PipelineSpec: spec,
+				PipelineId:   parent.PipelineId,
+				PipelineSpec: protoSpecV2,
 				DisplayName:  "pipeline version 2",
 				PackageUrl:   &apiv2.Url{PipelineUrl: "pv2.yaml"},
 			},
 			nil,
 			true,
-			"The name pipeline version 2 already exist. Please specify a new name",
+			"The name pipeline version 2 already exist. Specify a new name",
 		},
 		{
 			"Invalid - missing name",
-			DefaultFakeIdFour,
+			DefaultFakeIdSix,
 			&apiv2.PipelineVersion{
-				PipelineSpec: spec,
+				PipelineId:   parent.PipelineId,
+				PipelineSpec: protoSpecV2,
 				PackageUrl:   &apiv2.Url{PipelineUrl: "pv0.yaml"},
 			},
 			nil,
 			true,
-			"Failed create to a pipeline due to empty name. Please specify a valid name",
+			"Invalid input error: Pipeline version's name cannot be empty",
 		},
 		{
 			"Invalid - missing spec",
-			DefaultFakeIdFour,
+			DefaultFakeIdSeven,
 			&apiv2.PipelineVersion{
+				PipelineId:  parent.PipelineId,
 				DisplayName: "pipeline version 3",
 				PackageUrl:  &apiv2.Url{PipelineUrl: "pv3.yaml"},
 			},
 			nil,
 			true,
-			"Failed create to a pipeline version due to empty name. Please specify a valid name",
+			"Failed to create a pipeline version due to template creation error: InvalidInputError: unknown template format: pipeline spec is invalid",
 		},
 		{
 			"Invalid - missing package url",
-			DefaultFakeIdFour,
+			DefaultFakeIdEight,
 			&apiv2.PipelineVersion{
+				PipelineId:   parent.PipelineId,
 				DisplayName:  "pipeline version 5",
-				PipelineSpec: spec,
+				PipelineSpec: protoSpecV2,
 			},
 			nil,
 			true,
 			"Failed to create a pipeline version. Package URL is nil",
+		},
+		{
+			"Invalid - missing parent",
+			DefaultFakeIdNine,
+			&apiv2.PipelineVersion{
+				DisplayName: "pipeline version 4",
+				PackageUrl:  &apiv2.Url{PipelineUrl: "pv4.yaml"},
+			},
+			nil,
+			true,
+			"Parent pipeline id is empty",
 		},
 	}
 	for _, tt := range tests {

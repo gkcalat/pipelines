@@ -15,6 +15,7 @@
 package server
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -26,9 +27,11 @@ import (
 	"github.com/kubeflow/pipelines/backend/src/apiserver/model"
 	"github.com/kubeflow/pipelines/backend/src/apiserver/template"
 	"github.com/kubeflow/pipelines/backend/src/common/util"
+	swapi "github.com/kubeflow/pipelines/backend/src/crd/pkg/apis/scheduledworkflow/v1beta1"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/genproto/googleapis/rpc/status"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -327,6 +330,13 @@ func TestToModelPipeline(t *testing.T) {
 				Status:      "READY",
 				Namespace:   "ns3",
 			},
+		},
+		{
+			"invalid type",
+			&apiv2beta1.Experiment{},
+			true,
+			"Error using Pipeline with *go_client.Experiment",
+			nil,
 		},
 	}
 
@@ -749,6 +759,13 @@ func TestToModelPipelineVersion(t *testing.T) {
 					ResourceReferences: []*apiv1beta1.ResourceReference{
 						{
 							Key: &apiv1beta1.ResourceKey{
+								Id:   "namespace10",
+								Type: apiv1beta1.ResourceType_NAMESPACE,
+							},
+							Relationship: apiv1beta1.Relationship_OWNER,
+						},
+						{
+							Key: &apiv1beta1.ResourceKey{
 								Id:   "pipeline2",
 								Type: apiv1beta1.ResourceType_PIPELINE,
 							},
@@ -849,6 +866,13 @@ func TestToModelPipelineVersion(t *testing.T) {
 			true,
 			"Failed to convert API pipeline version to internal pipeline version representation due to pipeline spec conversion error",
 		},
+		{
+			"invalid type",
+			&apiv2beta1.Experiment{},
+			nil,
+			true,
+			"Error using PipelineVersion with *go_client.Experiment",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(
@@ -864,6 +888,418 @@ func TestToModelPipelineVersion(t *testing.T) {
 				assert.Equal(t, tt.expectedPipelineVersion, pipelineVersion)
 			},
 		)
+	}
+}
+
+func TestToApiPipelineVersion(t *testing.T) {
+	tests := []struct {
+		name    string
+		arg     *model.PipelineVersion
+		want    *apiv2beta1.PipelineVersion
+		wantErr bool
+		errMsg  string
+	}{
+		{
+			"Valid - v2",
+			&model.PipelineVersion{
+				UUID:           "pv1",
+				CreatedAtInSec: 2,
+				Name:           "Version 2 v2beta1",
+				Parameters:     "",
+				PipelineId:     "pipeline 333",
+				CodeSourceUrl:  "http://repo/3333",
+				Description:    "This is pipeline version 333",
+				PipelineSpec:   "name: PipelineVersion222\n",
+				Status:         model.PipelineVersionReady,
+			},
+			&apiv2beta1.PipelineVersion{
+				PipelineVersionId: "pv1",
+				CreatedAt:         &timestamppb.Timestamp{Seconds: 2},
+				DisplayName:       "Version 2 v2beta1",
+				PipelineId:        "pipeline 333",
+				PackageUrl:        &apiv2beta1.Url{PipelineUrl: "http://repo/3333"},
+				Description:       "This is pipeline version 333",
+				PipelineSpec:      &structpb.Struct{Fields: map[string]*structpb.Value{"name": {Kind: &structpb.Value_StringValue{StringValue: "PipelineVersion222"}}}},
+			},
+			false,
+			"",
+		},
+		{
+			"Valid - v2 uri amd empty spec",
+			&model.PipelineVersion{
+				UUID:            "pv1",
+				CreatedAtInSec:  2,
+				Name:            "Version 2 v2beta1",
+				Parameters:      "",
+				PipelineId:      "pipeline 333",
+				PipelineSpecURI: "http://repo/3333",
+				Description:     "This is pipeline version 333",
+				PipelineSpec:    "",
+				Status:          model.PipelineVersionReady,
+			},
+			&apiv2beta1.PipelineVersion{
+				PipelineVersionId: "pv1",
+				CreatedAt:         &timestamppb.Timestamp{Seconds: 2},
+				DisplayName:       "Version 2 v2beta1",
+				PipelineId:        "pipeline 333",
+				PackageUrl:        &apiv2beta1.Url{PipelineUrl: "http://repo/3333"},
+				Description:       "This is pipeline version 333",
+			},
+			false,
+			"",
+		},
+		{
+			"Invalid - v2 nil",
+			nil,
+			nil,
+			true,
+			"Pipeline version cannot be nil",
+		},
+		{
+			"Invalid - v2 empty UUID",
+			&model.PipelineVersion{
+				UUID:           "",
+				CreatedAtInSec: 2,
+				Name:           "Version 2 v2beta1",
+				Parameters:     "",
+				PipelineId:     "pipeline 333",
+				CodeSourceUrl:  "http://repo/3333",
+				Description:    "This is pipeline version 333",
+				PipelineSpec:   "name: PipelineVersion222\n",
+				Status:         model.PipelineVersionReady,
+			},
+			nil,
+			true,
+			"Pipeline version id cannot be empty",
+		},
+		{
+			"Invalid - v2 empty create time",
+			&model.PipelineVersion{
+				UUID:           "pv 2",
+				CreatedAtInSec: 0,
+				Name:           "Version 2 v2beta1",
+				Parameters:     "",
+				PipelineId:     "pipeline 333",
+				CodeSourceUrl:  "http://repo/3333",
+				Description:    "This is pipeline version 333",
+				PipelineSpec:   "name: PipelineVersion222\n",
+				Status:         model.PipelineVersionReady,
+			},
+			nil,
+			true,
+			"Create time can not be 0",
+		},
+		{
+			"Invalid - v2 corrupted spec",
+			&model.PipelineVersion{
+				UUID:           "pv 2",
+				CreatedAtInSec: 10,
+				Name:           "Version 2 v2beta1",
+				Parameters:     "",
+				PipelineId:     "pipeline 333",
+				CodeSourceUrl:  "http://repo/3333",
+				Description:    "This is pipeline version 333",
+				PipelineSpec:   "name: ,PipelineVersion222\n",
+				Status:         model.PipelineVersionReady,
+			},
+			nil,
+			true,
+			"Failed to convert a pipeline versions to API pipeline version due to error in parsing its pipeline spec yaml",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(
+			tt.name,
+			func(t *testing.T) {
+				pipelineVersion := toApiPipelineVersion(tt.arg)
+				assert.NotNil(t, pipelineVersion)
+				if tt.wantErr {
+					assert.NotNil(t, pipelineVersion.GetError())
+					assert.Contains(t, pipelineVersion.GetError().GetMessage(), tt.errMsg)
+				} else {
+					assert.True(t, proto.Equal(tt.want, pipelineVersion))
+				}
+			},
+		)
+	}
+}
+
+func TestToApiPipelineVersions(t *testing.T) {
+	want := []*apiv2beta1.PipelineVersion{
+		{
+			PipelineVersionId: "pv1",
+			CreatedAt:         &timestamppb.Timestamp{Seconds: 2},
+			DisplayName:       "Version 2 v2beta1",
+			PipelineId:        "pipeline 333",
+			PackageUrl:        &apiv2beta1.Url{PipelineUrl: "http://repo/3333"},
+			Description:       "This is pipeline version 333",
+			PipelineSpec:      &structpb.Struct{Fields: map[string]*structpb.Value{"name": {Kind: &structpb.Value_StringValue{StringValue: "PipelineVersion222"}}}},
+		},
+		{
+			PipelineVersionId: "pv1",
+			CreatedAt:         &timestamppb.Timestamp{Seconds: 2},
+			DisplayName:       "Version 2 v2beta1",
+			PipelineId:        "pipeline 333",
+			PackageUrl:        &apiv2beta1.Url{PipelineUrl: "http://repo/3333"},
+			Description:       "This is pipeline version 333",
+		},
+		{
+			Error: util.ToRpcStatus(
+				util.NewInternalServerError(
+					errors.New("Pipeline version cannot be nil"),
+					"Failed to convert a pipeline version to API pipeline version",
+				),
+			),
+		},
+
+		{
+			Error: util.ToRpcStatus(
+				util.NewInternalServerError(
+					errors.New("Pipeline version id cannot be empty"),
+					"Failed to convert a pipeline version to API pipeline version",
+				),
+			),
+		},
+		{
+			PipelineVersionId: "pv 2",
+			Error: util.ToRpcStatus(
+				util.NewInternalServerError(
+					errors.New("Create time can not be 0"),
+					"Failed to convert a pipeline versions to API pipeline version",
+				),
+			),
+		},
+		{
+			PipelineVersionId: "pv 2",
+			Error: util.ToRpcStatus(
+				util.NewInternalServerError(
+					util.Wrap(fmt.Errorf("error converting YAML to JSON: %v", fmt.Errorf("yaml: did not find expected node content")), "Failed to convert a yaml string into a protobuf struct"),
+					"Failed to convert a pipeline versions to API pipeline version due to error in parsing its pipeline spec yaml",
+				),
+			),
+		},
+	}
+	arg := []*model.PipelineVersion{
+		{
+			UUID:           "pv1",
+			CreatedAtInSec: 2,
+			Name:           "Version 2 v2beta1",
+			Parameters:     "",
+			PipelineId:     "pipeline 333",
+			CodeSourceUrl:  "http://repo/3333",
+			Description:    "This is pipeline version 333",
+			PipelineSpec:   "name: PipelineVersion222\n",
+			Status:         model.PipelineVersionReady,
+		},
+		{
+			UUID:            "pv1",
+			CreatedAtInSec:  2,
+			Name:            "Version 2 v2beta1",
+			Parameters:      "",
+			PipelineId:      "pipeline 333",
+			PipelineSpecURI: "http://repo/3333",
+			Description:     "This is pipeline version 333",
+			PipelineSpec:    "",
+			Status:          model.PipelineVersionReady,
+		},
+		nil,
+		{
+			UUID:           "",
+			CreatedAtInSec: 2,
+			Name:           "Version 2 v2beta1",
+			Parameters:     "",
+			PipelineId:     "pipeline 333",
+			CodeSourceUrl:  "http://repo/3333",
+			Description:    "This is pipeline version 333",
+			PipelineSpec:   "name: PipelineVersion222\n",
+			Status:         model.PipelineVersionReady,
+		},
+		{
+			UUID:           "pv 2",
+			CreatedAtInSec: 0,
+			Name:           "Version 2 v2beta1",
+			Parameters:     "",
+			PipelineId:     "pipeline 333",
+			CodeSourceUrl:  "http://repo/3333",
+			Description:    "This is pipeline version 333",
+			PipelineSpec:   "name: PipelineVersion222\n",
+			Status:         model.PipelineVersionReady,
+		},
+		{
+			UUID:           "pv 2",
+			CreatedAtInSec: 10,
+			Name:           "Version 2 v2beta1",
+			Parameters:     "",
+			PipelineId:     "pipeline 333",
+			CodeSourceUrl:  "http://repo/3333",
+			Description:    "This is pipeline version 333",
+			PipelineSpec:   "name: ,PipelineVersion222\n",
+			Status:         model.PipelineVersionReady,
+		},
+	}
+	got := toApiPipelineVersions(arg)
+	for i, tt := range got {
+		assert.True(t, proto.Equal(want[i], tt), "Wanted: %v, got %v", want[i], tt)
+	}
+}
+
+func TestToApiPipelineVersionV1(t *testing.T) {
+	tests := []struct {
+		name    string
+		arg     *model.PipelineVersion
+		want    *apiv1beta1.PipelineVersion
+		wantErr bool
+		errMsg  string
+	}{
+		{
+			"Valid - v1",
+			&model.PipelineVersion{
+				UUID:           "pipelineversion1",
+				CreatedAtInSec: 1,
+				Parameters:     `[{"name":"param2","value":"world"}]`,
+				PipelineId:     "pipeline1",
+				CodeSourceUrl:  "http://repo/11111",
+				Status:         model.PipelineVersionReady,
+			},
+			&apiv1beta1.PipelineVersion{
+				Id:        "pipelineversion1",
+				CreatedAt: &timestamp.Timestamp{Seconds: 1},
+				Parameters: []*apiv1beta1.Parameter{
+					{
+						Name:  "param2",
+						Value: "world",
+					},
+				},
+				CodeSourceUrl: "http://repo/11111",
+				PackageUrl:    &apiv1beta1.Url{PipelineUrl: "http://repo/11111"},
+				ResourceReferences: []*apiv1beta1.ResourceReference{
+					{
+						Key: &apiv1beta1.ResourceKey{
+							Id:   "pipeline1",
+							Type: apiv1beta1.ResourceType_PIPELINE,
+						},
+						Relationship: apiv1beta1.Relationship_OWNER,
+					},
+				},
+			},
+			false,
+			"",
+		},
+		{
+			"Valid - v1 no refs",
+			&model.PipelineVersion{
+				UUID:           "pipelineversion1",
+				CreatedAtInSec: 1,
+				Parameters:     "[]",
+				Status:         model.PipelineVersionReady,
+			},
+			&apiv1beta1.PipelineVersion{
+				Id:        "pipelineversion1",
+				CreatedAt: &timestamp.Timestamp{Seconds: 1},
+			},
+			false,
+			"",
+		},
+		{
+			"Invalid - v1 nil",
+			nil,
+			nil,
+			true,
+			"",
+		},
+		{
+			"Invalid - v1 parameters",
+			&model.PipelineVersion{
+				UUID:           "pipelineversion1",
+				CreatedAtInSec: 1,
+				PipelineId:     "pipeline1",
+				CodeSourceUrl:  "http://repo/11111",
+				Status:         model.PipelineVersionReady,
+				Parameters:     "wrong params",
+			},
+			nil,
+			true,
+			"",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(
+			tt.name,
+			func(t *testing.T) {
+				pipelineVersion := toApiPipelineVersionV1(tt.arg)
+				if tt.wantErr {
+					assert.Nil(t, pipelineVersion)
+				} else {
+					assert.True(t, proto.Equal(tt.want, pipelineVersion))
+				}
+			},
+		)
+	}
+}
+
+func TestToApiPipelineVersionsV1(t *testing.T) {
+	want := []*apiv1beta1.PipelineVersion{
+		{
+			Id:        "pipelineversion1",
+			CreatedAt: &timestamp.Timestamp{Seconds: 1},
+			Parameters: []*apiv1beta1.Parameter{
+				{
+					Name:  "param2",
+					Value: "world",
+				},
+			},
+			CodeSourceUrl: "http://repo/11111",
+			PackageUrl:    &apiv1beta1.Url{PipelineUrl: "http://repo/11111"},
+			ResourceReferences: []*apiv1beta1.ResourceReference{
+				{
+					Key: &apiv1beta1.ResourceKey{
+						Id:   "pipeline1",
+						Type: apiv1beta1.ResourceType_PIPELINE,
+					},
+					Relationship: apiv1beta1.Relationship_OWNER,
+				},
+			},
+		},
+		{
+			Id:        "pipelineversion1",
+			CreatedAt: &timestamp.Timestamp{Seconds: 1},
+		},
+		nil,
+		nil,
+	}
+	args := []*model.PipelineVersion{
+		{
+			UUID:           "pipelineversion1",
+			CreatedAtInSec: 1,
+			Parameters:     `[{"name":"param2","value":"world"}]`,
+			PipelineId:     "pipeline1",
+			CodeSourceUrl:  "http://repo/11111",
+			Status:         model.PipelineVersionReady,
+		},
+		{
+			UUID:           "pipelineversion1",
+			CreatedAtInSec: 1,
+			Parameters:     "[]",
+			Status:         model.PipelineVersionReady,
+		},
+		nil,
+		{
+			UUID:           "pipelineversion1",
+			CreatedAtInSec: 1,
+			PipelineId:     "pipeline1",
+			CodeSourceUrl:  "http://repo/11111",
+			Status:         model.PipelineVersionReady,
+			Parameters:     "wrong params",
+		},
+	}
+	got := toApiPipelineVersionsV1(args)
+	assert.Equal(t, len(want), len(got))
+	for i, tt := range got {
+		if want[i] != nil {
+			assert.True(t, proto.Equal(want[i], tt), "Wanted: %v, got: %v", want[i], tt)
+		} else {
+			assert.Nil(t, tt)
+		}
 	}
 }
 
@@ -2305,4 +2741,678 @@ func TestToApiRecurringRun(t *testing.T) {
 	// exported fields into string format.
 	// See https://github.com/stretchr/testify/issues/758
 	assert.Equal(t, expectedRecurringRun2.String(), apiRecurringRun2.String())
+}
+
+func Test_toModelStorageState(t *testing.T) {
+	tests := []struct {
+		name    string
+		arg     interface{}
+		want    model.StorageState
+		wantErr bool
+		errMsg  string
+	}{
+		{
+			"invalid type - int64",
+			32,
+			"",
+			true,
+			"Error using StorageState with int",
+		},
+		{
+			"invalid type - api experiment",
+			&apiv2beta1.Experiment{},
+			"",
+			true,
+			"Error using StorageState with *go_client.Experiment",
+		},
+		{
+			"string - invalid value",
+			"INVALID STORAGE STATE",
+			"",
+			true,
+			"Storage state cannot be equal to INVALID STORAGE STATE",
+		},
+		{
+			"string - archived",
+			"ARCHIVED",
+			model.StorageStateArchived,
+			false,
+			"",
+		},
+		{
+			"string - available",
+			"AVAILABLE",
+			model.StorageStateAvailable,
+			false,
+			"",
+		},
+		{
+			"string - unspecified",
+			"STORAGE_STATE_UNSPECIFIED",
+			model.StorageStateUnspecified,
+			false,
+			"",
+		},
+		{
+			"string - archived v1",
+			"STORAGESTATE_ARCHIVED",
+			model.StorageStateArchived,
+			false,
+			"",
+		},
+		{
+			"string - available v1",
+			"STORAGESTATE_AVAILABLE",
+			model.StorageStateAvailable,
+			false,
+			"",
+		},
+		{
+			"string - unspecified v1",
+			"STORAGESTATE_UNSPECIFIED",
+			model.StorageStateUnspecified,
+			false,
+			"",
+		},
+		{
+			"string - experiment archived",
+			apiv2beta1.Experiment_ARCHIVED,
+			model.StorageStateArchived,
+			false,
+			"",
+		},
+		{
+			"string - experiment available",
+			apiv2beta1.Experiment_AVAILABLE,
+			model.StorageStateAvailable,
+			false,
+			"",
+		},
+		{
+			"string - experiment unspecified",
+			apiv2beta1.Experiment_STORAGE_STATE_UNSPECIFIED,
+			model.StorageStateUnspecified,
+			false,
+			"",
+		},
+		{
+			"string - run archived",
+			apiv2beta1.Run_ARCHIVED,
+			model.StorageStateArchived,
+			false,
+			"",
+		},
+		{
+			"string - run available",
+			apiv2beta1.Run_AVAILABLE,
+			model.StorageStateAvailable,
+			false,
+			"",
+		},
+		{
+			"string - run unspecified",
+			apiv2beta1.Run_STORAGE_STATE_UNSPECIFIED,
+			model.StorageStateUnspecified,
+			false,
+			"",
+		},
+		{
+			"string - experiment archived v1",
+			apiv1beta1.Experiment_STORAGESTATE_ARCHIVED,
+			model.StorageStateArchived,
+			false,
+			"",
+		},
+		{
+			"string - experiment available v1",
+			apiv1beta1.Experiment_STORAGESTATE_AVAILABLE,
+			model.StorageStateAvailable,
+			false,
+			"",
+		},
+		{
+			"string - experiment unspecified v1",
+			apiv1beta1.Experiment_STORAGESTATE_UNSPECIFIED,
+			model.StorageStateUnspecified,
+			false,
+			"",
+		},
+		{
+			"string - run archived v1",
+			apiv1beta1.Run_STORAGESTATE_ARCHIVED,
+			model.StorageStateArchived,
+			false,
+			"",
+		},
+		{
+			"string - run available v1",
+			apiv1beta1.Run_STORAGESTATE_AVAILABLE,
+			model.StorageStateAvailable,
+			false,
+			"",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := toModelStorageState(tt.arg)
+			if tt.wantErr {
+				assert.NotNil(t, err)
+				assert.Empty(t, got)
+				assert.Contains(t, err.Error(), tt.errMsg)
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, tt.want, got)
+			}
+		})
+	}
+}
+
+func Test_toApiRunStorageState(t *testing.T) {
+	tests := []struct {
+		name string
+		arg  model.StorageState
+		want apiv2beta1.Run_StorageState
+	}{
+		{
+			"wrong value",
+			model.StorageState("wrong state"),
+			apiv2beta1.Run_STORAGE_STATE_UNSPECIFIED,
+		},
+		{
+			"empty string",
+			model.StorageState(""),
+			apiv2beta1.Run_STORAGE_STATE_UNSPECIFIED,
+		},
+		{
+			"archived",
+			model.StorageStateArchived,
+			apiv2beta1.Run_ARCHIVED,
+		},
+		{
+			"available",
+			model.StorageStateAvailable,
+			apiv2beta1.Run_AVAILABLE,
+		},
+		{
+			"unspecified",
+			model.StorageStateUnspecified,
+			apiv2beta1.Run_STORAGE_STATE_UNSPECIFIED,
+		},
+		{
+			"archived v1",
+			model.StorageStateArchivedV1,
+			apiv2beta1.Run_ARCHIVED,
+		},
+		{
+			"available v1",
+			model.StorageStateAvailableV1,
+			apiv2beta1.Run_AVAILABLE,
+		},
+		{
+			"unspecified v1",
+			model.StorageStateUnspecifiedV1,
+			apiv2beta1.Run_STORAGE_STATE_UNSPECIFIED,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := toApiRunStorageState(&tt.arg)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func Test_toApiRunStorageStateV1(t *testing.T) {
+	tests := []struct {
+		name string
+		arg  model.StorageState
+		want apiv1beta1.Run_StorageState
+	}{
+		{
+			"wrong value",
+			model.StorageState("wrong state"),
+			apiv1beta1.Run_STORAGESTATE_AVAILABLE,
+		},
+		{
+			"empty string",
+			model.StorageState(""),
+			apiv1beta1.Run_STORAGESTATE_AVAILABLE,
+		},
+		{
+			"archived",
+			model.StorageStateArchived,
+			apiv1beta1.Run_STORAGESTATE_ARCHIVED,
+		},
+		{
+			"available",
+			model.StorageStateAvailable,
+			apiv1beta1.Run_STORAGESTATE_AVAILABLE,
+		},
+		{
+			"unspecified",
+			model.StorageStateUnspecified,
+			apiv1beta1.Run_STORAGESTATE_AVAILABLE,
+		},
+		{
+			"archived v1",
+			model.StorageStateArchivedV1,
+			apiv1beta1.Run_STORAGESTATE_ARCHIVED,
+		},
+		{
+			"available v1",
+			model.StorageStateAvailableV1,
+			apiv1beta1.Run_STORAGESTATE_AVAILABLE,
+		},
+		{
+			"unspecified v1",
+			model.StorageStateUnspecifiedV1,
+			apiv1beta1.Run_STORAGESTATE_AVAILABLE,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := toApiRunStorageStateV1(&tt.arg)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func Test_toApiExperimentStorageState(t *testing.T) {
+	tests := []struct {
+		name string
+		arg  model.StorageState
+		want apiv2beta1.Experiment_StorageState
+	}{
+		{
+			"wrong value",
+			model.StorageState("wrong state"),
+			apiv2beta1.Experiment_STORAGE_STATE_UNSPECIFIED,
+		},
+		{
+			"empty string",
+			model.StorageState(""),
+			apiv2beta1.Experiment_STORAGE_STATE_UNSPECIFIED,
+		},
+		{
+			"archived",
+			model.StorageStateArchived,
+			apiv2beta1.Experiment_ARCHIVED,
+		},
+		{
+			"available",
+			model.StorageStateAvailable,
+			apiv2beta1.Experiment_AVAILABLE,
+		},
+		{
+			"unspecified",
+			model.StorageStateUnspecified,
+			apiv2beta1.Experiment_STORAGE_STATE_UNSPECIFIED,
+		},
+		{
+			"archived v1",
+			model.StorageStateArchivedV1,
+			apiv2beta1.Experiment_ARCHIVED,
+		},
+		{
+			"available v1",
+			model.StorageStateAvailableV1,
+			apiv2beta1.Experiment_AVAILABLE,
+		},
+		{
+			"unspecified v1",
+			model.StorageStateUnspecifiedV1,
+			apiv2beta1.Experiment_STORAGE_STATE_UNSPECIFIED,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := toApiExperimentStorageState(&tt.arg)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func Test_toApiExperimentStorageStateV1(t *testing.T) {
+	tests := []struct {
+		name string
+		arg  model.StorageState
+		want apiv1beta1.Experiment_StorageState
+	}{
+		{
+			"wrong value",
+			model.StorageState("wrong state"),
+			apiv1beta1.Experiment_STORAGESTATE_UNSPECIFIED,
+		},
+		{
+			"empty string",
+			model.StorageState(""),
+			apiv1beta1.Experiment_STORAGESTATE_UNSPECIFIED,
+		},
+		{
+			"archived",
+			model.StorageStateArchived,
+			apiv1beta1.Experiment_STORAGESTATE_ARCHIVED,
+		},
+		{
+			"available",
+			model.StorageStateAvailable,
+			apiv1beta1.Experiment_STORAGESTATE_AVAILABLE,
+		},
+		{
+			"unspecified",
+			model.StorageStateUnspecified,
+			apiv1beta1.Experiment_STORAGESTATE_UNSPECIFIED,
+		},
+		{
+			"archived v1",
+			model.StorageStateArchivedV1,
+			apiv1beta1.Experiment_STORAGESTATE_ARCHIVED,
+		},
+		{
+			"available v1",
+			model.StorageStateAvailableV1,
+			apiv1beta1.Experiment_STORAGESTATE_AVAILABLE,
+		},
+		{
+			"unspecified v1",
+			model.StorageStateUnspecifiedV1,
+			apiv1beta1.Experiment_STORAGESTATE_UNSPECIFIED,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := toApiExperimentStorageStateV1(&tt.arg)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func Test_toModelJobEnabled(t *testing.T) {
+	tests := []struct {
+		name    string
+		arg     interface{}
+		want    bool
+		wantErr bool
+		errMsg  string
+	}{
+		{
+			"valid - nil",
+			nil,
+			false,
+			false,
+			"",
+		},
+		{
+			"valid - mode enable",
+			apiv2beta1.RecurringRun_ENABLE,
+			true,
+			false,
+			"",
+		},
+		{
+			"valid - mode disable",
+			apiv2beta1.RecurringRun_DISABLE,
+			false,
+			false,
+			"",
+		},
+		{
+			"valid - mode unspecified",
+			apiv2beta1.RecurringRun_MODE_UNSPECIFIED,
+			false,
+			false,
+			"",
+		},
+		{
+			"invalid - mode invalid value",
+			apiv2beta1.RecurringRun_Mode(3),
+			false,
+			true,
+			"Recurring run's mode is invalid: 3",
+		},
+		{
+			"valid - mode enable v1",
+			apiv1beta1.Job_ENABLED,
+			true,
+			false,
+			"",
+		},
+		{
+			"valid - mode disable v1",
+			apiv1beta1.Job_DISABLED,
+			false,
+			false,
+			"",
+		},
+		{
+			"valid - mode unknown v1",
+			apiv1beta1.Job_UNKNOWN_MODE,
+			false,
+			false,
+			"",
+		},
+		{
+			"invalid - mode invalid value v1",
+			apiv1beta1.Job_Mode(3),
+			false,
+			true,
+			"Recurring run's mode is invalid: 3",
+		},
+		{
+			"invalid - experiment",
+			&apiv2beta1.Experiment{},
+			false,
+			true,
+			"Error using RecurringRun.Mode with *go_client.Experiment",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := toModelJobEnabled(tt.arg)
+			if tt.wantErr {
+				assert.False(t, got)
+				assert.NotNil(t, err)
+				assert.Contains(t, err.Error(), tt.errMsg)
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, tt.want, got)
+			}
+		})
+	}
+}
+
+func Test_toApiRecurringRunStatus(t *testing.T) {
+	tests := []struct {
+		name string
+		arg  string
+		want apiv2beta1.RecurringRun_Status
+	}{
+		{
+			"valid - empty",
+			"",
+			apiv2beta1.RecurringRun_STATUS_UNSPECIFIED,
+		},
+		{
+			"valid - unspecified",
+			string(model.StatusStateUnspecified),
+			apiv2beta1.RecurringRun_STATUS_UNSPECIFIED,
+		},
+		{
+			"valid - unspecified v1",
+			string(model.StatusStateUnspecifiedV1),
+			apiv2beta1.RecurringRun_STATUS_UNSPECIFIED,
+		},
+		{
+			"valid - error v1",
+			string(swapi.ScheduledWorkflowError),
+			apiv2beta1.RecurringRun_STATUS_UNSPECIFIED,
+		},
+		{
+			"valid - disabled",
+			string(model.StatusStateDisabled),
+			apiv2beta1.RecurringRun_DISABLED,
+		},
+		{
+			"valid - disabled v1",
+			string(swapi.ScheduledWorkflowDisabled),
+			apiv2beta1.RecurringRun_DISABLED,
+		},
+		{
+			"valid - enabled",
+			string(model.StatusStateEnabled),
+			apiv2beta1.RecurringRun_ENABLED,
+		},
+		{
+			"valid - succeeded v1",
+			string(swapi.ScheduledWorkflowSucceeded),
+			apiv2beta1.RecurringRun_ENABLED,
+		},
+		{
+			"valid - running v1",
+			string(swapi.ScheduledWorkflowRunning),
+			apiv2beta1.RecurringRun_ENABLED,
+		},
+		{
+			"valid - enabled v1",
+			string(swapi.ScheduledWorkflowEnabled),
+			apiv2beta1.RecurringRun_ENABLED,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := toApiRecurringRunStatus(tt.arg)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func Test_toApiJobStatus(t *testing.T) {
+	tests := []struct {
+		name string
+		arg  string
+		want string
+	}{
+		{
+			"valid - empty",
+			"",
+			string(model.StatusStateUnspecified),
+		},
+		{
+			"valid - unspecified",
+			string(model.StatusStateUnspecified),
+			string(model.StatusStateUnspecified),
+		},
+		{
+			"valid - unspecified v1",
+			string(model.StatusStateUnspecifiedV1),
+			string(model.StatusStateUnspecified),
+		},
+		{
+			"valid - error v1",
+			string(swapi.ScheduledWorkflowError),
+			string(model.StatusStateUnspecified),
+		},
+		{
+			"valid - disabled",
+			string(model.StatusStateDisabled),
+			string(model.StatusStateDisabled),
+		},
+		{
+			"valid - disabled v1",
+			string(swapi.ScheduledWorkflowDisabled),
+			string(model.StatusStateDisabled),
+		},
+		{
+			"valid - enabled",
+			string(model.StatusStateEnabled),
+			string(model.StatusStateEnabled),
+		},
+		{
+			"valid - succeeded v1",
+			string(swapi.ScheduledWorkflowSucceeded),
+			string(model.StatusStateEnabled),
+		},
+		{
+			"valid - running v1",
+			string(swapi.ScheduledWorkflowRunning),
+			string(model.StatusStateEnabled),
+		},
+		{
+			"valid - enabled v1",
+			string(swapi.ScheduledWorkflowEnabled),
+			string(model.StatusStateEnabled),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := toApiJobStatus(tt.arg)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func Test_toModelResourceTypeV1(t *testing.T) {
+	tests := []struct {
+		name    string
+		arg     apiv1beta1.ResourceType
+		want    model.ResourceType
+		wantErr bool
+		errMsg  string
+	}{
+		{
+			"valid - namespace",
+			apiv1beta1.ResourceType_NAMESPACE,
+			model.NamespaceResourceType,
+			false,
+			"",
+		},
+		{
+			"valid - experiment",
+			apiv1beta1.ResourceType_EXPERIMENT,
+			model.ExperimentResourceType,
+			false,
+			"",
+		},
+		{
+			"valid - pipeline",
+			apiv1beta1.ResourceType_PIPELINE,
+			model.PipelineResourceType,
+			false,
+			"",
+		},
+		{
+			"valid - pipeline version",
+			apiv1beta1.ResourceType_PIPELINE_VERSION,
+			model.PipelineVersionResourceType,
+			false,
+			"",
+		},
+		{
+			"valid - job",
+			apiv1beta1.ResourceType_JOB,
+			model.JobResourceType,
+			false,
+			"",
+		},
+		{
+			"invalid",
+			apiv1beta1.ResourceType(99),
+			"",
+			true,
+			"Failed to convert unsupported v1beta1 API resource type 99",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := toModelResourceTypeV1(tt.arg)
+			if tt.wantErr {
+				assert.NotNil(t, err)
+				assert.Contains(t, err.Error(), tt.errMsg)
+				assert.Empty(t, got)
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, tt.want, got)
+			}
+		})
+	}
 }
