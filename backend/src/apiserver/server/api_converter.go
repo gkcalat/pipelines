@@ -221,8 +221,6 @@ func toApiPipelineV1(pipeline *model.Pipeline, pipelineVersion *model.PipelineVe
 	}
 	if defaultVersion.GetPackageUrl() != nil && defaultVersion.GetPackageUrl().GetPipelineUrl() != "" {
 		apiPipeline.Url = defaultVersion.GetPackageUrl()
-	} else if defaultVersion.GetCodeSourceUrl() != "" {
-		apiPipeline.Url = &apiv1beta1.Url{PipelineUrl: defaultVersion.GetCodeSourceUrl()}
 	}
 	return apiPipeline
 }
@@ -431,7 +429,7 @@ func toModelPipelineVersion(p interface{}) (*model.PipelineVersion, error) {
 func toApiPipelineVersionV1(pv *model.PipelineVersion) *apiv1beta1.PipelineVersion {
 	apiPipelineVersion := &apiv1beta1.PipelineVersion{}
 	if pv == nil {
-		return apiPipelineVersion
+		return nil
 	}
 	apiPipelineVersion.Id = pv.UUID
 	apiPipelineVersion.Name = pv.Name
@@ -511,7 +509,7 @@ func toApiPipelineVersion(pv *model.PipelineVersion) *apiv2beta1.PipelineVersion
 	// Infer pipeline url
 	if pv.CodeSourceUrl != "" {
 		apiPipelineVersion.PackageUrl = &apiv2beta1.Url{
-			PipelineUrl: pv.PipelineSpecURI,
+			PipelineUrl: pv.CodeSourceUrl,
 		}
 	} else if pv.PipelineSpecURI != "" {
 		apiPipelineVersion.PackageUrl = &apiv2beta1.Url{
@@ -544,9 +542,6 @@ func toApiPipelineVersionsV1(pv []*model.PipelineVersion) []*apiv1beta1.Pipeline
 	apiVersions := make([]*apiv1beta1.PipelineVersion, 0)
 	for _, version := range pv {
 		v := toApiPipelineVersionV1(version)
-		if v == nil {
-			return nil
-		}
 		apiVersions = append(apiVersions, v)
 	}
 	return apiVersions
@@ -577,7 +572,7 @@ func toModelResourceTypeV1(rt apiv1beta1.ResourceType) (model.ResourceType, erro
 	case apiv1beta1.ResourceType_JOB:
 		return model.JobResourceType, nil
 	default:
-		return "", util.NewInvalidInputError("Failed to convert unsupported v1beta1 API resource type %s", apiv1beta1.ResourceType_name[int32(rt)])
+		return "", util.NewInvalidInputError("Failed to convert unsupported v1beta1 API resource type %v", rt)
 	}
 }
 
