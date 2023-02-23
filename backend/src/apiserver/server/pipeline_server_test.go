@@ -69,7 +69,7 @@ deploymentSpec:
           _outputs = hello_world(**_parsed_args)
         image: python:3.7
 pipelineInfo:
-  name: pipelines/pipeline-hello-world
+  name: pipeline/pipeline-hello-world
 root:
   dag:
     tasks:

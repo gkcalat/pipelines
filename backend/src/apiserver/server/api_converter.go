@@ -680,20 +680,6 @@ func toModelParameters(obj interface{}) (string, error) {
 			paramsString = ""
 		}
 		return paramsString, nil
-	case *apiv1beta1.PipelineSpec_RuntimeConfig:
-		runtimeConfig := obj
-		protoParams := runtimeConfig.GetParameters()
-		if protoParams == nil {
-			return "", util.NewInternalServerError(util.NewInvalidInputError("Parameters cannot be nil"), "Failed to convert v1beta1 API runtime config to internal parameters representation")
-		}
-		return toModelParameters(protoParams)
-	case *apiv2beta1.RuntimeConfig:
-		runtimeConfig := obj
-		protoParams := runtimeConfig.GetParameters()
-		if protoParams == nil {
-			return "", util.NewInternalServerError(util.NewInvalidInputError("Parameters cannot be nil"), "Failed to convert API runtime config to internal parameters representation")
-		}
-		return toModelParameters(protoParams)
 	default:
 		return "", util.NewUnknownApiVersionError("Parameters", obj)
 	}

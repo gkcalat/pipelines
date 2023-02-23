@@ -24,11 +24,13 @@ import (
 	"github.com/google/go-cmp/cmp"
 	apiv1beta1 "github.com/kubeflow/pipelines/backend/api/v1beta1/go_client"
 	apiv2beta1 "github.com/kubeflow/pipelines/backend/api/v2beta1/go_client"
+	"github.com/kubeflow/pipelines/backend/src/apiserver/common"
 	"github.com/kubeflow/pipelines/backend/src/apiserver/model"
 	"github.com/kubeflow/pipelines/backend/src/apiserver/template"
 	"github.com/kubeflow/pipelines/backend/src/common/util"
 	swapi "github.com/kubeflow/pipelines/backend/src/crd/pkg/apis/scheduledworkflow/v1beta1"
 	"github.com/pkg/errors"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/proto"
@@ -2380,11 +2382,15 @@ func TestToApiResourceReferences(t *testing.T) {
 		},
 		{
 			ResourceUUID: "run1", ResourceType: model.RunResourceType, ReferenceUUID: "job1",
-			ReferenceName: "j1", ReferenceType: model.JobResourceType, Relationship: model.OwnerRelationship,
+			ReferenceName: "j1", ReferenceType: model.JobResourceType, Relationship: model.CreatorRelationship,
 		},
 		{
 			ResourceUUID: "run1", ResourceType: model.RunResourceType, ReferenceUUID: "pipelineversion1",
-			ReferenceName: "k1", ReferenceType: model.PipelineVersionResourceType, Relationship: model.OwnerRelationship,
+			ReferenceName: "k1", ReferenceType: model.PipelineVersionResourceType, Relationship: model.CreatorRelationship,
+		},
+		{
+			ResourceUUID: "unknown", ResourceType: model.ResourceType("Unknown"), ReferenceUUID: "unknown_id",
+			ReferenceName: "u1", ReferenceType: model.ResourceType("Unknown"), Relationship: model.Relationship("Unknown"),
 		},
 	}
 	expectedApiResourceReferences := []*apiv1beta1.ResourceReference{
@@ -2394,11 +2400,15 @@ func TestToApiResourceReferences(t *testing.T) {
 		},
 		{
 			Key:  &apiv1beta1.ResourceKey{Type: apiv1beta1.ResourceType_JOB, Id: "job1"},
-			Name: "j1", Relationship: apiv1beta1.Relationship_OWNER,
+			Name: "j1", Relationship: apiv1beta1.Relationship_CREATOR,
 		},
 		{
 			Key:  &apiv1beta1.ResourceKey{Type: apiv1beta1.ResourceType_PIPELINE_VERSION, Id: "pipelineversion1"},
-			Name: "k1", Relationship: apiv1beta1.Relationship_OWNER,
+			Name: "k1", Relationship: apiv1beta1.Relationship_CREATOR,
+		},
+		{
+			Key:  &apiv1beta1.ResourceKey{Type: apiv1beta1.ResourceType_UNKNOWN_RESOURCE_TYPE, Id: "unknown_id"},
+			Name: "u1", Relationship: apiv1beta1.Relationship_UNKNOWN_RELATIONSHIP,
 		},
 	}
 	assert.Equal(t, expectedApiResourceReferences, toApiResourceReferencesV1(resourceReferences))
@@ -2593,6 +2603,65 @@ func TestToApiExperiments(t *testing.T) {
 		},
 	}
 	assert.Equal(t, expectedApiExps, apiExps)
+}
+
+func TestToModelParameters_EdgeCases(t *testing.T) {
+	longParams := make([]util.SpecParameter, 0)
+	for i := 1; i < 1000; i++ {
+		longParams = append(longParams, util.SpecParameter{Name: fmt.Sprintf("Param-%v", i), Default: util.StringPointer("0"), Value: util.StringPointer(fmt.Sprint(i))})
+	}
+	viper.Set(common.HasDefaultBucketEnvVar, "true")
+	viper.Set(common.DefaultBucketNameEnvVar, "test-bucket")
+	viper.Set(common.ProjectIDEnvVar, "test-project")
+	tests := []struct {
+		name    string
+		arg     interface{}
+		want    string
+		wantErr bool
+		errMsg  string
+	}{
+		{
+			"valid - nil",
+			nil,
+			"",
+			false,
+			"",
+		},
+		{
+			"invalid - long spec params",
+			util.SpecParameters(longParams),
+			"",
+			true,
+			"The input parameter length exceed maximum size",
+		},
+		{
+			"valid - v1 params from config",
+			[]*apiv1beta1.Parameter{{Name: "my-bucket", Value: "{{kfp-default-bucket}}-value"}, {Name: "my-project", Value: "{{kfp-project-id}}-value"}},
+			`[{"name":"my-bucket","value":"test-bucket-value"},{"name":"my-project","value":"test-project-value"}]`,
+			false,
+			"",
+		},
+		{
+			"invalid - wrong type",
+			&apiv2beta1.Experiment{},
+			"",
+			true,
+			"Error using Parameters with *go_client.Experiment",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := toModelParameters(tt.arg)
+			if tt.wantErr {
+				assert.NotNil(t, err)
+				assert.Empty(t, got)
+				assert.Contains(t, err.Error(), tt.errMsg)
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, tt.want, got)
+			}
+		})
+	}
 }
 
 func TestToApiParameters(t *testing.T) {
