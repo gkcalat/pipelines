@@ -20,7 +20,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/argoproj/argo-workflows/v3/pkg/apis/workflow/v1alpha1"
+	workflowapi "github.com/argoproj/argo-workflows/v3/pkg/apis/workflow/v1alpha1"
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/google/go-cmp/cmp"
 	apiv1beta1 "github.com/kubeflow/pipelines/backend/api/v1beta1/go_client"
@@ -405,9 +405,9 @@ func TestToModelRunDetail(t *testing.T) {
 					},
 				},
 			},
-			workflow: util.NewWorkflow(&v1alpha1.Workflow{
+			workflow: util.NewWorkflow(&workflowapi.Workflow{
 				ObjectMeta: v1.ObjectMeta{Name: "workflow-name", UID: "123"},
-				Status:     v1alpha1.WorkflowStatus{Phase: "running"},
+				Status:     workflowapi.WorkflowStatus{Phase: "running"},
 			}),
 			manifest:     "workflow spec",
 			templateType: template.V1,
@@ -451,9 +451,9 @@ func TestToModelRunDetail(t *testing.T) {
 					},
 				},
 			},
-			workflow: util.NewWorkflow(&v1alpha1.Workflow{
+			workflow: util.NewWorkflow(&workflowapi.Workflow{
 				ObjectMeta: v1.ObjectMeta{Name: "workflow-name", UID: "123"},
-				Status:     v1alpha1.WorkflowStatus{Phase: "running"},
+				Status:     workflowapi.WorkflowStatus{Phase: "running"},
 			}),
 			manifest:     "pipeline spec",
 			templateType: template.V2,
