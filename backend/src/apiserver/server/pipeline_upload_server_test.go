@@ -112,7 +112,7 @@ func TestUploadPipeline(t *testing.T) {
 			assert.Equal(t, 1, totalSize)
 			assert.Equal(t, pkgsExpect, pkg)
 
-			opts2, err := list.NewOptions(&model.PipelineVersion{}, 2, "", nil)
+			opts2, _ := list.NewOptions(&model.PipelineVersion{}, 2, "", nil)
 			pkg2, totalSize, str, err := clientManager.PipelineStore().ListPipelineVersions(DefaultFakeUUID, opts2)
 			assert.Nil(t, err)
 			assert.Equal(t, str, "")

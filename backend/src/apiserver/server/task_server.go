@@ -36,7 +36,7 @@ func (s *TaskServer) CreateTaskV1(ctx context.Context, request *api.CreateTaskRe
 		return nil, util.Wrap(err, "Failed to create a new task due to validation error")
 	}
 
-	modelTask, err := toModelTask(request.GetTask())
+	modelTask, err := cfg(request.GetTask())
 	if err != nil {
 		return nil, util.Wrap(err, "Failed to create a new task due to conversion error")
 	}
