@@ -31,6 +31,10 @@ func TestScheduledWorkflow_Save_Success(t *testing.T) {
 	pipelineFake := client.NewPipelineClientFake()
 
 	workflow := util.NewScheduledWorkflow(&swfapi.ScheduledWorkflow{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "kubeflow.org/v2beta1",
+			Kind:       "ScheduledWorkflow",
+		},
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: "MY_NAMESPACE",
 			Name:      "MY_NAME",
@@ -89,6 +93,10 @@ func TestScheduledWorkflow_Save_PermanentFailureWhileReporting(t *testing.T) {
 		"My Permanent Error"))
 
 	workflow := util.NewScheduledWorkflow(&swfapi.ScheduledWorkflow{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "kubeflow.org/v2beta1",
+			Kind:       "ScheduledWorkflow",
+		},
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: "MY_NAMESPACE",
 			Name:      "MY_NAME",
@@ -116,6 +124,10 @@ func TestScheduledWorkflow_Save_TransientFailureWhileReporting(t *testing.T) {
 		"My Transient Error"))
 
 	workflow := util.NewScheduledWorkflow(&swfapi.ScheduledWorkflow{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "kubeflow.org/v2beta1",
+			Kind:       "ScheduledWorkflow",
+		},
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: "MY_NAMESPACE",
 			Name:      "MY_NAME",

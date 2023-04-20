@@ -19,7 +19,6 @@ import (
 	"time"
 
 	"github.com/kubeflow/pipelines/backend/src/common/util"
-	errorutil "github.com/kubeflow/pipelines/backend/src/common/util"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/util/runtime"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -186,7 +185,7 @@ func (p *PersistenceWorker) processNextWorkItem() bool {
 		// Run the syncHandler, passing it the namespace/name string of the
 		// resource to be synced.
 		err := p.syncHandler(key)
-		retryOnError := errorutil.HasCustomCode(err, errorutil.CUSTOM_CODE_TRANSIENT)
+		retryOnError := util.HasCustomCode(err, util.CUSTOM_CODE_TRANSIENT)
 		if err != nil && retryOnError {
 			// Transient failure. We will retry.
 			log.Errorf("Transient failure while syncing resource (%v): %+v", key, err)
@@ -220,7 +219,7 @@ func (p *PersistenceWorker) syncHandler(key string) error {
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
 	if err != nil {
 		// Permanent failure.
-		return errorutil.NewCustomError(err, errorutil.CUSTOM_CODE_PERMANENT,
+		return util.NewCustomError(err, util.CUSTOM_CODE_PERMANENT,
 			"Invalid resource key (%s): %v", key, err)
 	}
 
